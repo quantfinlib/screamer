@@ -1,0 +1,16 @@
+# Set the default behavior to automatically normalize line endings.
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.c text
+*.cpp text
+*.h text
+*.hpp text
+*.py text
+*.md text
+
+# Declare binary files to be always stored and checked out as-is.
+*.png binary
+*.jpg binary
+*.gif binary

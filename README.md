@@ -1,7 +1,7 @@
 # screamer
 Screamingly fast streaming indicators with C++ performance and Python simplicity.
 
-[![CI](https://github.com/quantfinlib/screamer/actions/workflows/ci.yml/badge.svg)](https://github.com/quantfinlib/screamer/actions/workflows/ci.yml)
+[![Tests](https://github.com/quantfinlib/screamer/actions/workflows/ci.yml/badge.svg)](https://github.com/quantfinlib/screamer/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/screamer)](https://pypi.org/project/screamer/)
 [![License](https://img.shields.io/pypi/l/screamer)](https://github.com/quantfinlib/screamer/blob/main/LICENSE)
 ![Python Versions](https://img.shields.io/pypi/pyversions/screamer)

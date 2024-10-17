@@ -69,8 +69,8 @@ jobs:
     - name: Combine wheels
       run: |
         mkdir all_wheels
-        mv **/*.whl all_wheels/
-
+        find . -name '*.whl' -exec mv {} all_wheels/ \;
+      
     - name: Publish to PyPI via Trusted Publishers
       uses: pypa/gh-action-pypi-publish@release/v1
       with:

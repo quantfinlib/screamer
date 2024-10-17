@@ -53,6 +53,12 @@ jobs:
         cmake --build .
 
     - name: List screamer directory
+      if: runner.os != 'Windows'
+      run: |
+        ls -la screamer
+  
+    - name: List screamer directory
+      if: runner.os == 'Windows'
       run: |
         dir screamer
 

@@ -31,18 +31,37 @@ jobs:
     - name: Install dependencies
       run: poetry install
 
-
     - name: Install CMake
       uses: lukka/get-cmake@latest
 
-    - name: Build with CMake
+    # Build Step for Windows
+    - name: Build with CMake (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+        cmake --build . --config Debug
+
+    # Build Step for Linux and macOS
+    - name: Build with CMake (Linux and macOS)
+      if: runner.os != 'Windows'
       run: |
         mkdir build
         cd build
         cmake ..
         cmake --build .
 
-    - name: Run C++ Tests
+    # Run C++ Tests on Windows
+    - name: Run C++ Tests (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        cd build
+        ctest --output-on-failure -C Debug
+
+    # Run C++ Tests on Linux and macOS
+    - name: Run C++ Tests (Linux and macOS)
+      if: runner.os != 'Windows'
       run: |
         cd build
         ctest --output-on-failure

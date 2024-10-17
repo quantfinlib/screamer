@@ -23,62 +23,19 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install Poetry
+    - name: Install build dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install poetry
+        pip install scikit-build cmake ninja pybind11 pytest
 
-    - name: Install dependencies
-      run: poetry install
-
-    - name: Install CMake
-      uses: lukka/get-cmake@latest
-
-     # Build Step for Windows
-    - name: Build with CMake (Windows)
-      if: runner.os == 'Windows'
+    - name: Build and install the package
       run: |
-        mkdir build
-        cd build
-        cmake .. -A x64
-        cmake --build . --config Debug
+        pip install .
 
-    # Build Step for Linux and macOS
-    - name: Build with CMake (Linux and macOS)
-      if: runner.os != 'Windows'
+    - name: Run C++ Tests
       run: |
-        mkdir build
-        cd build
-        cmake ..
-        cmake --build .
-
-    - name: List screamer directory
-      if: runner.os != 'Windows'
-      run: |
-        ls -la screamer
-  
-    - name: List screamer directory
-      if: runner.os == 'Windows'
-      run: |
-        dir screamer
-
-    # Run C++ Tests on Windows
-    - name: Run C++ Tests (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        cd build
-        ctest --output-on-failure -C Debug
-
-    # Run C++ Tests on Linux and macOS
-    - name: Run C++ Tests (Linux and macOS)
-      if: runner.os != 'Windows'
-      run: |
-        cd build
         ctest --output-on-failure
 
-    # Run Python Tests
     - name: Run Python Tests
-      env:
-        PYTHONPATH: ${{ github.workspace }}
       run: |
-        poetry run pytest
+        pytest

@@ -39,9 +39,6 @@ enable_testing()
 # Add source files
 file(GLOB SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/**/*.cpp")
 
-# Create a C++ library for core functionality
-add_library(screamer_core ${SOURCES})
-
 # Create a C++ library for core functionality 
 add_library(screamer_core ${SOURCES})
 set_target_properties(screamer_core PROPERTIES POSITION_INDEPENDENT_CODE ON)

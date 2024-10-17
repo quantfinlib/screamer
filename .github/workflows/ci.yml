@@ -52,6 +52,10 @@ jobs:
         cmake ..
         cmake --build .
 
+    - name: List screamer directory
+      run: |
+        dir screamer
+
     # Run C++ Tests on Windows
     - name: Run C++ Tests (Windows)
       if: runner.os == 'Windows'
@@ -66,6 +70,9 @@ jobs:
         cd build
         ctest --output-on-failure
 
+    # Run Python Tests
     - name: Run Python Tests
+      env:
+        PYTHONPATH: ${{ github.workspace }}
       run: |
         poetry run pytest

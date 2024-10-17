@@ -57,12 +57,18 @@ target_include_directories(screamer_core PUBLIC "${CMAKE_SOURCE_DIR}/include")
 pybind11_add_module(screamer_bindings bindings/screamer_bindings.cpp)
 target_link_libraries(screamer_bindings PRIVATE screamer_core)
 
-# Specify the output directory for the Python module
+# Ensure consistent naming and output directories
 set_target_properties(screamer_bindings PROPERTIES
+    OUTPUT_NAME "screamer_bindings"
+    SUFFIX ".pyd"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/screamer"
+    LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/screamer"
+    LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/screamer"
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/screamer"
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/screamer"
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/screamer"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/screamer"
 )
+
 
 # Install the Python module to the screamer package directory
 install(TARGETS screamer_bindings

@@ -38,17 +38,6 @@ FetchContent_Declare(
 # Prevent Google Test from overriding our compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-if (MSVC)
-    set_target_properties(gtest PROPERTIES
-        CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}"
-        CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}"
-    )
-    set_target_properties(gtest_main PROPERTIES
-        CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}"
-        CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}"
-    )
-endif()
-
 # Make Google Test available
 FetchContent_MakeAvailable(googletest)
 

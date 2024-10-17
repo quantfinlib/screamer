@@ -3,6 +3,10 @@
 cmake_minimum_required(VERSION 3.15)
 project(screamer VERSION 0.1.0 LANGUAGES CXX)
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -93,3 +97,7 @@ target_link_libraries(test_lag PRIVATE gtest_main screamer_core)
 
 # Register the test
 add_test(NAME LagTest COMMAND test_lag)
+
+# Ensure that the output directory is set to the directory specified by setuptools
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH})
+

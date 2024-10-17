@@ -34,13 +34,13 @@ jobs:
     - name: Install CMake
       uses: lukka/get-cmake@latest
 
-    # Build Step for Windows
+     # Build Step for Windows
     - name: Build with CMake (Windows)
       if: runner.os == 'Windows'
       run: |
         mkdir build
         cd build
-        cmake ..
+        cmake .. -A x64
         cmake --build . --config Debug
 
     # Build Step for Linux and macOS

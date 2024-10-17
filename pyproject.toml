@@ -7,7 +7,7 @@ authors = ["Thijs van den Berg <thijs@sitmo.com>, Mohammadjavad Vakili <Mohammad
 
 maintainers = [
     "Thijs van den Berg <thijs@sitmo.com>", 
-    "Mohammadjavad Vakili <Mohammadjavad.Vakili@shell.com>" 
+    "Mohammadjavad Vakili <mohammadjavad.vakili@gmail.com>" 
 ]
 
 
@@ -25,6 +25,9 @@ pytest = "^7.0"
 [tool.poetry.group.dev.dependencies]
 wheel = "^0.44.0"
 build = "^1.2.2.post1"
+
+[tool.pytest.ini_options]
+addopts = "--ignore=_skbuild"
 
 [build-system]
 requires = ["setuptools", "wheel", "scikit-build", "cmake", "pybind11"]

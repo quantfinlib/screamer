@@ -15,6 +15,9 @@ endif()
 # Include FetchContent module
 include(FetchContent)
 
+# Set PYBIND11_USE_CMAKE_OUTPUT_EXTENSION to avoid ABI-specific suffixes
+set(PYBIND11_USE_CMAKE_OUTPUT_EXTENSION TRUE)
+
 # Fetch pybind11
 FetchContent_Declare(
   pybind11
@@ -32,7 +35,7 @@ find_package(Python COMPONENTS Interpreter Development REQUIRED)
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        release-1.12.1  # Specify the desired version
+  GIT_TAG        release-1.12.1
 )
 
 # Prevent Google Test from overriding our compiler/linker settings
@@ -41,34 +44,41 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 # Make Google Test available
 FetchContent_MakeAvailable(googletest)
 
-
 # Enable testing
 enable_testing()
 
 # Add source files
 file(GLOB SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/**/*.cpp")
 
-# Create a C++ library for core functionality 
+# Create a C++ library for core functionality
 add_library(screamer_core ${SOURCES})
 set_target_properties(screamer_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(screamer_core PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
 # Create Python module using pybind11, linking against screamer_core
-pybind11_add_module(screamer_bindings bindings/screamer_bindings.cpp)
+pybind11_add_module(screamer_bindings MODULE bindings/screamer_bindings.cpp)
 target_link_libraries(screamer_bindings PRIVATE screamer_core)
 
 # Ensure consistent naming and output directories
 set_target_properties(screamer_bindings PROPERTIES
     OUTPUT_NAME "screamer_bindings"
-    SUFFIX ".pyd"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/screamer"
-    LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/screamer"
-    LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/screamer"
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/screamer"
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/screamer"
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/screamer"
 )
 
+if (WIN32)
+    # On Windows, set the suffix to .pyd and handle output directories
+    set_target_properties(screamer_bindings PROPERTIES
+        SUFFIX ".pyd"
+        LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/screamer"
+        LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/screamer"
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/screamer"
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/screamer"
+    )
+else()
+    # On Linux and macOS, remove the 'lib' prefix
+    set_target_properties(screamer_bindings PROPERTIES PREFIX "")
+endif()
 
 # Install the Python module to the screamer package directory
 install(TARGETS screamer_bindings

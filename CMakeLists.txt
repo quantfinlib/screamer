@@ -42,7 +42,9 @@ file(GLOB SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/**/*.cpp")
 # Create a C++ library for core functionality
 add_library(screamer_core ${SOURCES})
 
-# Specify include directories for screamer_core using absolute paths
+# Create a C++ library for core functionality 
+add_library(screamer_core ${SOURCES})
+set_target_properties(screamer_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(screamer_core PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
 # Create Python module using pybind11, linking against screamer_core

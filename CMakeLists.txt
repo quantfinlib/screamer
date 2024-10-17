@@ -1,25 +1,16 @@
 # CMakeLists.txt
 
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
 project(screamer VERSION 0.1.0 LANGUAGES CXX)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Force the use of /MDd for Debug and /MD for Release
+# Set MSVC runtime library to MultiThreaded DLL (/MD for Release, /MDd for Debug)
 if (MSVC)
-    # Remove /MTd and /MT from Debug flags
-    string(REGEX REPLACE "/MTd" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    # Add /MDd to Debug flags
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
-
-    # Remove /MT and /MTd from Release flags
-    string(REGEX REPLACE "/MT" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
-    # Add /MD to Release flags
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 endif()
-
 
 # Include FetchContent module
 include(FetchContent)
@@ -44,10 +35,6 @@ FetchContent_Declare(
   GIT_TAG        release-1.12.1  # Specify the desired version
 )
 
-
-# Make Google Test available
-FetchContent_MakeAvailable(googletest)
-
 # Prevent Google Test from overriding our compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
@@ -61,6 +48,10 @@ if (MSVC)
         CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}"
     )
 endif()
+
+# Make Google Test available
+FetchContent_MakeAvailable(googletest)
+
 
 # Enable testing
 enable_testing()

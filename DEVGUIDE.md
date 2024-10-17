@@ -1,4 +1,15 @@
 
+# Making a releaser
+
+We thave `invoke` tasks in `tasks.py` for mkaing releases. Some invoke commands are:
+
+```
+invoke release --part patch
+invoke release --part minor
+invoke release --part major
+```
+
+
 # Testing
  
  ## Test C++ code

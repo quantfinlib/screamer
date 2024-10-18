@@ -54,7 +54,7 @@ add_library(screamer_core ${SOURCES})
 set_target_properties(screamer_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # Link the core library with pybind11
-target_link_libraries(screamer_core PRIVATE pybind11::module ${Python_LIBRARIES})
+target_link_libraries(screamer_core PRIVATE pybind11::module '/usr/lib64/libpython3.so')
 
 # Set include directories for screamer_core
 target_include_directories(screamer_core PUBLIC
@@ -66,7 +66,7 @@ target_include_directories(screamer_core PUBLIC
 pybind11_add_module(screamer_bindings MODULE bindings/screamer_bindings.cpp)
 
 # Link the Python module with the core library and pybind11
-target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module ${Python_LIBRARIES})
+target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module '/usr/lib64/libpython3.so')
 
 # Install the module into the Python package directory
 install(TARGETS screamer_bindings DESTINATION .)

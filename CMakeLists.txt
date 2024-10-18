@@ -37,7 +37,8 @@ FetchContent_MakeAvailable(googletest)
 
 # Find Python and Development libraries
 #find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
-find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
+find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+
 message(STATUS "Python_FOUND: ${Python_FOUND}")
 message(STATUS "Python_LIBRARIES: ${Python_LIBRARIES}")
 message(STATUS "Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")

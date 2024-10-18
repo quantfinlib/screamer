@@ -24,5 +24,8 @@ target_include_directories(screamer_tests PRIVATE
     "${CMAKE_SOURCE_DIR}/src"
 )
 
+set(LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/screamer")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH})
+
 # Add the test
 add_test(NAME screamer_tests COMMAND screamer_tests)

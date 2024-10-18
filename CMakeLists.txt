@@ -41,7 +41,7 @@ FetchContent_MakeAvailable(googletest)
 #message(STATUS "Python_LIBRARIES: ${Python_LIBRARIES}")
 #message(STATUS "Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
 
-set(Python3_USE_STATIC_LIBS TRUE)
+#set(Python3_USE_STATIC_LIBS TRUE)
 find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 message(STATUS "Python3_FOUND: ${Python3_FOUND}")
 message(STATUS "Python3_Interpreter_FOUND: ${Python3_Interpreter_FOUND}")
@@ -66,7 +66,6 @@ message(STATUS "Python3_SABI_LIBRARIES: ${Python3_SABI_LIBRARIES}")
 message(STATUS "Python3_LIBRARY: ${Python3_LIBRARY}")
 
 
-
 # Add source files
 file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/*.cpp")
 
@@ -78,7 +77,7 @@ add_library(screamer_core ${SOURCES})
 set_target_properties(screamer_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # Link the core library with pybind11
-target_link_libraries(screamer_core PRIVATE pybind11::module ${Python3_STDLIB})
+target_link_libraries(screamer_core PRIVATE pybind11::module Python3::Module)
 
 # Set include directories for screamer_core
 target_include_directories(screamer_core PUBLIC
@@ -90,7 +89,7 @@ target_include_directories(screamer_core PUBLIC
 pybind11_add_module(screamer_bindings MODULE bindings/screamer_bindings.cpp)
 
 # Link the Python module with the core library and pybind11
-target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module ${Python3_STDLIB})
+target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module Python3::Module)
 
 # Install the module into the Python package directory
 install(TARGETS screamer_bindings DESTINATION .)

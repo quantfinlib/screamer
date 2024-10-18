@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "screamer"
-version = "0.1.5"
+version = "0.1.6"
 description = "Screamingly fast streaming indicators with C++ performance and Python simplicity."
 
 authors = ["Thijs van den Berg <thijs@sitmo.com>, Mohammadjavad Vakili <Mohammadjavad.Vakili@shell.com>"]

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(screamer VERSION 0.1.5 LANGUAGES CXX)
+project(screamer VERSION 0.1.6 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)

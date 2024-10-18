@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(screamer VERSION 0.1.21 LANGUAGES CXX)
+project(screamer VERSION 0.1.20 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
@@ -36,12 +36,25 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Find Python and Development libraries
-#find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
-find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+#find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
+#message(STATUS "Python_FOUND: ${Python_FOUND}")
+#message(STATUS "Python_LIBRARIES: ${Python_LIBRARIES}")
+#message(STATUS "Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
 
-message(STATUS "Python_FOUND: ${Python_FOUND}")
-message(STATUS "Python_LIBRARIES: ${Python_LIBRARIES}")
-message(STATUS "Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
+find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
+message(STATUS "Python3_FOUND: ${Python3_FOUND}")
+message(STATUS "Python3_Interpreter_FOUND: ${Python3_Interpreter_FOUND}")
+message(STATUS "Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
+message(STATUS "Python3_INTERPRETER_ID: ${Python3_INTERPRETER_ID}")
+message(STATUS "Python3_STDLIB: ${Python3_STDLIB}")
+message(STATUS "Python3_STDARCH: ${Python3_STDARCH}")
+message(STATUS "Python3_SITELIB: ${Python3_SITELIB}")
+message(STATUS "Python3_SITEARCH: ${Python3_SITEARCH}")
+message(STATUS "Python3_SOABI: ${Python3_SOABI}")
+message(STATUS "Python3_INCLUDE_DIRS: ${Python3_INCLUDE_DIRS}")
+message(STATUS "Python3_Development.Module_FOUND: ${Python3_Development.Module_FOUND}")
+message(STATUS "Python3_LINK_OPTIONS: ${Python3_LINK_OPTIONS}")
+message(STATUS "Python3_VERSION: ${Python3_VERSION}")
 
 # Add source files
 file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/*.cpp")
@@ -54,7 +67,7 @@ add_library(screamer_core ${SOURCES})
 set_target_properties(screamer_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # Link the core library with pybind11
-target_link_libraries(screamer_core PRIVATE pybind11::module '/usr/lib64/libpython3.so')
+target_link_libraries(screamer_core PRIVATE pybind11::module ${Python_LIBRARIES})
 
 # Set include directories for screamer_core
 target_include_directories(screamer_core PUBLIC
@@ -66,7 +79,7 @@ target_include_directories(screamer_core PUBLIC
 pybind11_add_module(screamer_bindings MODULE bindings/screamer_bindings.cpp)
 
 # Link the Python module with the core library and pybind11
-target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module '/usr/lib64/libpython3.so')
+target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module ${Python_LIBRARIES})
 
 # Install the module into the Python package directory
 install(TARGETS screamer_bindings DESTINATION .)

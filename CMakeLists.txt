@@ -41,6 +41,7 @@ FetchContent_MakeAvailable(googletest)
 #message(STATUS "Python_LIBRARIES: ${Python_LIBRARIES}")
 #message(STATUS "Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
 
+# set(Python3_USE_STATIC_LIBS TRUE)
 find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 message(STATUS "Python3_FOUND: ${Python3_FOUND}")
 message(STATUS "Python3_Interpreter_FOUND: ${Python3_Interpreter_FOUND}")
@@ -55,6 +56,14 @@ message(STATUS "Python3_INCLUDE_DIRS: ${Python3_INCLUDE_DIRS}")
 message(STATUS "Python3_Development.Module_FOUND: ${Python3_Development.Module_FOUND}")
 message(STATUS "Python3_LINK_OPTIONS: ${Python3_LINK_OPTIONS}")
 message(STATUS "Python3_VERSION: ${Python3_VERSION}")
+
+message(STATUS "Python3_Development.Module_FOUND: ${Python3_Development.Module_FOUND}")
+message(STATUS "Python3_Development.SABIModule_FOUND: ${Python3_Development.SABIModule_FOUND}")
+message(STATUS "Python3_LIBRARIES: ${Python3_LIBRARIES}")
+message(STATUS "Python3_LIBRARY_DIRS: ${Python3_LIBRARY_DIRS}")
+message(STATUS "Python3_RUNTIME_LIBRARY_DIRS: ${Python3_RUNTIME_LIBRARY_DIRS}")
+
+
 
 # Add source files
 file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/*.cpp")

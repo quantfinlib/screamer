@@ -1,6 +1,5 @@
 #include "screamer/lag.h"
 
-
 namespace screamer {
 
 
@@ -42,7 +41,7 @@ py::array_t<double> Lag::transform(py::array_t<double> input_array) {
     double* result_ptr = static_cast<double*>(result_buf_info.ptr);
 
     // Apply the transformation for each element
-    for (ssize_t i = 0; i < buf_info.size; ++i) {
+    for (size_t i = 0; i < buf_info.size; ++i) {
         result_ptr[i] = (*this)(input_ptr[i]);
     }
 

@@ -36,6 +36,10 @@ jobs:
       run: |
         find $(python -c 'import site; print(site.getsitepackages()[0])')/screamer
 
+    - name: List screamer binaries
+      run: |
+        find --name screamer*.so
+  
     - name: List build directory
       run: |
         ls -la

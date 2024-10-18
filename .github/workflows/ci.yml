@@ -40,10 +40,9 @@ jobs:
       run: |
         find . -name "screamer*.so"
   
-    - name: List build directory
+    - name: List directory
       run: |
         ls -la
-        ls -R build
 
     - name: Run C++ Tests
       run: |

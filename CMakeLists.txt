@@ -63,13 +63,6 @@ pybind11_add_module(screamer_bindings MODULE bindings/screamer_bindings.cpp)
 # Link the Python module with the core library and pybind11
 target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module Python3::Python)
 
-# Install the Python module to the screamer package directory
-#install(TARGETS screamer_bindings
-#        LIBRARY DESTINATION screamer
-#        RUNTIME DESTINATION screamer
-#        ARCHIVE DESTINATION screamer
-#)
-
 # Ensure that the output directory is set to the directory specified by setuptools
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/screamer)
 

@@ -1,9 +1,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
-#include "screamer/indicators/lag.h"
+#include "screamer/lag.h"
 
 namespace py = pybind11;
-using namespace screamer::indicators;
+using namespace screamer;
 
 PYBIND11_MODULE(screamer_bindings, m) {
     py::class_<Lag>(m, "Lag")

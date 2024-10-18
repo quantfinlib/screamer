@@ -11,7 +11,5 @@ def lag_generator(iterable, delay, initial=0.0):
     :param initial: Initial value(s) to yield before lagged values are available.
     """
     lag = Lag(delay, initial)
-    buffer = [initial] * delay
     for value in iterable:
-        delayed_value = lag(value)
-        yield delayed_value
+        yield lag(value)

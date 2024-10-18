@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(screamer VERSION 0.1.0 LANGUAGES CXX)
+project(screamer VERSION 0.1.4 LANGUAGES CXX)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -18,8 +18,24 @@ FetchContent_Declare(
 # Make pybind11 available
 FetchContent_MakeAvailable(pybind11)
 
+# Fetch Google Test
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG        release-1.12.1  # Specify the desired version
+)
+
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+# Make Google Test available
+FetchContent_MakeAvailable(googletest)
+
 # Add source files
-file(GLOB SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/**/*.cpp")
+file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/*.cpp")
+
+# Debug: Print the SOURCES variable
+message(STATUS "SOURCES found: ${SOURCES}")
 
 # Create the core library
 add_library(screamer_core ${SOURCES})
@@ -32,3 +48,9 @@ target_link_libraries(screamer_bindings PRIVATE screamer_core)
 
 # Install the module into the Python package directory
 install(TARGETS screamer_bindings DESTINATION .)
+
+# Enable testing
+enable_testing()
+
+# Add the tests
+add_subdirectory(tests)

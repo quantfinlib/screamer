@@ -7,6 +7,7 @@ setup(
     long_description="Screamer is a high-performance Python library designed for efficient streaming indicator algorithms. Built with a core of optimized C++ code and integrated through Python bindings, Screamer delivers lightning-fast computations for real-time data processing. The library is perfect for real-time algorithmic trading applications that need low-latency indicators.",
     long_description_content_type="text/markdown",
     maintainer="Thijs van den Berg, Mohammadjavad Vakili",
+    maintainer_email="thijs@sitmo.com",
     url="https://github.com/quantfinlib/screamer",
     author="Thijs van den Berg, Mohammadjavad Vakili",
     author_email="thijs@sitmo.com",

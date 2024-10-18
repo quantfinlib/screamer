@@ -1,9 +1,9 @@
 // tests/test_lag.cpp
 
 #include <gtest/gtest.h>
-#include "screamer/indicators/lag.h"
+#include "screamer/lag.h"
 
-using namespace screamer::indicators;
+using namespace screamer;
 
 // Test Fixture for Lag
 class LagTest : public ::testing::Test {

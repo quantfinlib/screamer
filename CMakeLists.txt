@@ -65,6 +65,7 @@ message(STATUS "Python3_RUNTIME_LIBRARY_DIRS: ${Python3_RUNTIME_LIBRARY_DIRS}")
 message(STATUS "Python3_SABI_LIBRARIES: ${Python3_SABI_LIBRARIES}")
 message(STATUS "Python3_LIBRARY: ${Python3_LIBRARY}")
 
+add_library(Python3::Module INTERFACE IMPORTED)
 
 # Add source files
 file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/*.cpp")

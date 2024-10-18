@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.18)
 project(screamer VERSION 0.1.14 LANGUAGES CXX)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -50,7 +50,7 @@ add_library(screamer_core ${SOURCES})
 set_target_properties(screamer_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # Link the core library with pybind11
-target_link_libraries(screamer_core PRIVATE pybind11::module  ${Python_LIBRARIES})
+target_link_libraries(screamer_core PRIVATE pybind11::module Python::Python)
 
 # Set include directories for screamer_core
 target_include_directories(screamer_core PUBLIC
@@ -62,7 +62,7 @@ target_include_directories(screamer_core PUBLIC
 pybind11_add_module(screamer_bindings MODULE bindings/screamer_bindings.cpp)
 
 # Link the Python module with the core library and pybind11
-target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module ${Python_LIBRARIES})
+target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module Python::Python)
 
 # Install the module into the Python package directory
 install(TARGETS screamer_bindings DESTINATION .)

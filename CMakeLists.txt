@@ -71,7 +71,7 @@ target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module P
 #)
 
 # Ensure that the output directory is set to the directory specified by setuptools
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/screamer)
 
 # Enable testing
 enable_testing()

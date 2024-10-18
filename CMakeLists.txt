@@ -38,6 +38,9 @@ FetchContent_MakeAvailable(googletest)
 # Find Python and Development libraries
 #find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
+message(STATUS "Python_FOUND: ${Python_FOUND}")
+message(STATUS "Python_LIBRARIES: ${Python_LIBRARIES}")
+message(STATUS "Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
 
 # Add source files
 file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/*.cpp")
@@ -50,7 +53,7 @@ add_library(screamer_core ${SOURCES})
 set_target_properties(screamer_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # Link the core library with pybind11
-target_link_libraries(screamer_core PRIVATE pybind11::module Python::Python)
+target_link_libraries(screamer_core PRIVATE pybind11::module ${Python_LIBRARIES})
 
 # Set include directories for screamer_core
 target_include_directories(screamer_core PUBLIC
@@ -62,7 +65,7 @@ target_include_directories(screamer_core PUBLIC
 pybind11_add_module(screamer_bindings MODULE bindings/screamer_bindings.cpp)
 
 # Link the Python module with the core library and pybind11
-target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module Python::Python)
+target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module ${Python_LIBRARIES})
 
 # Install the module into the Python package directory
 install(TARGETS screamer_bindings DESTINATION .)

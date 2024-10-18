@@ -30,7 +30,16 @@ jobs:
 
     - name: Build and install the package
       run: |
-        pip install .
+        pip install . -v
+
+    - name: List screamer installation
+      run: |
+        find $(python -c 'import site; print(site.getsitepackages()[0])')/screamer
+
+    - name: List build directory
+      run: |
+        ls -la
+        ls -R build
 
     - name: Run C++ Tests
       run: |

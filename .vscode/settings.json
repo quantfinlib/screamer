@@ -10,6 +10,7 @@
         "optional": "cpp",
         "ratio": "cpp",
         "tuple": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "__locale": "cpp"
     }
 }

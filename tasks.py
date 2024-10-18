@@ -37,7 +37,9 @@ def ctest(c):
             c.run('cmake --build . --config Debug')
             # Run tests with the specified configuration
             c.run('ctest -C Debug --output-on-failure')
+            c.rum('copy screamer_bindings*.so ..\\screamer\\')
         else:
             # On Unix-like systems
             c.run('cmake --build .')
             c.run('ctest --output-on-failure')
+            c.run('cp screamer_bindings*.so ../screamer/')

@@ -23,6 +23,18 @@ jobs:
       with:
         python-version: '3.x'
 
+    # Install Python development headers for Ubuntu
+    - name: Install Python development headers (Linux only)
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo apt-get update && sudo apt-get install -y python3-dev
+
+    # Install equivalent packages for macOS and Windows if necessary
+    - name: Install dependencies for macOS
+      if: matrix.os == 'macos-latest'
+      run: brew install python@3.9  # Adjust version as needed
+
+    # For Windows, the setup-python action should already provide Python libraries.
+    
     - name: Install cibuildwheel
       run: |
         python -m pip install --upgrade pip

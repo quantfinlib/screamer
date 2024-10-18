@@ -38,7 +38,7 @@ jobs:
 
     - name: List screamer binaries
       run: |
-        find --name screamer*.so
+        find . -name "screamer*.so"
   
     - name: List build directory
       run: |

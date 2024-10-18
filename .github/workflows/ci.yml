@@ -32,18 +32,6 @@ jobs:
       run: |
         pip install . -v
 
-    - name: List screamer installation
-      run: |
-        find $(python -c 'import site; print(site.getsitepackages()[0])')/screamer
-
-    - name: List screamer binaries
-      run: |
-        find . -name "screamer*.so"
-  
-    - name: List directory
-      run: |
-        ls -la
-
     - name: Run C++ Tests
       run: |
         ctest --output-on-failure

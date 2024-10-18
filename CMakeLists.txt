@@ -36,7 +36,8 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Find Python and Development libraries
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+#find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 
 # Add source files
 file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/*.cpp")

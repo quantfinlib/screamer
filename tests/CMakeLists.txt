@@ -13,10 +13,7 @@ endif()
 add_executable(screamer_tests ${TEST_SOURCES})
 
 # Link the test executable with the core library and Google Test libraries
-target_link_libraries(screamer_tests PRIVATE
-    screamer_core
-    gtest_main
-)
+target_link_libraries(screamer_tests PRIVATE screamer_core gtest_main)
 
 # Include directories for the test executable
 target_include_directories(screamer_tests PRIVATE

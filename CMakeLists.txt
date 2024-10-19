@@ -37,7 +37,7 @@ message(STATUS "Python3_LIBRARY: ${Python3_LIBRARY}")
 include(FetchContent)
 
 # Fetch pybind11
-set(PYBIND11_FINDPYTHON TRUE)
+#set(PYBIND11_FINDPYTHON TRUE)
 FetchContent_Declare(
   pybind11
   GIT_REPOSITORY https://github.com/pybind/pybind11.git

@@ -1,7 +1,8 @@
-# tests/test_python.py
+# tests/test_lag.py
 
 import pytest
 from screamer import Lag, lag_generator
+import numpy as np
 
 def test_lag_valid_delay():
     lag = Lag(2, 0.0)
@@ -35,3 +36,17 @@ def test_lag_generator_invalid_delay():
     with pytest.raises(ValueError) as exc_info:
         list(lag_generator(values, delay, initial))
     assert "Delay must be an integer >= 1." in str(exc_info.value)
+
+def test_lag_reset():
+    lag = Lag(2, 0.0)
+    assert lag(10.0) == 0.0
+    assert lag(20.0) == 0.0
+    assert lag(30.0) == 10.0
+    lag.reset()
+    assert lag(40.0) == 0.0
+
+def test_lag_transform():
+    values = np.array([10, 20, 30, 40])
+    lag = Lag(2, 0.0)
+    outputs = lag.transform(values)
+    np.testing.assert_array_equal(outputs, np.array([0.0, 0.0, 10.0, 20.0]))

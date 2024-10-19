@@ -17,7 +17,7 @@ def release(c, part):
 
 
 @task
-def ctest(c):
+def test(c):
     """Build and run C++ tests in a cross-platform way."""
     # Remove build directory if it exists
     if os.path.exists('build'):
@@ -35,11 +35,10 @@ def ctest(c):
         if platform.system() == 'Windows':
             # On Windows, specify the build configuration (Debug/Release)
             c.run('cmake --build . --config Debug')
-            # Run tests with the specified configuration
-            c.run('ctest -C Debug --output-on-failure')
             c.rum('copy screamer_bindings*.so ..\\screamer\\')
         else:
             # On Unix-like systems
             c.run('cmake --build .')
-            c.run('ctest --output-on-failure')
             c.run('cp screamer_bindings*.so ../screamer/')
+
+    c.run('pytest')

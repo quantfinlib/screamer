@@ -1,10 +1,10 @@
 #include "screamer/lag.h"
+#include <screamer/transforms.h>
 
 namespace screamer {
 
-
 Lag::Lag(int N, double defaultValue)
-    : index(0), N(N)
+    : index(0), N(N), defaultValue(defaultValue)
 {
     if (N < 1) {
         throw std::invalid_argument("Delay must be an integer >= 1.");
@@ -23,29 +23,13 @@ double Lag::operator()(double newValue) {
     return oldValue;
 }
 
+void Lag::reset() {
+    std::fill(buffer.begin(), buffer.end(), defaultValue);
+    index = 0;
+}
+
 py::array_t<double> Lag::transform(py::array_t<double> input_array) {
-    // Get buffer info from the input NumPy array
-    py::buffer_info buf_info = input_array.request();
-
-    // Check that the input is a 1D array
-    if (buf_info.ndim != 1) {
-        throw std::runtime_error("Input array must be 1D");
-    }
-
-    // Create an output array of the same size as the input
-    py::array_t<double> result_array(buf_info.size);
-    py::buffer_info result_buf_info = result_array.request();
-
-    // Get pointers to input and output data
-    double* input_ptr = static_cast<double*>(buf_info.ptr);
-    double* result_ptr = static_cast<double*>(result_buf_info.ptr);
-
-    // Apply the transformation for each element
-    for (size_t i = 0; i < buf_info.size; ++i) {
-        result_ptr[i] = (*this)(input_ptr[i]);
-    }
-
-    return result_array;
+    return transform_1(*this, input_array);
 }
 
 } // namespace screamer

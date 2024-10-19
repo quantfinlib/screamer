@@ -28,9 +28,10 @@ build = "^1.2.2.post1"
 bump2version = "^1.0.1"
 invoke = "^2.2.0"
 numpy = { version = "^2.0.1", python = ">=3.10"}
+
 [tool.pytest.ini_options]
 addopts = "--ignore=_skbuild"
 
 [build-system]
-requires = ["setuptools", "wheel", "scikit-build", "cmake", "pybind11"]
-build-backend = "setuptools.build_meta"
+requires = ["scikit-build-core", "pybind11"]
+build-backend = "scikit_build_core.build"

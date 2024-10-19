@@ -46,4 +46,4 @@ pybind11_add_module(screamer_bindings MODULE bindings/screamer_bindings.cpp)
 target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module)
 
 # Install the module into the Python package directory
-install(TARGETS screamer_bindings DESTINATION .)
+install(TARGETS screamer_bindings DESTINATION screamer)

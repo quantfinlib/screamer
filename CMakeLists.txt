@@ -9,6 +9,30 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Find Python and Development libraries
+#set(Python3_USE_STATIC_LIBS TRUE)
+find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
+#find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
+message(STATUS "Python3_FOUND: ${Python3_FOUND}")
+message(STATUS "Python3_Interpreter_FOUND: ${Python3_Interpreter_FOUND}")
+message(STATUS "Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
+message(STATUS "Python3_INTERPRETER_ID: ${Python3_INTERPRETER_ID}")
+message(STATUS "Python3_STDLIB: ${Python3_STDLIB}")
+message(STATUS "Python3_STDARCH: ${Python3_STDARCH}")
+message(STATUS "Python3_SITELIB: ${Python3_SITELIB}")
+message(STATUS "Python3_SITEARCH: ${Python3_SITEARCH}")
+message(STATUS "Python3_SOABI: ${Python3_SOABI}")
+message(STATUS "Python3_INCLUDE_DIRS: ${Python3_INCLUDE_DIRS}")
+message(STATUS "Python3_Development.Module_FOUND: ${Python3_Development.Module_FOUND}")
+message(STATUS "Python3_LINK_OPTIONS: ${Python3_LINK_OPTIONS}")
+message(STATUS "Python3_VERSION: ${Python3_VERSION}")
+message(STATUS "Python3_Development.SABIModule_FOUND: ${Python3_Development.SABIModule_FOUND}")
+message(STATUS "Python3_LIBRARIES: ${Python3_LIBRARIES}")
+message(STATUS "Python3_LIBRARY_DIRS: ${Python3_LIBRARY_DIRS}")
+message(STATUS "Python3_RUNTIME_LIBRARY_DIRS: ${Python3_RUNTIME_LIBRARY_DIRS}")
+message(STATUS "Python3_SABI_LIBRARIES: ${Python3_SABI_LIBRARIES}")
+message(STATUS "Python3_LIBRARY: ${Python3_LIBRARY}")
+
 # Include FetchContent module
 include(FetchContent)
 
@@ -34,37 +58,6 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 # Make Google Test available
 FetchContent_MakeAvailable(googletest)
-
-# Find Python and Development libraries
-#find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
-#message(STATUS "Python_FOUND: ${Python_FOUND}")
-#message(STATUS "Python_LIBRARIES: ${Python_LIBRARIES}")
-#message(STATUS "Python_INCLUDE_DIRS: ${Python_INCLUDE_DIRS}")
-
-#set(Python3_USE_STATIC_LIBS TRUE)
-find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
-#find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
-message(STATUS "Python3_FOUND: ${Python3_FOUND}")
-message(STATUS "Python3_Interpreter_FOUND: ${Python3_Interpreter_FOUND}")
-message(STATUS "Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
-message(STATUS "Python3_INTERPRETER_ID: ${Python3_INTERPRETER_ID}")
-message(STATUS "Python3_STDLIB: ${Python3_STDLIB}")
-message(STATUS "Python3_STDARCH: ${Python3_STDARCH}")
-message(STATUS "Python3_SITELIB: ${Python3_SITELIB}")
-message(STATUS "Python3_SITEARCH: ${Python3_SITEARCH}")
-message(STATUS "Python3_SOABI: ${Python3_SOABI}")
-message(STATUS "Python3_INCLUDE_DIRS: ${Python3_INCLUDE_DIRS}")
-message(STATUS "Python3_Development.Module_FOUND: ${Python3_Development.Module_FOUND}")
-message(STATUS "Python3_LINK_OPTIONS: ${Python3_LINK_OPTIONS}")
-message(STATUS "Python3_VERSION: ${Python3_VERSION}")
-
-message(STATUS "Python3_Development.Module_FOUND: ${Python3_Development.Module_FOUND}")
-message(STATUS "Python3_Development.SABIModule_FOUND: ${Python3_Development.SABIModule_FOUND}")
-message(STATUS "Python3_LIBRARIES: ${Python3_LIBRARIES}")
-message(STATUS "Python3_LIBRARY_DIRS: ${Python3_LIBRARY_DIRS}")
-message(STATUS "Python3_RUNTIME_LIBRARY_DIRS: ${Python3_RUNTIME_LIBRARY_DIRS}")
-message(STATUS "Python3_SABI_LIBRARIES: ${Python3_SABI_LIBRARIES}")
-message(STATUS "Python3_LIBRARY: ${Python3_LIBRARY}")
 
 # Add source files
 file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/*.cpp")

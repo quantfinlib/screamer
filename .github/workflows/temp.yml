@@ -22,7 +22,7 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD_VERBOSITY: 1
-          CIBW_BEFORE_BUILD: yum install -y python-devel
+          # CIBW_BEFORE_BUILD: yum install -y python-devel
           CIBW_BUILD: cp311-*
 
  

@@ -1,21 +1,58 @@
 [project]
+
 name = "screamer"
+
 version = "0.1.28"
+
 requires-python = ">= 3.9"
+
 authors = [
   {name = "Thijs van den Berg", email = "thijs@sitmo.com"},
   {name = "Mohammadjavad Vakili", email = "mohammadjavad.vakili@gmail.com"}
 ]
+
 maintainers = [
   {name = "Thijs van den Berg", email = "thijs@sitmo.com"},
   {name = "Mohammadjavad Vakili", email = "mohammadjavad.vakili@gmail.com"}
 ]
+
 description = "Screamingly fast streaming indicators with C++ performance and Python simplicity."
+
 readme = "README.md"
-license = "MIT"
-dependencies = [
-  "pybind11^2.9"
+
+license = {text = "MIT License"}
+
+dependencies = ["pybind11^2.9"]
+
+keywords = ["streaming", "indicators", "real-time", "algorithmic", "trading", "low-latency"]
+
+classifiers=[
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: C++",
+    "Operating System :: OS Independent"
 ]
+
+[project.urls]
+Homepage = "https://github.com/quantfinlib/screamer"
+Documentation = "https://readthedocs.org"
+Repository = "https://github.com/quantfinlib/screamer.git"
+Issues = "https://github.com/quantfinlib/screamer/issues"
+Changelog = "https://github.com/quantfinlib/screamer/blob/master/CHANGELOG.md"
+
+
+
+
+
+
 
 [tool.poetry]
 name = "screamer"

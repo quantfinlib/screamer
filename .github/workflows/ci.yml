@@ -1,8 +1,9 @@
-name: CI, build a Linux wheel and run pytest
+name: Tests
 
 on:
   push:
     branches: [ main ]
+    tags-ignore: ['v*'] # don't run when we make a release/publication
   pull_request:
     branches: [ main ]
 

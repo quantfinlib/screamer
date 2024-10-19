@@ -22,7 +22,7 @@ readme = "README.md"
 
 license = {text = "MIT License"}
 
-dependencies = ["pybind11^2.9"]
+dependencies = ["pybind11>=2.9"]
 
 keywords = ["streaming", "indicators", "real-time", "algorithmic", "trading", "low-latency"]
 

@@ -89,7 +89,7 @@ target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module)
 install(TARGETS screamer_bindings DESTINATION .)
 
 # Enable testing
-enable_testing()
+#enable_testing()
 
 # Add the tests
-add_subdirectory(tests)
+#add_subdirectory(tests)

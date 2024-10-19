@@ -16,7 +16,7 @@ maintainers = [
   {name = "Mohammadjavad Vakili", email = "mohammadjavad.vakili@gmail.com"}
 ]
 
-description = "Screamingly fast streaming indicators with C++ performance and Python simplicity."
+description = "Screamingly fast financial technical indicators with C++ performance and Python simplicity, built for both time series analysis and real-time, event-driven streaming."
 
 readme = "README.md"
 
@@ -57,7 +57,7 @@ Changelog = "https://github.com/quantfinlib/screamer/blob/master/CHANGELOG.md"
 [tool.poetry]
 name = "screamer"
 version = "0.1.29"
-description = "Screamingly fast streaming indicators with C++ performance and Python simplicity."
+description = "Screamingly fast financial technical indicators with C++ performance and Python simplicity, built for both time series analysis and real-time, event-driven streaming."
 authors = ["Thijs van den Berg <thijs@sitmo.com>, Mohammadjavad Vakili <mohammadjavad.vakili@gmail.com>"]
 maintainers = [
     "Thijs van den Berg <thijs@sitmo.com>", 

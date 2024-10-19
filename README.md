@@ -1,5 +1,6 @@
 # screamer
-Screamingly fast streaming indicators with C++ performance and Python simplicity.
+
+Screamingly fast financial technical indicators with C++ performance and Python simplicity, built for both time series analysis and real-time, event-driven streaming.
 
 [![Tests](https://github.com/quantfinlib/screamer/actions/workflows/ci.yml/badge.svg)](https://github.com/quantfinlib/screamer/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/screamer)](https://pypi.org/project/screamer/)

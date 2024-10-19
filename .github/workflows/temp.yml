@@ -27,7 +27,7 @@ jobs:
           CIBW_TEST_COMMAND: "pytest {project}/tests"
 
       - name: Install built wheel
-        run: pip install wheelhouse/*.whl
+        run: pip install wheelhouse/*manylinux*_x86_64.whl
 
       - name: Run tests on installed wheel
         run: pytest {project}/tests

@@ -5,6 +5,9 @@ All notable changes to this project are documented in this file.
 [Unreleased] - yyyy-mm-dd
 -------------------------
 
+Version v0.1.32 (2024-10-20)
+-------------------------
+
 ### Added
 
 * Differences, Simple Return, Log Return, Rolling Sum, Simple Moving Average

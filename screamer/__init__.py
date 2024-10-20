@@ -3,6 +3,6 @@
 from .screamer_bindings import Lag
 from .generators import lag_generator
 
-__version__ = "0.1.30"
+__version__ = "0.1.31"
 
 __all__ = ["Lag", "lag_generator"]

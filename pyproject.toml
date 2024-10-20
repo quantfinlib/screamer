@@ -43,7 +43,7 @@ classifiers=[
 
 [project.urls]
 Homepage = "https://github.com/quantfinlib/screamer"
-Documentation = "https://readthedocs.org"
+Documentation = "https://screamer.readthedocs.io/en/latest/"
 Repository = "https://github.com/quantfinlib/screamer.git"
 Issues = "https://github.com/quantfinlib/screamer/issues"
 Changelog = "https://github.com/quantfinlib/screamer/blob/master/CHANGELOG.md"

@@ -25,25 +25,16 @@ FetchContent_Declare(
 # Make pybind11 available
 FetchContent_MakeAvailable(pybind11)
 
-# Add source files
-file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/screamer/*.cpp")
-
-# ---------------------------------------------------------
-# Create the core library
-# ---------------------------------------------------------
-add_library(screamer_core ${SOURCES})
-set_target_properties(screamer_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(screamer_core PRIVATE pybind11::module)
-target_include_directories(screamer_core PUBLIC
-  "${CMAKE_SOURCE_DIR}/include"
-  "${pybind11_INCLUDE_DIRS}"
-)
-
 # ---------------------------------------------------------
 # Create the Python module
 # ---------------------------------------------------------
 pybind11_add_module(screamer_bindings MODULE bindings/screamer_bindings.cpp)
-target_link_libraries(screamer_bindings PRIVATE screamer_core pybind11::module)
+target_link_libraries(screamer_bindings PRIVATE pybind11::module)
+target_include_directories(
+    screamer_bindings PUBLIC
+    "${CMAKE_SOURCE_DIR}/include"
+    "${pybind11_INCLUDE_DIRS}"
+)
 
 # Install the module into the Python package directory
 install(TARGETS screamer_bindings DESTINATION screamer)

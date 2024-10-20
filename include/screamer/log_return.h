@@ -1,9 +1,10 @@
-#ifndef SCREAMER_LAG_H
-#define SCREAMER_LAG_H
+#ifndef SCREAMER_LOG_RETURN_H
+#define SCREAMER_LOG_RETURN_H
 
 #include <vector>
 #include <stdexcept>
 #include <limits>
+#include <cmath>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <screamer/transforms.h>
@@ -12,10 +13,10 @@ namespace py = pybind11; // Alias for pybind11 namespace
 
 namespace screamer {
 
-class Lag {
+class LogReturn {
 public:
     // Constructor with an integer delay (N)
-    Lag(int N)
+    LogReturn(int N)
         : index(0), N(N)
     {
         if (N < 1) {
@@ -24,7 +25,7 @@ public:
         buffer.resize(N, std::numeric_limits<double>::quiet_NaN());    
     }
 
-    // Operator to be used as the function call operator for applying the lag
+    // Operator to be used as the function call operator for applying the diff
     double operator()(double newValue) 
     {
         double oldValue = buffer[index];
@@ -33,7 +34,7 @@ public:
         if (index == N) {
             index = 0;
         }
-        return oldValue;
+        return std::log(newValue / oldValue);
     }
 
     // reset the internal state
@@ -43,7 +44,7 @@ public:
         index = 0;
     }
 
-    // Method to transform a NumPy array, applying the lag transformation
+    // Method to transform a NumPy array, applying the diff transformation
     py::array_t<double> transform(py::array_t<double> input_array) 
     {
         return transform_1(*this, input_array);
@@ -51,10 +52,10 @@ public:
 
 private:
     size_t index; // Tracks the current position in the buffer
-    size_t N;     // The lag value (number of steps to delay)
+    size_t N;     // The delay value (number of steps to compage the difference with)
     std::vector<double> buffer; // Used as circular buffer for storing lagged values
 };
 
 } // namespace screamer
 
-#endif // SCREAMER_LAG_H
+#endif // SCREAMER_LOG_RETURN_H

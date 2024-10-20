@@ -6,9 +6,8 @@ All notable changes to this project are documented in this file.
 -------------------------
 
 ### Added
-* Moving average: Ma, Ewma
-* Differences: Diff
-* Returns: Lret, Sret
+
+* Differences, Simple Return, Log Return, Rolling Sum, Simple Moving Average
 
 ### Changed
 * removed initial_value from the constructor, we (for now) return NaN values when we cant resolve indicators.

@@ -11,6 +11,7 @@
         "ratio": "cpp",
         "tuple": "cpp",
         "vector": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "valarray": "cpp"
     }
 }

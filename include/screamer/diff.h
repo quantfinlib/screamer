@@ -14,7 +14,7 @@ namespace screamer {
 
 class Diff {
 public:
-    // Constructor with an integer delay (N) and an optional default value
+    // Constructor with an integer delay (N)
     Diff(int N)
         : index(0), N(N)
     {
@@ -24,7 +24,7 @@ public:
         buffer.resize(N, std::numeric_limits<double>::quiet_NaN());    
     }
 
-    // Operator to be used as the function call operator for applying the lag
+    // Operator to be used as the function call operator for applying the diff
     double operator()(double newValue) 
     {
         double oldValue = buffer[index];

@@ -1,5 +1,5 @@
-#ifndef SCREAMER_LAG_H
-#define SCREAMER_LAG_H
+#ifndef SCREAMER_SMA_H
+#define SCREAMER_SMA_H
 
 #include <vector>
 #include <stdexcept>
@@ -12,14 +12,15 @@ namespace py = pybind11; // Alias for pybind11 namespace
 
 namespace screamer {
 
-class Lag {
+// Simple Moving Average
+class SMA {
 public:
-    // Constructor with an integer delay (N)
-    Lag(int N)
-        : index(0), N(N)
+    // Constructor with an integer windows size (N)
+    SMA(int N)
+        : index(0), N(N), sum(0.0), sum_count(0)
     {
         if (N < 1) {
-            throw std::invalid_argument("Delay must be an integer >= 1.");
+            throw std::invalid_argument("Window size must be an integer >= 1.");
         }
         buffer.resize(N, std::numeric_limits<double>::quiet_NaN());    
     }
@@ -29,11 +30,27 @@ public:
     {
         double oldValue = buffer[index];
         buffer[index] = newValue;
+
         index++;
         if (index == N) {
             index = 0;
         }
-        return oldValue;
+
+        if (!std::isnan(oldValue)) {
+            sum -= oldValue;
+            sum_count--;
+        }
+
+        if (!std::isnan(newValue)) {
+            sum += newValue;
+            sum_count++;
+        }  
+        if (sum_count > 0) {
+            return sum / sum_count;
+        } else {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+
     }
 
     // reset the internal state
@@ -41,6 +58,8 @@ public:
     {
         std::fill(buffer.begin(), buffer.end(), std::numeric_limits<double>::quiet_NaN());
         index = 0;
+        sum = 0.0;
+        sum_count = 0;
     }
 
     // Method to transform a NumPy array, applying the lag transformation
@@ -51,10 +70,12 @@ public:
 
 private:
     size_t index; // Tracks the current position in the buffer
-    size_t N;     // The lag value (number of steps to delay)
+    size_t N;     // The window size value
     std::vector<double> buffer; // Used as circular buffer for storing lagged values
+    double sum;
+    int sum_count; 
 };
 
 } // namespace screamer
 
-#endif // SCREAMER_LAG_H
+#endif // SCREAMER_SMA_H

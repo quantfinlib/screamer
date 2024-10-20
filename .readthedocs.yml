@@ -1,21 +1,22 @@
 version: 2
 
-# Use Poetry for dependency management
+# Set the version of Python and other tools you might need
 build:
-  os: ubuntu-22.04  # You can choose the OS version; RTD supports several options
-
-python:
-  version: 3.10  # Specify the Python version
-
-install:
-  - method: poetry  # Use poetry instead of pip
-    path: .
-    # Install only the docs group
-    install_args: ["--only", "docs"]
-
-sphinx:
-  configuration: docs/source/conf.py  # Path to the Sphinx config file
-
-build:
+  os: ubuntu-20.04
   tools:
-    python: "3.10"  # Ensure the correct Python version is used
+    python: "3.10"
+  jobs:
+    post_create_environment:
+      # Install poetry
+      - pip install poetry
+      # Tell poetry to not use a virtual environment
+      - poetry config virtualenvs.create false
+    post_install:
+      # Install dependencies
+      - poetry install --with docs
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH python -m poetry install --only docs
+      - poetry env info
+
+# Build documentation in the docs directory with Sphinx
+sphinx:
+  configuration: docs/source/conf.py

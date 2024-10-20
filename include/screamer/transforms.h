@@ -1,3 +1,6 @@
+#ifndef SCREAMER_TRANSFORMS_H
+#define SCREAMER_TRANSFORMS_H
+
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
@@ -41,3 +44,6 @@ py::array_t<double> transform_1(Func&& func, py::array_t<double> input_array) {
     
     return result;
 }
+
+
+#endif

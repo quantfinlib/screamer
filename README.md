@@ -5,8 +5,7 @@ Screamingly fast financial technical indicators with C++ performance and Python 
 [![License](https://img.shields.io/pypi/l/screamer?color=#28A745)](https://github.com/quantfinlib/screamer/blob/main/LICENSE)
 ![Python Versions](https://img.shields.io/pypi/pyversions/screamer)
 [![tests](https://github.com/quantfinlib/screamer/actions/workflows/ci.yml/badge.svg)](https://github.com/quantfinlib/screamer/actions/workflows/ci.yml)
-[![Docs](https://readthedocs.org/projects/screamer/badge/?version=latest)](https://screamer.readthedocs.io/en/latest/?badge=latest)
-
+[![Docs](https://readthedocs.org/projects/screamer/badge/?version=latest)](https://screamer.readthedocs.io/en/latest/?badge=latest) 
 [![PyPI](https://img.shields.io/pypi/v/screamer)](https://pypi.org/project/screamer/)
 
 Screamer is a high-performance Python library designed for efficient streaming indicator algorithms. Built with a core of optimized C++ code and integrated through Python bindings, Screamer delivers lightning-fast computations for real-time data processing. The library is perfect for real-time algorithmic trading applications that need low-latency indicators.

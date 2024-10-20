@@ -20,3 +20,9 @@ Functions
 .. automodule:: screamer
    :members:
    :undoc-members:
+
+
+
+.. include:: ../CHANGELOG.md
+   :parser: myst_parser.sphinx_
+

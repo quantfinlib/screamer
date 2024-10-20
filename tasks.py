@@ -28,17 +28,28 @@ def test(c):
 
     # Change to build directory
     with c.cd('build'):
+
         # Run CMake configuration
         c.run('cmake ..')
 
         # Build the project
         if platform.system() == 'Windows':
+
             # On Windows, specify the build configuration (Debug/Release)
             c.run('cmake --build . --config Debug')
             c.rum('copy screamer_bindings*.so ..\\screamer\\')
         else:
+
             # On Unix-like systems
             c.run('cmake --build .')
             c.run('cp screamer_bindings*.so ../screamer/')
-
+        
+    c.run('pip install -e .')
     c.run('pytest')
+
+
+@task
+def docs(c):
+    with c.cd('docs'):
+        c.run('make clean')
+        c.run('make html')        

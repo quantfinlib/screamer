@@ -1,4 +1,4 @@
-# screamer
+# Screamer
 
 Screamingly fast financial technical indicators with C++ performance and Python simplicity, built for both time series analysis and real-time, event-driven streaming.
 

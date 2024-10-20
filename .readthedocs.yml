@@ -1,0 +1,21 @@
+version: 2
+
+# Use Poetry for dependency management
+build:
+  os: ubuntu-22.04  # You can choose the OS version; RTD supports several options
+
+python:
+  version: 3.10  # Specify the Python version
+
+install:
+  - method: poetry  # Use poetry instead of pip
+    path: .
+    # Install only the docs group
+    install_args: ["--only", "docs"]
+
+sphinx:
+  configuration: docs/source/conf.py  # Path to the Sphinx config file
+
+build:
+  tools:
+    python: "3.10"  # Ensure the correct Python version is used

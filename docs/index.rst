@@ -7,20 +7,7 @@
 .. include:: ../README.md
    :parser: myst_parser.sphinx_
 
-
-Functions
-=========
-
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-
-.. automodule:: screamer
-   :members:
-   :undoc-members:
-
+.. include:: functions.rst
 
 
 .. include:: ../CHANGELOG.md

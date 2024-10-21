@@ -27,7 +27,7 @@ In the example, we create a lag operator lag = screamer.lag(2, 0). This creates 
 ```
 import screamer
 
-lag = screamer.lag(2, 0)
+lag = screamer.lag(2)
 
 for x in [1,2,3,4]:
     print(lag(x))
@@ -49,7 +49,7 @@ In the example, we create the same lag operator as before, lag = screamer.lag(2,
 import screamer
 import numpy as np
 
-lag = screamer.lag(2, 0)
+lag = screamer.lag(2)
 
 x = np.arange(1, 5)
 y = lag.transform(x)

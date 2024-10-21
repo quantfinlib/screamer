@@ -1,22 +1,40 @@
 version: 2
 
-# Set the version of Python and other tools you might need
+# Define the build environment
 build:
-  os: ubuntu-20.04
+  os: ubuntu-22.04  # A recent Ubuntu version to ensure necessary tools are available
   tools:
-    python: "3.10"
-  jobs:
-    post_create_environment:
-      # Install poetry
-      - pip install poetry screamer
-      # Tell poetry to not use a virtual environment
-      - poetry config virtualenvs.create false
-    post_install:
-      # Install dependencies
-      - poetry install --with docs
-      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH python -m poetry install --only docs
-      - poetry env info
+    python: "3.10"  # Ensure Python version matches your local environment
+
+# Install system dependencies for building the C++ extension
+apt_packages:
+  - build-essential  # Provides GCC and other build tools
+  - cmake            # CMake to configure and build the project
+  - python3-dev      # Required for compiling Python extensions
+
+# Commands to build the C++ bindings and documentation
+build:
+  commands:
+    # Step 1: Install Poetry (if it's not already installed)
+    - pip install poetry
+
+    # Step 2: Configure Poetry to use the ReadTheDocs virtual environment
+    - poetry config virtualenvs.create false
+
+    # Step 3: Create a build directory and configure the C++ project with CMake
+    - mkdir -p build
+    - cd build
+    - cmake ..  # Adjust with additional flags if necessary
+
+    # Step 4: Build the C++ project
+    - cmake --build .
+
+    # Step 5: Copy the built shared library (bindings) to the expected location
+    - cp screamer_bindings*.so ../screamer  # Make sure this path is correct
+
+    # Step 6: Install the documentation dependencies with Poetry in the existing virtual environment
+    - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH python -m poetry install --only docs
 
 # Build documentation in the docs directory with Sphinx
 sphinx:
-  configuration: docs/conf.py
+  configuration: docs/conf.py  # Path to the Sphinx configuration file

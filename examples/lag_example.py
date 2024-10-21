@@ -9,16 +9,14 @@ def main():
 
     values = [10, 20, 30, 40]
     delay = 2
-    initial = 0.0
 
     print('The genererator version of lag')
-    gen = lag_generator(values, delay, initial)
+    gen = lag_generator(values, delay)
     for lagged in gen:
         print(lagged)
 
-
     # Use the transform method on a NumPy array
-    lag = Lag(2, 0.0)
+    lag = Lag(2)
 
     arr = np.array([10, 20, 30, 40])
     result = lag.transform(arr)

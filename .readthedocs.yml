@@ -14,13 +14,10 @@ build:
     post_install:
       - pwd
       - ls
-      - ls ../
-      - ls ../../
-      - ls ../../../
       - printenv
       - env
-      - ( set -o posix ; set ) | less
-      
+      - set
+
       # Step 1: Update and install system dependencies using apt-get
       # - apt-get update && apt-get install -y build-essential cmake python3-dev
 
@@ -32,7 +29,10 @@ build:
 
       # Step 4: Create a build directory and configure the C++ project with CMake
       - mkdir -p build
+      - ls
       - cd build
+      - pwd
+      - ls
       - cmake ..  # Adjust with additional flags if necessary
 
       # Step 5: Build the C++ project

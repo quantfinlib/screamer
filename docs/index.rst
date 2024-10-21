@@ -9,7 +9,9 @@
 
 .. include:: functions.rst
 
-
+.. automodule:: screamer
+   :members:
+   
 .. include:: ../CHANGELOG.md
    :parser: myst_parser.sphinx_
 

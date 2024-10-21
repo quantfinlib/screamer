@@ -1,7 +1,6 @@
 import inspect
 import re
 import screamer.screamer_bindings
-from typing import get_type_hints
 
 def camel_to_snake(name):
     # Insert an underscore before an uppercase letter if preceded by a lowercase letter

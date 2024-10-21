@@ -12,6 +12,15 @@ build:
 
   jobs:
     post_install:
+      - pwd
+      - ls
+      - ls ../
+      - ls ../../
+      - ls ../../../
+      - printenv
+      - env
+      - ( set -o posix ; set ) | less
+      
       # Step 1: Update and install system dependencies using apt-get
       # - apt-get update && apt-get install -y build-essential cmake python3-dev
 

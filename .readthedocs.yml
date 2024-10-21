@@ -13,7 +13,7 @@ build:
   jobs:
     post_install:
       - pwd
-      - lsg
+      - ls
       - printenv
       - env
       - set

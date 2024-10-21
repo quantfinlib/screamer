@@ -27,19 +27,20 @@ build:
       # Step 3: Configure Poetry to use the ReadTheDocs virtual environment
       - poetry config virtualenvs.create false
 
+
       # Step 4: Create a build directory and configure the C++ project with CMake
       - mkdir -p build
+      - cmake -B build -S .  # Configure CMake, specifying build dir (-B) and source dir (-S)
       - ls
-      - cd build
-      - pwd
-      - ls
-      - cmake ..  # Adjust with additional flags if necessary
 
       # Step 5: Build the C++ project
-      - cmake --build .
+      - cmake --build build  # Build the project in the "build" directory
+      - ls build/
 
       # Step 6: Copy the built shared library (bindings) to the expected location
-      - cp screamer_bindings*.so ../screamer  # Make sure this path is correct
+      - ls screamer/
+      - cp build/screamer_bindings*.so screamer/  # Copy the shared library to the correct location
+      - ls screamer/
 
       # Step 7: Install the documentation dependencies with Poetry in the existing virtual environment
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH python -m poetry install --only docs

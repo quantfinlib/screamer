@@ -12,37 +12,24 @@ build:
 
   jobs:
     post_install:
-      - pwd
-      - ls
-      - printenv
-      - env
-      - set
 
-      # Step 1: Update and install system dependencies using apt-get
-      # - apt-get update && apt-get install -y build-essential cmake python3-dev
-
-      # Step 2: Install Poetry (if it's not already installed)
+      # Step 1: Install Poetry
       - pip install poetry
 
-      # Step 3: Configure Poetry to use the ReadTheDocs virtual environment
+      # Step 2: Configure Poetry to use the ReadTheDocs virtual environment
       - poetry config virtualenvs.create false
 
-
-      # Step 4: Create a build directory and configure the C++ project with CMake
+      # Step 3: Create a build directory and configure the C++ project with CMake
       - mkdir -p build
       - cmake -B build -S .  # Configure CMake, specifying build dir (-B) and source dir (-S)
-      - ls
 
-      # Step 5: Build the C++ project
+      # Step 4: Build the C++ project
       - cmake --build build  # Build the project in the "build" directory
-      - ls build/
 
-      # Step 6: Copy the built shared library (bindings) to the expected location
-      - ls screamer/
-      - cp build/screamer_bindings*.so screamer/  # Copy the shared library to the correct location
-      - ls screamer/
+      # Step 5: Copy the built shared library (bindings) to the expected location
+      - cp build/screamer_bindings*.so screamer/
 
-      # Step 7: Install the documentation dependencies with Poetry in the existing virtual environment
+      # Step 6: Install the documentation dependencies with Poetry in the existing virtual environment
       - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH python -m poetry install --only docs
 
 # Build documentation in the docs directory with Sphinx

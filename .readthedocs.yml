@@ -5,9 +5,14 @@ build:
   os: ubuntu-22.04  # Ensure a recent Ubuntu version is used
   tools:
     python: "3.10"  # Set the Python version to use
+  apt_packages:  
+    - build-essential  # Provides GCC and other build tools
+    - cmake            # CMake to configure and build the project
+    - python3-dev      # Required for compiling Python extensions
+
   commands:
     # Step 1: Update and install system dependencies using apt-get
-    - apt-get update && apt-get install -y build-essential cmake python3-dev
+    # - apt-get update && apt-get install -y build-essential cmake python3-dev
 
     # Step 2: Install Poetry (if it's not already installed)
     - pip install poetry

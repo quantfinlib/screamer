@@ -4,6 +4,7 @@
 from .screamer_bindings import (
     Diff,
     Lag,
+    Lagq,
     LogReturn,
     Return,
     RollingSum,
@@ -30,6 +31,18 @@ def lag_generator(iterable, delay):
     :param delay: The delay parameter, d.    
     """
     indicator = Lag(delay)
+    for value in iterable:
+        yield indicator(value)
+
+
+def lagq_generator(iterable, delay):
+    """
+    Generator version of the Lagq class.
+
+    :param iterable: An iterable of numerical values.
+    :param delay: The delay parameter, d.    
+    """
+    indicator = Lagq(delay)
     for value in iterable:
         yield indicator(value)
 

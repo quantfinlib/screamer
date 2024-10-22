@@ -1,6 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include "screamer/lag.h"
+#include "screamer/lagq.h"
 #include "screamer/diff.h"
 #include "screamer/rolling_sum.h"
 #include "screamer/return.h"
@@ -22,6 +23,20 @@ PYBIND11_MODULE(screamer_bindings, m) {
              "This applies a lag of `d` to the stream of input values `X`.")
         .def("reset", &screamer::Lag::reset, "Reset the Lag indicator to its initial state.")
         .def("transform", &screamer::Lag::transform, py::arg("input_array"),
+             "Apply the lag transformation to a NumPy array.")
+        .doc() = "Lag indicator, a delayed version of values in a sequence.";
+
+    py::class_<screamer::Lagq>(m, "Lagq")
+        .def(py::init<int>(), py::arg("delay"),
+             "Initialize the Lag indicator.\n\n"
+             ":param delay: The delay parameter, d.")
+        .def("__call__", &screamer::Lagq::operator(), py::arg("value"),
+             "Apply lag to the input value.\n\n"
+             ".. math::\n"
+             "    f(X[i]) = X[i-d]\n\n"
+             "This applies a lag of `d` to the stream of input values `X`.")
+        .def("reset", &screamer::Lagq::reset, "Reset the Lag indicator to its initial state.")
+        .def("transform", &screamer::Lagq::transform, py::arg("input_array"),
              "Apply the lag transformation to a NumPy array.")
         .doc() = "Lag indicator, a delayed version of values in a sequence.";
 

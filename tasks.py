@@ -18,7 +18,6 @@ def release(c, part):
     # Push tags
     c.run("git push origin --tags", pty=True)
 
-
 @task
 def test(c):
     """Build and run C++ tests in a cross-platform way."""
@@ -33,14 +32,14 @@ def test(c):
     with c.cd('build'):
 
         # Run CMake configuration
-        c.run('cmake ..')
+        c.run('cmake .. -DCMAKE_BUILD_TYPE=Release')
 
         # Build the project
         if platform.system() == 'Windows':
 
             # On Windows, specify the build configuration (Debug/Release)
-            c.run('cmake --build . --config Debug')
-            c.rum('copy screamer_bindings*.so ..\\screamer\\')
+            c.run('cmake --build . --config Release')
+            c.run('copy screamer_bindings*.so ..\\screamer\\')
         else:
 
             # On Unix-like systems

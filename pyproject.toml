@@ -75,6 +75,7 @@ pybind11 = "^2.9"
 [tool.poetry.group.dev.dependencies]
 bump2version = "^1.0.1"
 invoke = "^2.2.0"
+matplotlib = "^3.9.2"
 
 [tool.poetry.group.testing.dependencies]
 pytest = "^7.0"

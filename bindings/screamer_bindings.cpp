@@ -7,6 +7,7 @@
 #include "screamer/return.h"
 #include "screamer/log_return.h"
 #include "screamer/sma.h"
+#include "screamer/smal.h"
 
 namespace py = pybind11;
 
@@ -107,6 +108,21 @@ PYBIND11_MODULE(screamer_bindings, m) {
              "This applies a simple moving average to the stream of input values `X`.")
         .def("reset", &screamer::SMA::reset, "Reset the simple moving average indicator to its initial state.")
         .def("transform", &screamer::SMA::transform, py::arg("input_array"),
+             "Apply the simple moving average transformation to a NumPy array.")
+        .doc() = "Simple moving average, the average of the most recent values in a sequence.";
+
+
+    py::class_<screamer::SMAL>(m, "SMAL")
+        .def(py::init<int>(), py::arg("window_size"),
+             "Initialize the simple moving average indicator.\n\n"
+             ":param window_size: The window_size parameter.")
+        .def("__call__", &screamer::SMAL::operator(), py::arg("value"),
+             "Update and return the simple moving average.\n\n"
+             ".. math::\n"
+             "    f(X[i]) = \\sum_{i=0}^{w-1}X[i-w] / w\n\n"
+             "This applies a simple moving average to the stream of input values `X`.")
+        .def("reset", &screamer::SMAL::reset, "Reset the simple moving average indicator to its initial state.")
+        .def("transform", &screamer::SMAL::transform, py::arg("input_array"),
              "Apply the simple moving average transformation to a NumPy array.")
         .doc() = "Simple moving average, the average of the most recent values in a sequence.";
 

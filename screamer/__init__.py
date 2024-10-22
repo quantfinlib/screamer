@@ -10,7 +10,8 @@ from .screamer_bindings import (
     LogReturn,
     Return,
     RollingSum,
-    SMA             
+    SMA,
+    SMAL             
 )
 
 from .generators import (
@@ -20,7 +21,8 @@ from .generators import (
     log_return_generator,
     return_generator,
     rolling_sum_generator,
-    sma_generator             
+    sma_generator,
+    smal_generator             
 )
 
 __all__ = [
@@ -30,5 +32,6 @@ __all__ = [
     "LogReturn", "log_return_generator",
     "Return", "return_generator",
     "RollingSum", "rolling_sum_generator",
-    "SMA", "sma_generator"
+    "SMA", "sma_generator",
+    "SMAL", "smal_generator"
 ]

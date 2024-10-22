@@ -6,6 +6,7 @@ __version__ = "Unreleased"
 from .screamer_bindings import (
     Diff,
     Lag,
+    Lagq,
     LogReturn,
     Return,
     RollingSum,
@@ -15,6 +16,7 @@ from .screamer_bindings import (
 from .generators import (
     diff_generator,
     lag_generator,
+    lagq_generator,
     log_return_generator,
     return_generator,
     rolling_sum_generator,
@@ -24,6 +26,7 @@ from .generators import (
 __all__ = [
     "Diff", "diff_generator",
     "Lag", "lag_generator",
+    "Lagq", "lagq_generator",
     "LogReturn", "log_return_generator",
     "Return", "return_generator",
     "RollingSum", "rolling_sum_generator",

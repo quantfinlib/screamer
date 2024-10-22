@@ -20,6 +20,7 @@ def release(c, part):
 
 @task
 def test(c):
+
     """Build and run C++ tests in a cross-platform way."""
     # Remove build directory if it exists
     if os.path.exists('build'):

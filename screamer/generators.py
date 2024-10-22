@@ -8,7 +8,8 @@ from .screamer_bindings import (
     LogReturn,
     Return,
     RollingSum,
-    SMA             
+    SMA,
+    SMAL             
 )
 
 def diff_generator(iterable, delay):
@@ -91,6 +92,18 @@ def sma_generator(iterable, window_size):
     :param window_size: The window_size parameter.    
     """
     indicator = SMA(window_size)
+    for value in iterable:
+        yield indicator(value)
+
+
+def smal_generator(iterable, window_size):
+    """
+    Generator version of the SMAL class.
+
+    :param iterable: An iterable of numerical values.
+    :param window_size: The window_size parameter.    
+    """
+    indicator = SMAL(window_size)
     for value in iterable:
         yield indicator(value)
 

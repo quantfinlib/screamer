@@ -28,7 +28,7 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD_VERBOSITY: 1
-          CIBW_BUILD: cp311-manylinux*  # Build only Python 3.11 wheels
-          CIBW_ARCHS_LINUX: x86_64  # Build only for the x86_64 architecture          
+          CIBW_BUILD: cp311-manylinux2014_x86_64  # Build only Python 3.11 wheels for manylinux2014
+          CIBW_ARCHS_LINUX: x86_64  # Build only for the x86_64 architecture   
           CIBW_TEST_REQUIRES: pytest numpy
           CIBW_TEST_COMMAND: "pytest {project}/tests"

@@ -42,7 +42,7 @@ target_compile_options(screamer_bindings PRIVATE
     -O3                # Enable maximum optimization
     -march=native      # Enable architecture-specific optimizations
     -flto              # Enable Link Time Optimization
-    -ffast-math        # Enable fast math operations (may be unsafe for some code)
+    #-ffast-math        # Enable fast math operations (may be unsafe for some code)
 )
 
 

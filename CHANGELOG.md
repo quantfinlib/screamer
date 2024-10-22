@@ -34,5 +34,4 @@ Version v0.1.31 (2024-10-20)
 * The indicator.transform() member functions can now transform multi-dimensional numpy arrays.
 * Added documentation.
 
-### Fixed
 

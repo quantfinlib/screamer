@@ -5,6 +5,18 @@ All notable changes to this project are documented in this file.
 [Unreleased] - yyyy-mm-dd
 -------------------------
 
+### Added
+
+* exponentially weighted moving averge
+* rolling std
+* rolling skew
+* rolling kurtosis
+* rolling zscore
+
+### Fixed
+
+* Fixed incorrect results when applying transforms to a view on a numpy array.
+
 Version v0.1.32 (2024-10-20)
 -------------------------
 

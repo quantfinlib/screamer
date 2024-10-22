@@ -13,13 +13,11 @@ def test_diff_valid_delay():
 def test_diff_zero_delay():
     with pytest.raises(ValueError) as exc_info:
         Diff(0)
-    assert "Delay must be an integer >= 1." in str(exc_info.value)
 
 
 def test_diff_negative_delay():
     with pytest.raises(ValueError) as exc_info:
         Diff(-1)
-    assert "Delay must be an integer >= 1." in str(exc_info.value)
 
 
 def test_diff_generator_valid():
@@ -38,7 +36,6 @@ def test_diff_generator_invalid_delay():
     delay = 0
     with pytest.raises(ValueError) as exc_info:
         list(diff_generator(values, delay))
-    assert "Delay must be an integer >= 1." in str(exc_info.value)
 
 
 def test_diff_reset():

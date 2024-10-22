@@ -3,13 +3,15 @@
 
 from .screamer_bindings import (
     Diff,
+    EWMA,
     Lag,
-    Lagq,
     LogReturn,
     Return,
+    RollingSkew,
+    RollingStd,
     RollingSum,
-    SMA,
-    SMAL             
+    RollingZscore,
+    SMA             
 )
 
 def diff_generator(iterable, delay):
@@ -24,6 +26,18 @@ def diff_generator(iterable, delay):
         yield indicator(value)
 
 
+def ewma_generator(iterable, weight):
+    """
+    Generator version of the EWMA class.
+
+    :param iterable: An iterable of numerical values.
+    :param weight: Weight of new values.    
+    """
+    indicator = EWMA(weight)
+    for value in iterable:
+        yield indicator(value)
+
+
 def lag_generator(iterable, delay):
     """
     Generator version of the Lag class.
@@ -32,18 +46,6 @@ def lag_generator(iterable, delay):
     :param delay: The delay parameter, d.    
     """
     indicator = Lag(delay)
-    for value in iterable:
-        yield indicator(value)
-
-
-def lagq_generator(iterable, delay):
-    """
-    Generator version of the Lagq class.
-
-    :param iterable: An iterable of numerical values.
-    :param delay: The delay parameter, d.    
-    """
-    indicator = Lagq(delay)
     for value in iterable:
         yield indicator(value)
 
@@ -72,6 +74,30 @@ def return_generator(iterable, delay):
         yield indicator(value)
 
 
+def rolling_skew_generator(iterable, window_size):
+    """
+    Generator version of the RollingSkew class.
+
+    :param iterable: An iterable of numerical values.
+    :param window_size: The window_size parameter.    
+    """
+    indicator = RollingSkew(window_size)
+    for value in iterable:
+        yield indicator(value)
+
+
+def rolling_std_generator(iterable, window_size):
+    """
+    Generator version of the RollingStd class.
+
+    :param iterable: An iterable of numerical values.
+    :param window_size: The window_size parameter.    
+    """
+    indicator = RollingStd(window_size)
+    for value in iterable:
+        yield indicator(value)
+
+
 def rolling_sum_generator(iterable, window_size):
     """
     Generator version of the RollingSum class.
@@ -84,6 +110,18 @@ def rolling_sum_generator(iterable, window_size):
         yield indicator(value)
 
 
+def rolling_zscore_generator(iterable, window_size):
+    """
+    Generator version of the RollingZscore class.
+
+    :param iterable: An iterable of numerical values.
+    :param window_size: The window_size parameter.    
+    """
+    indicator = RollingZscore(window_size)
+    for value in iterable:
+        yield indicator(value)
+
+
 def sma_generator(iterable, window_size):
     """
     Generator version of the SMA class.
@@ -92,18 +130,6 @@ def sma_generator(iterable, window_size):
     :param window_size: The window_size parameter.    
     """
     indicator = SMA(window_size)
-    for value in iterable:
-        yield indicator(value)
-
-
-def smal_generator(iterable, window_size):
-    """
-    Generator version of the SMAL class.
-
-    :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
-    """
-    indicator = SMAL(window_size)
     for value in iterable:
         yield indicator(value)
 

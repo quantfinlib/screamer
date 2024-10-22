@@ -5,33 +5,39 @@ __version__ = "Unreleased"
 
 from .screamer_bindings import (
     Diff,
+    EWMA,
     Lag,
-    Lagq,
     LogReturn,
     Return,
+    RollingSkew,
+    RollingStd,
     RollingSum,
-    SMA,
-    SMAL             
+    RollingZscore,
+    SMA             
 )
 
 from .generators import (
     diff_generator,
+    ewma_generator,
     lag_generator,
-    lagq_generator,
     log_return_generator,
     return_generator,
+    rolling_skew_generator,
+    rolling_std_generator,
     rolling_sum_generator,
-    sma_generator,
-    smal_generator             
+    rolling_zscore_generator,
+    sma_generator             
 )
 
 __all__ = [
     "Diff", "diff_generator",
+    "EWMA", "ewma_generator",
     "Lag", "lag_generator",
-    "Lagq", "lagq_generator",
     "LogReturn", "log_return_generator",
     "Return", "return_generator",
+    "RollingSkew", "rolling_skew_generator",
+    "RollingStd", "rolling_std_generator",
     "RollingSum", "rolling_sum_generator",
-    "SMA", "sma_generator",
-    "SMAL", "smal_generator"
+    "RollingZscore", "rolling_zscore_generator",
+    "SMA", "sma_generator"
 ]

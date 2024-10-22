@@ -3,6 +3,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
+#include <vector>
 
 namespace py = pybind11;
 
@@ -16,9 +17,9 @@ py::array_t<double> transform_1(Func&& func, py::array_t<double> input_array) {
     if (buf_info.ndim < 1 || buf_info.itemsize != sizeof(double)) {
         throw std::runtime_error("Input array must have at least one dimension and contain doubles");
     }
-    
-    size_t rows = buf_info.shape[0];  // The size along the first dimension
-    size_t rest_size = 1;             // Total size of the rest of the dimensions (2nd axis onward)
+
+    size_t first_dim = buf_info.shape[0];  // The size along the first dimension (e.g., rows)
+    size_t rest_size = 1;                  // Total size of the rest of the dimensions
     for (int i = 1; i < buf_info.ndim; ++i) {
         rest_size *= buf_info.shape[i];
     }
@@ -31,19 +32,39 @@ py::array_t<double> transform_1(Func&& func, py::array_t<double> input_array) {
     py::buffer_info result_buf = result.request();
     double* result_data = static_cast<double*>(result_buf.ptr);
 
-    // Apply the functor or callable to each column (defined by slicing along the first axis)
-    for (size_t col = 0; col < rest_size; ++col) {
-        func.reset();  // Call reset() before processing each column
+    // Vector to store the stride steps for each dimension in terms of the number of elements
+    std::vector<size_t> input_strides(buf_info.ndim);
+    std::vector<size_t> result_strides(buf_info.ndim);
+    
+    for (int i = 0; i < buf_info.ndim; ++i) {
+        input_strides[i] = buf_info.strides[i] / sizeof(double);
+        result_strides[i] = result_buf.strides[i] / sizeof(double);
+    }
 
-        // Process each element along the first dimension for the current column
-        for (size_t row = 0; row < rows; ++row) {
-            size_t index = row * rest_size + col;  // Calculate the flat index in the data
-            result_data[index] = func(input_data[index]);  // Apply the functor to each element
+    // Apply the function to each "slice" along the first axis
+    for (size_t col = 0; col < rest_size; ++col) {
+        func.reset();  // Reset the function for each slice
+
+        for (size_t row = 0; row < first_dim; ++row) {
+            // Calculate the multi-dimensional index
+            size_t input_index = row * input_strides[0];
+            size_t result_index = row * result_strides[0];
+            size_t temp_col = col;
+
+            // For each remaining dimension, adjust the input and result indices by considering strides
+            for (int dim = buf_info.ndim - 1; dim > 0; --dim) {
+                size_t index_in_dim = temp_col % buf_info.shape[dim];
+                input_index += index_in_dim * input_strides[dim];
+                result_index += index_in_dim * result_strides[dim];
+                temp_col /= buf_info.shape[dim];
+            }
+
+            // Apply the function to the correct element in the input array
+            result_data[result_index] = func(input_data[input_index]);
         }
     }
-    
+
     return result;
 }
-
 
 #endif

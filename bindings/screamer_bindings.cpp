@@ -6,6 +6,7 @@
 #include "screamer/return.h"
 #include "screamer/log_return.h"
 #include "screamer/sma.h"
+#include "screamer/fracdiff.h"
 
 namespace py = pybind11;
 
@@ -88,5 +89,19 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("reset", &screamer::SMA::reset, "Reset the simple moving average indicator to its initial state.")
         .def("transform", &screamer::SMA::transform, py::arg("input_array"),
              "Apply the simple moving average transformation to a NumPy array.");
+
+     py::class_<screamer::FracDiff>(m, "FracDiff")
+          .def(py::init<double, int, double>(), py::arg("frac_order"), py::arg("window_size"), py::arg("threshold")=1e-5,
+                "Initialize the fractional difference indicator.\n\n"
+                ":param frac_order: The fractional order parameter, d.\n"
+                ":param window_size: The window_size parameter.\n"
+                ":param threshold: The threshold parameter.")
+          .def("__call__", &screamer::FracDiff::operator(), py::arg("value"),
+                "Update and return the fractionally differenced value.\n\n"
+                ".. math::\n"
+                "    f(X[i]) = \\sum_{i=0}^{w-1}w[i] * X[i-w]\n\n"
+                "This applies a fractional difference to the stream of input values `X`.")
+          .def("transform", &screamer::FracDiff::transform, py::arg("input_array"),
+                "Apply the fractional difference transformation to a NumPy array.");
 
 }

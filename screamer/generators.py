@@ -1,6 +1,6 @@
 # screamer/generators.py
 
-from .screamer_bindings import Lag, Diff, RollingSum, Return, LogReturn, SMA
+from .screamer_bindings import Lag, Diff, RollingSum, Return, LogReturn, SMA, FracDiff
 
 
 def lag_generator(iterable, delay):
@@ -71,4 +71,17 @@ def sma_generator(iterable, window_size):
     """
     trans = SMA(window_size)
     for value in iterable:
-        yield trans(value)  
+        yield trans(value) 
+
+
+def fracdiff_generator(iterable, frac_order, window_size, threshold=1e-5):
+    """
+    Generator that yields the fractional difference from the input iterable.
+
+    :param iterable: An iterable of numerical values.
+    :param window_size: The window size of the fractional difference.
+    :param frac_order: The fractional difference value.
+    """
+    trans = FracDiff(frac_order, window_size, threshold)
+    for value in iterable:
+        yield trans(value)

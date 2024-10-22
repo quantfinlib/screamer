@@ -32,13 +32,13 @@ def test_lag_transform_2d():
 
 
 def test_lag_transform_3d():
-    values = np.random.normal(size=(4, 3, 2))
-    expected_output = np.zeros_like(values)
-    expected_output[2:, ...] = values[:-2, ...]
+    input = np.random.normal(size=(4, 3, 2))
+    expected_output = np.zeros_like(input)
+    expected_output[2:, ...] = input[:-2, ...]
     expected_output[:2, ...] = np.nan
 
     lag = Lag(2)
-    outputs = lag.transform(values)
-    
+    output = lag.transform(input)
+
     # Compare 3D arrays with NaN
-    np.testing.assert_array_equal(outputs, expected_output, err_msg="3D arrays do not match")
+    np.testing.assert_array_equal(output, expected_output, err_msg="3D arrays do not match")

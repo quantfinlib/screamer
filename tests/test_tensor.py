@@ -15,59 +15,57 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize("class_name", class_meta.keys())
 
 
-# Test function that uses the dynamically parametrized class_name and class_info
+# Test processing a matrix columns wise, vs in one go with .transform()
 def test_matrix(class_name):
+
+    # windows_size or delay
+    arg = 3
+
+    # Instantiate an indicator class
     module = importlib.import_module("screamer.screamer_bindings")
     cls = getattr(module, class_name) 
       
     # generate some 4 column matrix input
-    input = np.cos(np.arange(240)).reshape(-1, 4)
+    input = 1.1*np.arange(24).reshape(-1, 4)
 
     # Loop over columns
-    obj1 = cls(10)
-    output1 = np.zeros_like(input)
+    obj1 = cls(arg)
+    output1 = np.zeros_like(input, dtype=float)
     for col in range(input.shape[1]):
-        output1[:, col] = obj1.transform(input[:, col])
+        output1[:, col] = obj1.transform(input[:, col].copy())
 
     # Matrix in one go
-    obj2 = cls(10)
+    obj2 = cls(arg)
     output2 = obj2.transform(input)
 
-    assert output1.shape == input.shape
-    assert output1.shape == output2.shape
-
     # Should be exactly the same
-    output1 = output1.flatten()
-    output2 = output2.flatten()
-    assert np.all([np.isnan(x1) if np.isnan(x2) else x1 == x2 for x1, x2 in zip(output1, output2)])
+    np.testing.assert_array_equal(output1, output2, err_msg="matrices do not match")
 
 
-# Test function that uses the dynamically parametrized class_name and class_info
+# Test processing a tensor columns wise, vs in one go with .transform()
 def test_tensor(class_name):
+
+    # windows_size or delay
+    arg = 3
+
+    # Instantiate an indicator class
     module = importlib.import_module("screamer.screamer_bindings")
     cls = getattr(module, class_name) 
       
     # generate some 3d tensor input
-    input = np.cos(np.arange(240)).reshape(-1, 2, 3)
+    input = np.arange(24).reshape(-1, 2, 3)
 
     # Loop over columns
-    obj1 = cls(10)
-    output1 = np.zeros_like(input)
+    obj1 = cls(arg)
+    output1 = np.zeros_like(input, dtype=float)
     for d1 in range(input.shape[1]):
         for d2 in range(input.shape[2]):
             output1[:, d1, d2] = obj1.transform(input[:, d1, d2])
 
     # Process tensor in one go
-    obj2 = cls(10)
+    obj2 = cls(arg)
     output2 = obj2.transform(input)
 
-    assert output1.shape == input.shape
-    assert output1.shape == output2.shape
-
     # Should be exactly the same
-    output1 = output1.flatten()
-    output2 = output2.flatten()
-    assert np.all([np.isnan(x1) if np.isnan(x2) else x1 == x2 for x1, x2 in zip(output1, output2)])
-
-
+    np.testing.assert_array_equal(output1, output2, err_msg="tensors do not match")
 

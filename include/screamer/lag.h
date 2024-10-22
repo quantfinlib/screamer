@@ -36,6 +36,10 @@ public:
         return oldValue;
     }
 
+    const double& operator[](size_t pos) const {
+        return buffer[(index + pos) % N]; 
+    }
+
     // reset the internal state
     void reset() 
     {

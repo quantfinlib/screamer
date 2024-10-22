@@ -4,7 +4,7 @@ Screamingly fast financial technical indicators with C++ performance and Python 
 
 [![License](https://img.shields.io/pypi/l/screamer?color=#28A745)](https://github.com/quantfinlib/screamer/blob/main/LICENSE)
 ![Python Versions](https://img.shields.io/pypi/pyversions/screamer)
-[![tests](https://github.com/quantfinlib/screamer/actions/workflows/ci.yml/badge.svg)](https://github.com/quantfinlib/screamer/actions/workflows/ci.yml)
+[![tests](https://github.com/quantfinlib/screamer/actions/workflows/ci.yml/badge.svg)](https://github.com/quantfinlib/screamer/actions/workflows/test.yml)
 [![Docs](https://readthedocs.org/projects/screamer/badge/?version=latest)](https://screamer.readthedocs.io/en/latest/?badge=latest) 
 [![PyPI](https://img.shields.io/pypi/v/screamer)](https://pypi.org/project/screamer/)
 

@@ -1,0 +1,33 @@
+name: tests-always
+
+on:
+  push:
+    branches: 
+      - '*'  # trigger on all branches including feature branches
+  pull_request:
+    branches: 
+      - main  # runs on pull requests targeting the main branch
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest] #, windows-latest, macos-13, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+
+      - name: Install cibuildwheel
+        run: python -m pip install cibuildwheel==2.21.3
+
+      - name: Build and test wheels
+        run: python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD_VERBOSITY: 1
+          CIBW_BUILD: cp311-* #cp39-* cp310-* cp311-*
+          CIBW_TEST_REQUIRES: pytest numpy
+          CIBW_TEST_COMMAND: "pytest {project}/tests"

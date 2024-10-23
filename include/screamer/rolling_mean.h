@@ -1,5 +1,5 @@
-#ifndef SCREAMER_SMA_H
-#define SCREAMER_SMA_H
+#ifndef SCREAMER_ROLLING_MEAN_H
+#define SCREAMER_ROLLING_MEAN_H
 
 #include <limits>
 #include <pybind11/pybind11.h>
@@ -11,9 +11,9 @@ namespace py = pybind11;
 
 namespace screamer {
 
-class SMA  {
+class RollingMean  {
 public:
-    SMA(int N) : sum(0), sum_count(0), buffer(N, std::numeric_limits<double>::quiet_NaN()) {}
+    RollingMean(int N) : sum(0), sum_count(0), buffer(N, std::numeric_limits<double>::quiet_NaN()) {}
 
     double operator()(double newValue) 
     {
@@ -56,4 +56,4 @@ private:
 
 } // namespace screamer
 
-#endif // SCREAMER_SMA_H
+#endif // SCREAMER_ROL_MEAN_H

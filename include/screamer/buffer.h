@@ -2,8 +2,11 @@
 #define SCREAMER_BUFFER_H
 
 #include <vector>
+#include <set>
+#include <iostream>
 #include <limits>
 #include <stdexcept>
+
 
 namespace screamer {
 
@@ -54,6 +57,67 @@ private:
     std::vector<double> buffer; // Used as circular buffer for storing lagged values
 };
 
+
+template<typename T>
+class SortedFixedSizeBuffer {
+public:
+    SortedFixedSizeBuffer(size_t size) : buffer(size), capacity(size), write_head(0) {}
+
+    void insert(T value) {
+        // If the buffer is full, remove the element at the current write head from the multiset
+        if (filled_size == capacity) {
+            auto it = sorted_values.find(buffer[write_head]);
+            sorted_values.erase(it); // Remove old value from multiset
+        } else {
+            ++filled_size;
+        }
+
+        // Add the new value to the cyclic buffer
+        buffer[write_head] = value;
+        sorted_values.insert(value);  // Add new value to the multiset
+
+        // Update the write head
+        write_head = (write_head + 1) % capacity;
+    }
+
+    T get_min() const {
+        return *sorted_values.begin();
+    }
+
+    T get_max() const {
+        return *sorted_values.rbegin();
+    }
+
+    T get_median() const {
+        auto it = sorted_values.begin();
+        std::advance(it, filled_size / 2);
+        if (filled_size % 2 == 0) {
+            // If even, take average of two middle values
+            auto it_prev = std::prev(it);
+            return (*it + *it_prev) / 2;
+        }
+        return *it; // Odd number of elements
+    }
+
+    T get_quantile(double q) const {
+        // q should be between 0 and 1 (e.g., 0.5 for median)
+        size_t rank = q * (filled_size - 1);  // Get rank position for quantile
+        auto it = sorted_values.begin();
+        std::advance(it, rank);
+        return *it;
+    }
+
+private:
+    std::vector<T> buffer;           // Cyclic buffer to store the elements
+    std::multiset<T> sorted_values;  // Sorted multiset to maintain current values
+    size_t capacity;                 // Maximum size of the cyclic buffer
+    size_t write_head;               // Write head index
+    size_t filled_size = 0;          // Number of valid elements currently in buffer
+};
+
+
+
 } // namespace screamer
 
 #endif // SCREAMER_BUFFER_H
+

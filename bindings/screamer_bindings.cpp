@@ -3,14 +3,17 @@
 #include "screamer/lag.h"
 #include "screamer/diff.h"
 #include "screamer/rolling_sum.h"
+#include "screamer/rolling_mean.h"
 #include "screamer/rolling_std.h"
+#include "screamer/rolling_var.h"
 #include "screamer/rolling_skew.h"
 #include "screamer/rolling_kurt.h"
 #include "screamer/rolling_zscore.h"
 #include "screamer/return.h"
 #include "screamer/log_return.h"
-#include "screamer/sma.h"
 #include "screamer/ewma.h"
+#include "screamer/ew_var.h"
+#include "screamer/ew_std.h"
 
 namespace py = pybind11;
 
@@ -58,6 +61,21 @@ PYBIND11_MODULE(screamer_bindings, m) {
              "Apply the rolling sum transformation to a NumPy array.")
         .doc() = "Rolling sum, the sum of the most recent values in a sequence.";
 
+    py::class_<screamer::RollingMean>(m, "RollingMean")
+        .def(py::init<int>(), py::arg("window_size"),
+             "Initialize the simple moving average indicator.\n\n"
+             ":param window_size: The window_size parameter.")
+        .def("__call__", &screamer::RollingMean::operator(), py::arg("value"),
+             "Update and return the simple moving average.\n\n"
+             ".. math::\n"
+             "    f(X[i]) = \\sum_{i=0}^{w-1}X[i-w] / w\n\n"
+             "This applies a simple moving average to the stream of input values `X`.")
+        .def("reset", &screamer::RollingMean::reset, "Reset the simple moving average indicator to its initial state.")
+        .def("transform", &screamer::RollingMean::transform, py::arg("input_array"),
+             "Apply the simple moving average transformation to a NumPy array.")
+        .doc() = "Simple moving average, the average of the most recent values in a sequence.";
+
+
     py::class_<screamer::RollingStd>(m, "RollingStd")
         .def(py::init<int>(), py::arg("window_size"),
              "Initialize the rolling standard deviation indicator.\n\n"
@@ -68,6 +86,17 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("transform", &screamer::RollingStd::transform, py::arg("input_array"),
              "Apply the indicator to a NumPy array.")
         .doc() = "Rolling standard deviation, the standard deviation of the most recent values in a sequence.";
+
+    py::class_<screamer::RollingVar>(m, "RollingVar")
+        .def(py::init<int>(), py::arg("window_size"),
+             "Initialize the rolling variance indicator.\n\n"
+             ":param window_size: The window_size parameter.")
+        .def("__call__", &screamer::RollingVar::operator(), py::arg("value"),
+             "This applies a rolling variance to the stream of input values `X`.")
+        .def("reset", &screamer::RollingVar::reset, "Reset the indicator to its initial state.")
+        .def("transform", &screamer::RollingVar::transform, py::arg("input_array"),
+             "Apply the indicator to a NumPy array.")
+        .doc() = "Rolling variance, the variance of the most recent values in a sequence.";
 
     py::class_<screamer::RollingSkew>(m, "RollingSkew")
         .def(py::init<int>(), py::arg("window_size"),
@@ -90,7 +119,6 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("transform", &screamer::RollingKurt::transform, py::arg("input_array"),
              "Apply the indicator to a NumPy array.")
         .doc() = "Rolling kurtosis, the kurtosis of the most recent values in a sequence.";
-
 
     py::class_<screamer::RollingZscore>(m, "RollingZscore")
         .def(py::init<int>(), py::arg("window_size"),
@@ -131,21 +159,6 @@ PYBIND11_MODULE(screamer_bindings, m) {
              "Apply the log return transformation to a NumPy array.")
         .doc() = "Log return, the logarithmic change compared to a previous value.";
 
-    py::class_<screamer::SMA>(m, "SMA")
-        .def(py::init<int>(), py::arg("window_size"),
-             "Initialize the simple moving average indicator.\n\n"
-             ":param window_size: The window_size parameter.")
-        .def("__call__", &screamer::SMA::operator(), py::arg("value"),
-             "Update and return the simple moving average.\n\n"
-             ".. math::\n"
-             "    f(X[i]) = \\sum_{i=0}^{w-1}X[i-w] / w\n\n"
-             "This applies a simple moving average to the stream of input values `X`.")
-        .def("reset", &screamer::SMA::reset, "Reset the simple moving average indicator to its initial state.")
-        .def("transform", &screamer::SMA::transform, py::arg("input_array"),
-             "Apply the simple moving average transformation to a NumPy array.")
-        .doc() = "Simple moving average, the average of the most recent values in a sequence.";
-
-
     py::class_<screamer::EWMA>(m, "EWMA")
         .def(py::init<int>(), py::arg("weight"),
              "Initialize the exponentially weighted moving average indicator.\n\n"
@@ -159,5 +172,30 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("transform", &screamer::EWMA::transform, py::arg("input_array"),
              "Apply the exponentially weighted moving average transformation to a NumPy array.")
         .doc() = "Exponentially weighted moving average ofvalues in a sequence.";
+
+    py::class_<screamer::EwStd>(m, "EwStd")
+        .def(py::init<int>(), py::arg("weight"),
+             "Initialize the exponentially weighted standard deviation indicator.\n\n"
+             ":param weight: Weight of new values.")
+        .def("__call__", &screamer::EwStd::operator(), py::arg("value"),
+             "Update and return exponentially weighted standard deviation indicator.")
+        .def("reset", &screamer::EwStd::reset, 
+        "Reset the exponentially weighted moving standard deviation indicator to its initial state.")
+        .def("transform", &screamer::EwStd::transform, py::arg("input_array"),
+             "Apply the exponentially weighted standard deviation transformation to a NumPy array.")
+        .doc() = "Exponentially weighted standard deviation of values in a sequence.";
+
+    py::class_<screamer::EwVar>(m, "EwVar")
+        .def(py::init<int>(), py::arg("weight"),
+             "Initialize the exponentially weighted variance indicator.\n\n"
+             ":param weight: Weight of new values.")
+        .def("__call__", &screamer::EwVar::operator(), py::arg("value"),
+             "Update and return exponentially weighted variance indicator.")
+        .def("reset", &screamer::EwVar::reset, 
+        "Reset the exponentially weighted moving standard deviation indicator to its initial state.")
+        .def("transform", &screamer::EwVar::transform, py::arg("input_array"),
+             "Apply the exponentially weighted variance transformation to a NumPy array.")
+        .doc() = "Exponentially weighted variance of values in a sequence.";
+
 
 }

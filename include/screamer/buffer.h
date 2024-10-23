@@ -61,7 +61,17 @@ private:
 template<typename T>
 class SortedFixedSizeBuffer {
 public:
-    SortedFixedSizeBuffer(size_t size) : buffer(size), capacity(size), write_head(0) {}
+    SortedFixedSizeBuffer(size_t size)
+    {
+        if (size <= 0) {
+            throw std::invalid_argument("N must be positive.");
+        }
+        // Now that size is validated, we can initialize the members
+        buffer.resize(size);  // Initialize buffer with the specified size
+        capacity = size;
+        write_head = 0;
+        filled_size = 0;
+    }
 
     void insert(T value) {
         // If the buffer is full, remove the element at the current write head from the multiset
@@ -105,6 +115,15 @@ public:
         auto it = sorted_values.begin();
         std::advance(it, rank);
         return *it;
+    }
+
+    // Reset the buffer to its initial state
+    void reset() {
+        buffer.clear();                  // Clear the buffer
+        buffer.resize(capacity);          // Resize to the original capacity
+        sorted_values.clear();            // Clear the sorted multiset
+        write_head = 0;                   // Reset the write head
+        filled_size = 0;                  // Reset the filled size
     }
 
 private:

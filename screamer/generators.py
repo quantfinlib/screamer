@@ -10,7 +10,11 @@ from .screamer_bindings import (
     LogReturn,
     Return,
     RollingKurt,
+    RollingMax,
     RollingMean,
+    RollingMedian,
+    RollingMedian2,
+    RollingMin,
     RollingSkew,
     RollingStd,
     RollingSum,
@@ -114,6 +118,18 @@ def rolling_kurt_generator(iterable, window_size):
         yield indicator(value)
 
 
+def rolling_max_generator(iterable, window_size):
+    """
+    Generator version of the RollingMax class.
+
+    :param iterable: An iterable of numerical values.
+    :param window_size: The window_size parameter.    
+    """
+    indicator = RollingMax(window_size)
+    for value in iterable:
+        yield indicator(value)
+
+
 def rolling_mean_generator(iterable, window_size):
     """
     Generator version of the RollingMean class.
@@ -122,6 +138,42 @@ def rolling_mean_generator(iterable, window_size):
     :param window_size: The window_size parameter.    
     """
     indicator = RollingMean(window_size)
+    for value in iterable:
+        yield indicator(value)
+
+
+def rolling_median_generator(iterable, window_size):
+    """
+    Generator version of the RollingMedian class.
+
+    :param iterable: An iterable of numerical values.
+    :param window_size: The window_size parameter.    
+    """
+    indicator = RollingMedian(window_size)
+    for value in iterable:
+        yield indicator(value)
+
+
+def rolling_median2_generator(iterable, window_size):
+    """
+    Generator version of the RollingMedian2 class.
+
+    :param iterable: An iterable of numerical values.
+    :param window_size: The window_size parameter.    
+    """
+    indicator = RollingMedian2(window_size)
+    for value in iterable:
+        yield indicator(value)
+
+
+def rolling_min_generator(iterable, window_size):
+    """
+    Generator version of the RollingMin class.
+
+    :param iterable: An iterable of numerical values.
+    :param window_size: The window_size parameter.    
+    """
+    indicator = RollingMin(window_size)
     for value in iterable:
         yield indicator(value)
 

@@ -8,7 +8,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Read the data
 df = pd.read_csv(
-    os.path.join(script_dir, 'benchmark_rolling.csv'),
+    os.path.join(script_dir, 'experiments', 'benchmark_rolling.csv'),
     dtype={'lib': str, 'func': str, 'N': int, 'window_size': int, 'time': float}
 )
 
@@ -21,8 +21,8 @@ def make_func_plot(df_filtered, func_name):
     # Plot
     plt.figure(figsize=(8,6))
     for (lib, window_size), group in df_filtered.groupby(['lib', 'window_size']):
-        linestyle = '-.' if lib == 'pandas' else '-'
-        markerstyle = '+' if lib == 'pandas' else '*'
+        linestyle = '-' if lib == 'pandas' else '-'
+        markerstyle = None if lib == 'pandas' else 'o'
         plt.plot(np.log10(group['N']), np.log10(group['time']),
                 label=f'{lib}, window_size={window_size:>10,.0f}'.replace(',','.'), 
                 color=colors[window_size], 
@@ -36,7 +36,7 @@ def make_func_plot(df_filtered, func_name):
     plt.legend(loc='best')
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(os.path.join(script_dir, f'benchmark_{func_name.lower()}.png'))
+    plt.savefig(os.path.join(script_dir, 'plots', f'benchmark_{func_name.lower()}.png'))
 
 
     # Create a pivot table to calculate the ratio of pandas time to screamer time for each N and window_size
@@ -67,7 +67,7 @@ def make_func_plot(df_filtered, func_name):
     plt.tight_layout()
 
 
-    plt.savefig(os.path.join(script_dir, f'benchmark_{func_name.lower()}_ratio.png'))
+    plt.savefig(os.path.join(script_dir, 'plots', f'benchmark_{func_name.lower()}_ratio.png'))
 
 # Filter for 'RollingMean' function
 for func_name in df['func'].unique():

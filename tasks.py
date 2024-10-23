@@ -59,3 +59,8 @@ def docs(c):
     with c.cd('docs'):
         c.run('make clean')
         c.run('make html')        
+
+@task
+def benchmark(c):
+    c.run('python benchmarks/benchmark_rolling.py', pty=True)
+    c.run('python benchmarks/make_plots.py', pty=True)

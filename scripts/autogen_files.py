@@ -1,6 +1,8 @@
+import importlib.util
 import inspect
 import re
-import screamer.screamer_bindings
+import glob
+#import screamer.screamer_bindings
 
 def camel_to_snake(name):
     # Insert an underscore before an uppercase letter if preceded by a lowercase letter
@@ -72,7 +74,14 @@ def {snake_name}_generator(iterable, {arg_list}):
 '''
 
 
-info = collect_class_info(screamer.screamer_bindings)
+so_file_path = glob.glob('screamer/screamer_bindings*.so')[0]
+
+# Load the .so file directly as a module without importing the package
+spec = importlib.util.spec_from_file_location('screamer_bindings', so_file_path)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)  # Load the .so file into the module
+
+info = collect_class_info(module)
 
 
 # -------------------------------------------------------------------------------

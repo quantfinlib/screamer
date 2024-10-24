@@ -1,11 +1,12 @@
-name: tests
+name: tests-always
 
 on:
   push:
-    branches: [ main ]
-    tags-ignore: ['v*'] # don't run when we make a release/publication
+    branches: 
+      - '*'  # trigger on all branches including feature branches
   pull_request:
-    branches: [ main ]
+    branches: 
+      - main  # runs on pull requests targeting the main branch
 
 jobs:
   build_wheels:
@@ -27,6 +28,7 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD_VERBOSITY: 1
-          CIBW_BUILD: cp311-* #cp39-* cp310-* cp311-*
+          CIBW_BUILD: cp311-manylinux*
+          CIBW_ARCHS_LINUX: x86_64
           CIBW_TEST_REQUIRES: pytest numpy
           CIBW_TEST_COMMAND: "pytest {project}/tests"

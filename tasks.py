@@ -5,6 +5,9 @@ import platform
 
 @task
 def release(c, part):
+    # Refresh Python files in screamer directory
+    c.run("python scripts/autogen_files.py", pty=True)
+
     """Bump version, commit, tag, and push."""
     # Bump the version
     c.run(f"bump2version {part}", pty=True)
@@ -15,9 +18,9 @@ def release(c, part):
     # Push tags
     c.run("git push origin --tags", pty=True)
 
-
 @task
 def test(c):
+
     """Build and run C++ tests in a cross-platform way."""
     # Remove build directory if it exists
     if os.path.exists('build'):
@@ -30,19 +33,22 @@ def test(c):
     with c.cd('build'):
 
         # Run CMake configuration
-        c.run('cmake ..')
+        c.run('cmake .. -DCMAKE_BUILD_TYPE=Release')
 
         # Build the project
         if platform.system() == 'Windows':
 
             # On Windows, specify the build configuration (Debug/Release)
-            c.run('cmake --build . --config Debug')
-            c.rum('copy screamer_bindings*.so ..\\screamer\\')
+            c.run('cmake --build . --config Release')
+            c.run('copy screamer_bindings*.so ..\\screamer\\')
         else:
 
             # On Unix-like systems
             c.run('cmake --build .')
             c.run('cp screamer_bindings*.so ../screamer/')
+
+    # Refresh Python files in screamer directory
+    c.run("python scripts/autogen_files.py")
         
     c.run('pip install -e .')
     c.run('pytest')
@@ -53,3 +59,8 @@ def docs(c):
     with c.cd('docs'):
         c.run('make clean')
         c.run('make html')        
+
+@task
+def benchmark(c):
+    c.run('python benchmarks/benchmark_rolling.py', pty=True)
+    c.run('python benchmarks/make_plots.py', pty=True)

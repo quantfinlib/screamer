@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.18)
 project(screamer VERSION 0.1.32 LANGUAGES CXX)
 
+# Set the default build type to Release for optimizations
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
+
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -35,6 +37,14 @@ target_include_directories(
     "${CMAKE_SOURCE_DIR}/include"
     "${pybind11_INCLUDE_DIRS}"
 )
+# Add optimization flags for performance
+target_compile_options(screamer_bindings PRIVATE
+    -O3                # Enable maximum optimization
+    -march=native      # Enable architecture-specific optimizations
+    -flto              # Enable Link Time Optimization
+    #-ffast-math        # Enable fast math operations (may be unsafe for some code)
+)
+
 
 # Install the module into the Python package directory
 install(TARGETS screamer_bindings DESTINATION screamer)

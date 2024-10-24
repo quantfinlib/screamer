@@ -1,4 +1,4 @@
-from screamer import FracDiff, fracdiff_generator
+from screamer import FracDiff, frac_diff_generator
 
 import numpy as np
 import pytest
@@ -24,7 +24,7 @@ def test_frac_diff_identity(prices):
 
 
 def test_frac_diff_generator_identity(prices):
-    gen = fracdiff_generator(prices, window_size=10, frac_order=0)
+    gen = frac_diff_generator(prices, window_size=10, frac_order=0)
     fs = np.array(list(gen))
     assert np.allclose(fs, prices)
 
@@ -56,12 +56,12 @@ def test_frac_diff_multi_dimensional(prices):
     fs2 = fracdiff.transform(p2)
     fs20 = np.array(
         list(
-            fracdiff_generator(prices, frac_order=0.1, window_size=100, threshold=1e-6)
+            frac_diff_generator(prices, frac_order=0.1, window_size=100, threshold=1e-6)
         )
     )
     fs21 = np.array(
         list(
-            fracdiff_generator(
+            frac_diff_generator(
                 prices * 2, frac_order=0.1, window_size=100, threshold=1e-6
             )
         )

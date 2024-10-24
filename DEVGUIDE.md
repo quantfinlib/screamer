@@ -20,8 +20,13 @@ Local testing compiles the C++ code,  re-installs the library, and runs pytest:
 
 # Reference implemenations
 
-After adding a class `ABC` to screamer you should add a function `screamer_abc(array, ...)`
-to `reference_impls/screamer.py` that call this function.
+After adding a class `ABC` to screamer you should add a function `screamer__abc(array, ...)`
+to `reference_impls/screamer.py` that call this function. The general function name 
+convention is: `<reference name>__<function name>[__<optional variant name>]`. E.g. the 
+function `numpy__rolling_mean__cumsum` is a `numpy` implementation of the `rolling_mean` 
+function, and this specific implementation variant uses `cumsum`.  Specifying an implementation 
+variant name is optional, it allows for implementing multiple variant of the same algorithm
+using the same basis library (`numpy` in this case)
 
 Additionally you should aim to add an independent reference implemenation and call it
  `<other>_abc(array, ..)`. Currently we have collected reference implemenation based on 
@@ -34,7 +39,7 @@ The `reference_impls` modules also container an `all()` function that returns a 
 assembled pandas DataFrame of all the functions and reference implementation. It looks 
 like this:
 
-|           callable             |    lib    |        func         |    var    |              args              |
+|           callable             |    lib    |        func         |    var    |              args               |
 |---------------------------------|-----------|---------------------|----------|---------------------------------|
 | numpy__rolling_mean__cumsum     | numpy     | rolling_mean        | cumsum   | array,window_size               |
 | numpy__rolling_mean__stride     | numpy     | rolling_mean        | stride   | array,window_size               |
@@ -67,8 +72,12 @@ like this:
 | screamer__lag                   | screamer  | lag                 |          | array,window_size               |
 
 
-This table forms the basis of comparing screamer functions against reference implementations,
+This table is basis of comparing screamer functions against reference implementations,
 both for unit testing and for performance benchmark tests.
+
+The  `test/test_reference_impl.py` script collect this table, loop over all function in the 
+screamer lib, and looks for the same function in other libs. If a pair is found it will 
+run a test to see if both version give the same return value.
 
 
 # Running Examples

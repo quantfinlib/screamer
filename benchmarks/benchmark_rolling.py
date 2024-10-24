@@ -54,12 +54,12 @@ def time_function(func, *args):
 
 experiments = []
 
-for p in np.arange(2, 8): # power 10^p: 100 ... 100_000_000
+for p in np.arange(2, 9): # power 10^p: 100 ... 100_000_000
     for m in np.arange(1,10): # multiplier
         N = m * 10**p
 
         # Upper bound for vector length
-        if N > 1_000_000:
+        if N > 10_000_000:
             break
 
         print('testing size', N)

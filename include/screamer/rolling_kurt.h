@@ -18,20 +18,20 @@ public:
     RollingKurt(int N) : 
         N(N), 
         kurt(std::numeric_limits<double>::quiet_NaN()),
-        sum_x_buffer(N, std::numeric_limits<double>::quiet_NaN()),
-        sum_xx_buffer(N, std::numeric_limits<double>::quiet_NaN()),
-        sum_xxx_buffer(N, std::numeric_limits<double>::quiet_NaN()),
-        sum_xxxx_buffer(N, std::numeric_limits<double>::quiet_NaN())
+        sum_x_buffer(N),
+        sum_xx_buffer(N),
+        sum_xxx_buffer(N),
+        sum_xxxx_buffer(N)
     {}
     
     double operator()(const double newValue) 
     {
         if (!std::isnan(newValue)) {
             // Update the rolling sums
-            double sum_x = sum_x_buffer.append(newValue);
-            double sum_xx = sum_xx_buffer.append(newValue * newValue);
-            double sum_xxx = sum_xxx_buffer.append(newValue * newValue * newValue);
-            double sum_xxxx = sum_xxxx_buffer.append(newValue * newValue * newValue * newValue);
+            double sum_x = sum_x_buffer(newValue);
+            double sum_xx = sum_xx_buffer(newValue * newValue);
+            double sum_xxx = sum_xxx_buffer(newValue * newValue * newValue);
+            double sum_xxxx = sum_xxxx_buffer(newValue * newValue * newValue * newValue);
 
             // Calculate the rolling mean and variance
             double mean = sum_x / N;
@@ -53,10 +53,10 @@ public:
 
     void reset() 
     {
-        sum_x_buffer.reset(std::numeric_limits<double>::quiet_NaN());
-        sum_xx_buffer.reset(std::numeric_limits<double>::quiet_NaN());
-        sum_xxx_buffer.reset(std::numeric_limits<double>::quiet_NaN());
-        sum_xxxx_buffer.reset(std::numeric_limits<double>::quiet_NaN());
+        sum_x_buffer.reset();
+        sum_xx_buffer.reset();
+        sum_xxx_buffer.reset();
+        sum_xxxx_buffer.reset();
         kurt = std::numeric_limits<double>::quiet_NaN();
     }
 
@@ -66,10 +66,10 @@ public:
     }
 
 private:
-    FixedSizeBuffer sum_x_buffer;
-    FixedSizeBuffer sum_xx_buffer;
-    FixedSizeBuffer sum_xxx_buffer;
-    FixedSizeBuffer sum_xxxx_buffer;
+    RollingSum sum_x_buffer;
+    RollingSum sum_xx_buffer;
+    RollingSum sum_xxx_buffer;
+    RollingSum sum_xxxx_buffer;
     double kurt;
     const int N;
 };

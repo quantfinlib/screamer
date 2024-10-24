@@ -20,6 +20,7 @@ def numpy__rolling_skew__stride(array, window_size):
     mean = np.mean(windowed_array, axis=-1)
     std = np.std(windowed_array, axis=-1, ddof=1)
     skewness = np.mean(((windowed_array - mean[:, None]) / std[:, None])**3, axis=-1)
+    skewness = skewness * window_size * window_size / (window_size-1) / (window_size-2)
     return np.concatenate((np.full(window_size-1, np.nan), skewness))
 
 def numpy__rolling_kurt__stride(array, window_size):

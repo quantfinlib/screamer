@@ -21,16 +21,18 @@ Local testing compiles the C++ code,  re-installs the library, and runs pytest:
 # Reference implemenations
 
 After adding a class `ABC` to screamer you should add a function `screamer__abc(array, ...)`
-to `reference_impls/screamer.py` that call this function. The general function name 
-convention is: `<reference name>__<function name>[__<optional variant name>]`. E.g. the 
-function `numpy__rolling_mean__cumsum` is a `numpy` implementation of the `rolling_mean` 
-function, and this specific implementation variant uses `cumsum`.  Specifying an implementation 
-variant name is optional, it allows for implementing multiple variant of the same algorithm
-using the same basis library (`numpy` in this case)
+to `reference_impls/screamer.py` that call this function. 
 
 Additionally you should aim to add an independent reference implemenation and call it
  `<other>_abc(array, ..)`. Currently we have collected reference implemenation based on 
  numpy and pandas in the `reference_impls/numpy.py` and `reference_impls/pandas.py` modules.
+
+The general function name convention is:
+ `<reference name>__<function name>[__<optional variant name>]`. E.g. the 
+function `numpy__rolling_mean__cumsum` is a `numpy` implementation of the `rolling_mean` 
+function, and this specific implementation variant uses `cumsum`.  Specifying an implementation 
+variant name is optional, it allows for implementing multiple variant of the same algorithm
+using the same basis library (`numpy` in this case)
 
  During testing the script `test/test_reference_impl.py` will scan these implementations and 
  run and compare them against eachother.

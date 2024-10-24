@@ -12,6 +12,10 @@ All notable changes to this project are documented in this file.
 * rolling skew
 * rolling kurtosis
 * rolling zscore
+* rolling min
+* rolling max
+* rolling median
+* rolling quantile
 
 ### Fixed
 

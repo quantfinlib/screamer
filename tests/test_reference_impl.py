@@ -6,7 +6,7 @@ import pytest
 
 test_args = {
     'array': np.random.normal(size=50),
-    'window_size': 7,
+    'window_size': 5,
     'quantile': 0.75
 }
 

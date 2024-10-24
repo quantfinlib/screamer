@@ -33,18 +33,28 @@ public:
             double sum_xxx = sum_xxx_buffer(newValue * newValue * newValue);
             double sum_xxxx = sum_xxxx_buffer(newValue * newValue * newValue * newValue);
 
-            // Calculate the rolling mean and variance
+
+            // Calculate the mean
             double mean = sum_x / N;
-            double variance = (sum_xx - sum_x * mean) / (N - 1);
+
+            // Calculate the sample variance (unbiased)
+            double variance = (sum_xx - N * mean * mean) / (N - 1);
             double std_dev = std::sqrt(variance);
 
-            if (std_dev > 0) {
-                // Calculate the rolling kurtosis (excess kurtosis)
-                kurt = (N * (sum_xxxx - 4 * mean * sum_xxx + 6 * mean * mean * sum_xx 
-                        - 4 * mean * mean * mean * sum_x + N * mean * mean * mean * mean)) 
-                        / ((N - 1) * (N - 2) * (N - 3) * std_dev * std_dev * std_dev * std_dev) - 3;
+            if (std_dev > 0 && N > 3) {
+                // Calculate m4 (fourth central moment)
+                double m4 = sum_xxxx - 4 * mean * sum_xxx + 6 * mean * mean * sum_xx - 3 * N * mean * mean * mean * mean;
+
+                // Calculate numerator and denominator for kurtosis
+                double numerator = N * (N + 1) * m4;
+                double denominator = (N - 1) * (N - 2) * (N - 3) * std_dev * std_dev * std_dev * std_dev;
+
+                // Calculate kurtosis
+                double excess_kurtosis = (numerator / denominator) - (3 * (N - 1) * (N - 1)) / ((N - 2) * (N - 3));
+
+                kurt = excess_kurtosis;
             } else {
-                kurt = std::numeric_limits<double>::quiet_NaN(); // Undefined kurtosis when std dev is 0
+                kurt = std::numeric_limits<double>::quiet_NaN();  // Undefined kurtosis
             }
         }
 

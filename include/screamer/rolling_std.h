@@ -6,7 +6,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <screamer/transforms.h>
-#include <screamer/buffer.h>
+#include <screamer/rolling_sum.h>
 
 namespace py = pybind11; // Alias for pybind11 namespace
 
@@ -18,16 +18,16 @@ public:
     RollingStd(int N) : 
         N(N), 
         std(std::numeric_limits<double>::quiet_NaN()),
-        sum_x_buffer(N, std::numeric_limits<double>::quiet_NaN()),
-        sum_xx_buffer(N, std::numeric_limits<double>::quiet_NaN())
+        sum_x_buffer(N),
+        sum_xx_buffer(N)
     {}
     
     double operator()(const double newValue) 
     {
         if (!std::isnan(newValue)) {
-            double sum_x = sum_x_buffer.append(newValue);
-            double sum_xx = sum_x_buffer.append(newValue * newValue);
-            std = std::sqrt((sum_xx - sum_x * sum_x / N) / (N - 1));
+            double sum_x = sum_x_buffer(newValue);
+            double sum_xx = sum_xx_buffer(newValue * newValue);
+            std = std::sqrt((N * sum_xx - sum_x * sum_x) / (N * (N - 1)));
         } 
 
         return std;
@@ -35,8 +35,8 @@ public:
 
     void reset() 
     {
-        sum_x_buffer.reset(std::numeric_limits<double>::quiet_NaN());
-        sum_xx_buffer.reset(std::numeric_limits<double>::quiet_NaN());        
+        sum_x_buffer.reset();
+        sum_xx_buffer.reset();        
         std = std::numeric_limits<double>::quiet_NaN();
     }
 
@@ -46,8 +46,8 @@ public:
     }
 
 private:
-    FixedSizeBuffer sum_x_buffer;
-    FixedSizeBuffer sum_xx_buffer;
+    RollingSum sum_x_buffer;
+    RollingSum sum_xx_buffer;
     double std;
     const int N;
 };

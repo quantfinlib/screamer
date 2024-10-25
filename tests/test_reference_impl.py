@@ -1,12 +1,17 @@
 import numpy as np
 import pytest
+
+import importlib.util
 import sys
 import os
 
-# Add the root directory to sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+# Dynamically load the reference_impls module
+reference_impls_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../reference_impls"))
+spec = importlib.util.spec_from_file_location("reference_impls", os.path.join(reference_impls_path, "__init__.py"))
+reference_impls = importlib.util.module_from_spec(spec)
+sys.modules["reference_impls"] = reference_impls
+spec.loader.exec_module(reference_impls)
 
-import reference_impls
 
 test_args = {
     'array': np.random.normal(size=50),

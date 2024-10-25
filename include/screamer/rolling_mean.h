@@ -4,7 +4,7 @@
 #include <limits>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/transforms.h>
+#include <screamer/transforms_mean.h>
 #include <screamer/buffer.h>
 
 namespace py = pybind11;
@@ -13,45 +13,35 @@ namespace screamer {
 
 class RollingMean  {
 public:
-    RollingMean(int N) : sum(0), sum_count(0), buffer(N, std::numeric_limits<double>::quiet_NaN()) {}
+    RollingMean(int N) : N(N), one_over_N(1.0 / N), sum(0.0), buffer(N, 0.0) {}
 
     double operator()(double newValue) 
     {
-        double oldValue = buffer.append(newValue);
-
-        if (!std::isnan(oldValue)) {
-            sum -= oldValue;
-            sum_count--;
-        }
-
         if (!std::isnan(newValue)) {
+            double oldValue = buffer.append(newValue);
+            sum -= oldValue;
             sum += newValue;
-            sum_count++;
         }
 
-        if (sum_count > 0) {
-            return sum / sum_count;
-        } else {
-            return std::numeric_limits<double>::quiet_NaN();
-        }
+        return sum * one_over_N;
     }
 
-    void reset() 
+    void reset()
     {
-        buffer.reset(std::numeric_limits<double>::quiet_NaN());
+        buffer.reset(0.0);
         sum = 0.0;
-        sum_count = 0;
     }
 
     py::array_t<double> transform(const py::array_t<const double> input_array) 
     {
-        return transform_1(*this, input_array);
+        return transform_mean(N, input_array);
     }
 
 private:
     FixedSizeBuffer buffer;
     double sum;
-    int sum_count;
+    const double one_over_N;
+    const int N;
 };
 
 } // namespace screamer

@@ -1,5 +1,8 @@
 import screamer as sc
 
+def screamer__rolling_sum(array, window_size):
+    return sc.RollingSum(window_size).transform(array)
+
 def screamer__rolling_mean(array, window_size):
     return sc.RollingMean(window_size).transform(array)
 

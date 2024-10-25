@@ -1,5 +1,15 @@
 import numpy as np
 
+def numpy__rolling_sum__cumsum(array, window_size):
+    ans = np.cumsum(array)
+    ans[window_size:] = ans[window_size:] - ans[:-window_size]
+    return ans 
+
+def numpy__rolling_sum__stride(array, window_size):
+    windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
+    ans  = np.sum(windowed_array, axis=-1)
+    return np.concatenate((np.full(window_size-1, np.nan), ans))
+
 def numpy__rolling_mean__cumsum(array, window_size):
     ans = np.cumsum(array)
     ans[window_size:] = ans[window_size:] - ans[:-window_size]
@@ -22,16 +32,6 @@ def numpy__rolling_skew__stride(array, window_size):
     skewness = np.mean(((windowed_array - mean[:, None]) / std[:, None])**3, axis=-1)
     skewness = skewness * window_size * window_size / (window_size-1) / (window_size-2)
     return np.concatenate((np.full(window_size-1, np.nan), skewness))
-
-def numpy__rolling_kurt__stride(array, window_size):
-    windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
-    mean = np.mean(windowed_array, axis=-1)
-    std = np.std(windowed_array, axis=-1, ddof=1)
-    kurtosis = np.mean(((windowed_array - mean[:, None]) / std[:, None])**4, axis=-1) - 3
-    return np.concatenate((np.full(window_size-1, np.nan), kurtosis))
-
-
-import numpy as np
 
 def numpy__rolling_kurt__stride(array, window_size):
     N = window_size

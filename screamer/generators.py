@@ -13,7 +13,6 @@ from .screamer_bindings import (
     RollingMax,
     RollingMean,
     RollingMedian,
-    RollingMedian2,
     RollingMin,
     RollingSkew,
     RollingStd,
@@ -150,18 +149,6 @@ def rolling_median_generator(iterable, window_size):
     :param window_size: The window_size parameter.    
     """
     indicator = RollingMedian(window_size)
-    for value in iterable:
-        yield indicator(value)
-
-
-def rolling_median2_generator(iterable, window_size):
-    """
-    Generator version of the RollingMedian2 class.
-
-    :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
-    """
-    indicator = RollingMedian2(window_size)
     for value in iterable:
         yield indicator(value)
 

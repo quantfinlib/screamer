@@ -17,7 +17,7 @@ public:
 
     RollingKurt(int N) : 
         N(N), 
-        kurt(std::numeric_limits<double>::quiet_NaN()),
+        kurt(0.0),
         sum_x_buffer(N),
         sum_xx_buffer(N),
         sum_xxx_buffer(N),

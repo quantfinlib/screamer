@@ -2,14 +2,11 @@ import numpy as np
 import reference_impls
 import pytest
 
-
-
 test_args = {
     'array': np.random.normal(size=50),
     'window_size': 5,
     'quantile': 0.75
 }
-
 
 # Load the table with all reference functions
 all_functions = reference_impls.all()

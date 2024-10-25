@@ -62,5 +62,5 @@ def docs(c):
 
 @task
 def benchmark(c):
-    c.run('python benchmarks/benchmark_rolling.py', pty=True)
+    c.run('python benchmarks/run_benchmarks.py', pty=True)
     c.run('python benchmarks/make_plots.py', pty=True)

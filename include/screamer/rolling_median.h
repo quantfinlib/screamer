@@ -1,9 +1,10 @@
 #ifndef SCREAMER_ROLLING_MEDIAN_H
 #define SCREAMER_ROLLING_MEDIAN_H
 
-#include <set>
-#include <deque>
-#include <stdexcept>
+#include <queue>
+#include <vector>
+#include <map>
+#include <cmath>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <screamer/transforms.h>
@@ -15,106 +16,127 @@ namespace screamer {
 
 class RollingMedian {
 public:
-    RollingMedian(int window_size) : window_size(window_size)
+    RollingMedian(int N) : window_size(N), buffer(N, std::numeric_limits<double>::quiet_NaN()) {}
+
+    double operator()(double newValue) 
     {
-        if (window_size <= 0) {
-            throw std::invalid_argument("Window size must be positive.");
+        double oldValue = buffer.append(newValue);
+
+        if (!std::isnan(oldValue)) {
+            remove(oldValue);
+        }
+
+        if (!std::isnan(newValue)) {
+            add(newValue);
+        }
+
+        rebalanceHeaps();
+
+        if (maxHeapSize + minHeapSize == 0) {
+            return std::numeric_limits<double>::quiet_NaN();
+        } else {
+            return getMedian();
         }
     }
 
-    double operator()(const double newValue)
+    void reset() 
     {
-        // Remove the oldest value if the window is full
-        if (values.size() == window_size) {
-            double old_value = values.front();
-            values.pop_front();
-            removeValue(old_value);
-        }
-
-        insertValue(newValue);
-        values.push_back(newValue);
-
-        // Return the current median
-        return getMedian();
+        buffer.reset(std::numeric_limits<double>::quiet_NaN());
+        maxHeap = std::priority_queue<double>();
+        minHeap = std::priority_queue<double, std::vector<double>, std::greater<double>>();
+        delayed.clear();
+        maxHeapSize = 0;
+        minHeapSize = 0;
     }
 
-    void reset()
-    {
-        lower.clear();
-        upper.clear();
-        values.clear();
-    }
-
-    py::array_t<double> transform(const py::array_t<const double> input_array)
+    py::array_t<double> transform(const py::array_t<const double> input_array) 
     {
         return transform_1(*this, input_array);
     }
 
 private:
-    const int window_size;
-    std::deque<double> values; // To keep track of the order of elements
-    std::multiset<double> lower; // Max-heap behavior (lower half)
-    std::multiset<double> upper; // Min-heap behavior (upper half)
+    int window_size;
+    FixedSizeBuffer buffer;
+    std::priority_queue<double> maxHeap; // Max heap for lower half
+    std::priority_queue<double, std::vector<double>, std::greater<double>> minHeap; // Min heap for upper half
+    std::map<double, int> delayed; // Map to handle delayed deletions
+    int maxHeapSize = 0;
+    int minHeapSize = 0;
 
-    void insertValue(double value)
+    void add(double num)
     {
-        if (lower.empty() || value <= *lower.rbegin()) {
-            lower.insert(value);
+        if (maxHeap.empty() || num <= maxHeap.top()) {
+            maxHeap.push(num);
+            maxHeapSize++;
         } else {
-            upper.insert(value);
+            minHeap.push(num);
+            minHeapSize++;
         }
-
-        // Rebalance the multisets
-        rebalance();
     }
 
-    void removeValue(double value)
+    void remove(double num)
     {
-        auto it_lower = lower.find(value);
-        if (it_lower != lower.end()) {
-            lower.erase(it_lower);
+        delayed[num]++;
+        if (!maxHeap.empty() && num <= maxHeap.top()) {
+            maxHeapSize--;
+            if (num == maxHeap.top()) {
+                pruneHeap(maxHeap);
+            }
         } else {
-            auto it_upper = upper.find(value);
-            if (it_upper != upper.end()) {
-                upper.erase(it_upper);
-            } else {
-                // Value not found in either multiset
-                throw std::runtime_error("Value not found in multiset during removal.");
+            minHeapSize--;
+            if (num == minHeap.top()) {
+                pruneHeap(minHeap);
             }
         }
-
-        // Rebalance the multisets
-        rebalance();
     }
 
-    void rebalance()
+    void rebalanceHeaps()
     {
-        // Ensure sizes of lower and upper are balanced
-        if (lower.size() > upper.size() + 1) {
-            // Move one element from lower to upper
-            upper.insert(*lower.rbegin());
-            auto it = lower.end();
-            --it;
-            lower.erase(it);
-        } else if (upper.size() > lower.size()) {
-            // Move one element from upper to lower
-            lower.insert(*upper.begin());
-            upper.erase(upper.begin());
+        // Balance the two heaps so that their sizes differ at most by 1
+        while (maxHeapSize > minHeapSize + 1) {
+            pruneHeap(maxHeap);
+            double num = maxHeap.top();
+            maxHeap.pop();
+            maxHeapSize--;
+            minHeap.push(num);
+            minHeapSize++;
+        }
+        while (maxHeapSize < minHeapSize) {
+            pruneHeap(minHeap);
+            double num = minHeap.top();
+            minHeap.pop();
+            minHeapSize--;
+            maxHeap.push(num);
+            maxHeapSize++;
         }
     }
 
-    double getMedian() const
+    template <typename HeapType>
+    void pruneHeap(HeapType& heap)
     {
-        if (lower.empty() && upper.empty()) {
-            throw std::runtime_error("Window is empty, cannot compute median.");
+        while (!heap.empty()) {
+            double num = heap.top();
+            if (delayed.count(num)) {
+                delayed[num]--;
+                if (delayed[num] == 0) {
+                    delayed.erase(num);
+                }
+                heap.pop();
+            } else {
+                break;
+            }
         }
+    }
 
-        if ((lower.size() + upper.size()) % 2 == 1) {
-            // Odd number of elements, median is the largest of lower
-            return *lower.rbegin();
+    double getMedian()
+    {
+        pruneHeap(maxHeap);
+        pruneHeap(minHeap);
+
+        if ((maxHeapSize + minHeapSize) % 2 != 0) {
+            return maxHeap.top();
         } else {
-            // Even number of elements, median is the average of max of lower and min of upper
-            return (*lower.rbegin() + *upper.begin()) / 2.0;
+            return (maxHeap.top() + minHeap.top()) / 2.0;
         }
     }
 };

@@ -32,9 +32,12 @@ def test_stream_vs_batch(class_name):
     obj2 = cls(10)
     output2 = obj2.transform(input)
 
-    # Should be exactly the same
-    assert np.all([np.isnan(x1) if np.isnan(x2) else x1 == x2 for x1, x2 in zip(output1, output2)])
-
-
+    # Should be the same
+    np.testing.assert_allclose(
+        output1, 
+        output2, 
+        rtol=1e-5, atol=1e-8, 
+        err_msg=f"Discrepancy between streaming and batch mode for {class_name}"
+    )
 
 

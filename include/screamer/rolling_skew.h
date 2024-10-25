@@ -17,7 +17,7 @@ public:
 
     RollingSkew(int N) : 
         N(N), 
-        skew(std::numeric_limits<double>::quiet_NaN()),
+        skew(0.0),
         sum_x_buffer(N),
         sum_xx_buffer(N),
         sum_xxx_buffer(N)

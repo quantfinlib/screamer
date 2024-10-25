@@ -17,7 +17,7 @@ public:
 
     RollingStd(int N) : 
         N(N), 
-        std(std::numeric_limits<double>::quiet_NaN()),
+        std(0.0),
         sum_x_buffer(N),
         sum_xx_buffer(N)
     {}

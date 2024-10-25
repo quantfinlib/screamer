@@ -12,7 +12,6 @@
 #include "screamer/rolling_min.h"
 #include "screamer/rolling_max.h"
 #include "screamer/rolling_median.h"
-#include "screamer/rolling_median2.h"
 #include "screamer/return.h"
 #include "screamer/log_return.h"
 #include "screamer/ewma.h"
@@ -231,18 +230,6 @@ PYBIND11_MODULE(screamer_bindings, m) {
              "Update and return the rolling median.")
         .def("reset", &screamer::RollingMedian::reset, "Reset the indicator to its initial state.")
         .def("transform", &screamer::RollingMedian::transform, py::arg("input_array"),
-             "Apply the indicator to a NumPy array.")
-        .doc() = "Rolling median, the median value of the most recent values in a sequence.";
-
-
-    py::class_<screamer::RollingMedian2>(m, "RollingMedian2")
-        .def(py::init<int>(), py::arg("window_size"),
-             "Initialize the rolling median indicator.\n\n"
-             ":param window_size: The window_size parameter.")
-        .def("__call__", &screamer::RollingMedian2::operator(), py::arg("value"),
-             "Update and return the rolling median.")
-        .def("reset", &screamer::RollingMedian2::reset, "Reset the indicator to its initial state.")
-        .def("transform", &screamer::RollingMedian2::transform, py::arg("input_array"),
              "Apply the indicator to a NumPy array.")
         .doc() = "Rolling median, the median value of the most recent values in a sequence.";
 

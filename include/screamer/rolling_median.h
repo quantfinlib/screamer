@@ -1,6 +1,124 @@
 #ifndef SCREAMER_ROLLING_MEDIAN_H
 #define SCREAMER_ROLLING_MEDIAN_H
 
+#include <set>
+#include <cmath>
+#include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
+#include <screamer/transforms.h>
+#include <screamer/buffer.h>
+
+namespace py = pybind11;
+
+namespace screamer {
+
+class RollingMedian {
+public:
+    RollingMedian(int N) : window_size(N), buffer(N, std::numeric_limits<double>::quiet_NaN()) {}
+
+    double operator()(double newValue) 
+    {
+        double oldValue = buffer.append(newValue);
+
+        if (!std::isnan(oldValue)) {
+            remove(oldValue);
+        }
+
+        if (!std::isnan(newValue)) {
+            add(newValue);
+        }
+
+        if (low.empty() && high.empty()) {
+            return std::numeric_limits<double>::quiet_NaN();
+        } else {
+            return getMedian();
+        }
+    }
+
+    void reset() 
+    {
+        buffer.reset(std::numeric_limits<double>::quiet_NaN());
+        low.clear();
+        high.clear();
+    }
+
+    py::array_t<double> transform(const py::array_t<const double> input_array) 
+    {
+        return transform_1(*this, input_array);
+    }
+
+private:
+    int window_size;
+    FixedSizeBuffer buffer;
+    std::multiset<double> low;  // Max heap (lower half)
+    std::multiset<double> high; // Min heap (upper half)
+
+    void add(double x)
+    {
+        // Insert into appropriate half
+        if (low.empty() || x <= *low.rbegin()) {
+            low.insert(x);
+        } else {
+            high.insert(x);
+        }
+
+        // Rebalance the two halves
+        rebalance();
+    }
+
+    void remove(double x)
+    {
+        // Remove from the appropriate half
+        auto it = low.find(x);
+        if (it != low.end()) {
+            low.erase(it);
+        } else {
+            it = high.find(x);
+            if (it != high.end()) {
+                high.erase(it);
+            }
+        }
+
+        // Rebalance after removal
+        rebalance();
+    }
+
+    void rebalance()
+    {
+        // Ensure size properties: low.size() >= high.size()
+        if (low.size() > high.size() + 1) {
+            high.insert(*low.rbegin());
+            low.erase(--low.end());
+        } else if (high.size() > low.size()) {
+            low.insert(*high.begin());
+            high.erase(high.begin());
+        }
+    }
+
+    double getMedian()
+    {
+        if (low.empty()) {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+
+        if (low.size() == high.size()) {
+            // Median is the average of max of low and min of high
+            return (*low.rbegin() + *high.begin()) / 2.0;
+        } else {
+            // Median is max of low
+            return *low.rbegin();
+        }
+    }
+};
+
+} // namespace screamer
+
+#endif // SCREAMER_ROLLING_MEDIAN_H
+
+/*
+#ifndef SCREAMER_ROLLING_MEDIAN_H
+#define SCREAMER_ROLLING_MEDIAN_H
+
 #include <queue>
 #include <vector>
 #include <map>
@@ -144,3 +262,4 @@ private:
 } // namespace screamer
 
 #endif // SCREAMER_ROLLING_MEDIAN_H
+*/

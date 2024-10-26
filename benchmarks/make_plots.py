@@ -147,6 +147,7 @@ def plot1(screamer_data, ref_data, func, lib, var):
     # save
     script_dir = os.path.dirname(os.path.abspath(__file__))
     plt.savefig(os.path.join(script_dir, 'plots', f'benchmark_{func}_{lib}_{var}.png'))
+    plt.close()
 
 # Loop over all screamer functions
 screamer_funcs = results[results['lib'] == 'screamer']['func'].unique()

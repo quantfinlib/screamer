@@ -18,42 +18,52 @@ namespace screamer {
         virtual void reset() {};
 
         py::object operator()(py::object input) {
-            try {
 
-                // Handle scalar types like float, double, int
+            // scalar types
+            if (py::isinstance<py::float_>(input) ||
+                py::isinstance<py::int_>(input) ||
+                py::isinstance<py::bool_>(input)
+            ) {
                 double value = input.cast<double>();
                 return py::float_(process_scalar(value));
+            }
 
-            } catch (const py::cast_error&) {
+            // array types
+            if (py::isinstance<py::array>(input) ||
+                py::isinstance<py::list>(input) ||
+                py::isinstance<py::tuple>(input)
+            ) {
+                py::array_t<double> double_array = py::cast<py::array_t<double>>(input);
+                ssize_t size = double_array.size();
 
-                // Handle numpy array types
-                if (py::isinstance<py::array>(input)) {
-                    py::array array = input.cast<py::array>();
-                    ssize_t size = array.size();
+                if (size == 1) {
+                    double value = py::cast<double>(double_array[0]);
+                    return py::float_(process_scalar(value));
 
-                    if (size == 1) {
-                        double value = py::cast<double>(array[0]);
-                        return py::float_(process_scalar(value));
-                    } else if (size > 1) {
-                        py::array_t<double> double_array = py::cast<py::array_t<double>>(array);
-                        return process_python_array(double_array);
-                    }
-                }          
-
-                // Handle Python list types      
-                if (py::isinstance<py::list>(input)) {
-                    py::list input_list = input.cast<py::list>();
-                    py::array_t<double> double_array = py::cast<py::array_t<double>>(input_list);
+                } else if (size > 1) {
                     return process_python_array(double_array);
                 }
-
-                // Handle itterator / generatore types
-                if (py::isinstance<py::iterable>(input)) {
-                    return py::cast(LazyIterator(input.cast<py::iterable>(), *this));
-                }
-
-                throw std::invalid_argument("Unsupported input type for call");
             }
+
+            // iterator / generatore types
+            if (py::isinstance<py::iterable>(input)) {
+                return py::cast(LazyIterator(input.cast<py::iterable>(), *this));
+            }
+
+            // numpy primitive types
+            auto type_str = std::string(py::str(input.get_type()));
+            if (type_str == "<class \'numpy.uint32\'>" ||
+               type_str == "<class \'numpy.uint64\'>" ||
+               type_str == "<class \'numpy.int32\'>" ||
+               type_str == "<class \'numpy.int64\'>" ||
+               type_str == "<class \'numpy.float32\'>" ||
+               type_str == "<class \'numpy.float64\'>") {
+                double value = py::cast<double>(input);
+                return py::float_(process_scalar(value));
+            }
+
+            // unknow other types
+            throw std::invalid_argument("Unsupported input type for call");
         }
 
         class LazyIterator {
@@ -149,10 +159,15 @@ namespace screamer {
             // The size along the first dimension
             size_t size = buf_info.shape[0];
 
+            // we only proceed if the size of array we want to process is positive
+            if (size == 0) {
+                return result;
+            }
+
             // If this is a contiguous 1d array then we have optimized code!
             if (buf_info.ndim == 1 && buf_info.strides[0] == sizeof(double)) {
 
-                reset();
+                reset(); // we do this in the base class, to ensure consistent behaviour
 
                 process_array_no_stride(result_data, input_data, size);
 
@@ -203,7 +218,7 @@ namespace screamer {
                 size_t input_index = col_input_offsets[col];
                 size_t result_index = col_result_offsets[col];
 
-                reset();
+                reset(); // we do this in the base class to ensure consistent behaviour
 
                 process_array_stride(
                     &result_data[result_index], 

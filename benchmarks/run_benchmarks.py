@@ -27,7 +27,8 @@ results = []
 for repeats in range(5):
     for _, row in reference_impls.all().iterrows():
         row = row.to_dict()
-
+        if row['func'] != 'rolling_mean2':
+            continue
         for n in array_sizes:
 
             args = extra_args.copy()

@@ -12,6 +12,7 @@ from .screamer_bindings import (
     RollingKurt,
     RollingMax,
     RollingMean,
+    RollingMean2,
     RollingMedian,
     RollingMin,
     RollingSkew,
@@ -138,6 +139,18 @@ def rolling_mean_generator(iterable, window_size):
     :param window_size: The window_size parameter.    
     """
     indicator = RollingMean(window_size)
+    for value in iterable:
+        yield indicator(value)
+
+
+def rolling_mean2_generator(iterable, window_size):
+    """
+    Generator version of the RollingMean2 class.
+
+    :param iterable: An iterable of numerical values.
+    :param window_size: No description available    
+    """
+    indicator = RollingMean2(window_size)
     for value in iterable:
         yield indicator(value)
 

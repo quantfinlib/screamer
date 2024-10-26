@@ -20,6 +20,7 @@
 
 #include "screamer/base.h"
 #include "screamer/two.h"
+#include "screamer/rolling_mean2.h"
 
 namespace py = pybind11;
 
@@ -93,6 +94,11 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def(py::init<>())
         .def("__call__", &screamer::Two::operator(), py::arg("value"))
         .def("reset", &screamer::Two::reset, "Reset to the initial state.");
+
+    py::class_<screamer::RollingMean2, screamer::ScreamerBase>(m, "RollingMean2")
+        .def(py::init<int>(), py::arg("window_size"))
+        .def("__call__", &screamer::RollingMean2::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingMean2::reset, "Reset to the initial state.");
 
 
     py::class_<screamer::RollingStd>(m, "RollingStd")

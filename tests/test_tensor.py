@@ -17,7 +17,6 @@ def pytest_generate_tests(metafunc):
 
 # Test processing a matrix columns wise, vs in one go with .transform()
 def test_matrix(class_name):
-
     # windows_size or delay
     arg = 3
 
@@ -32,11 +31,17 @@ def test_matrix(class_name):
     obj1 = cls(arg)
     output1 = np.zeros_like(input, dtype=float)
     for col in range(input.shape[1]):
-        output1[:, col] = obj1.transform(input[:, col].copy())
+        if hasattr(obj1, 'transform'):
+            output1[:, col] = obj1.transform(input[:, col].copy())
+        else:
+            output1[:, col] = obj1(input[:, col].copy())
 
     # Matrix in one go
     obj2 = cls(arg)
-    output2 = obj2.transform(input)
+    if hasattr(obj2, 'transform'):
+        output2 = obj2.transform(input)
+    else:
+        output2 = obj2(input)
 
     # Should be exactly the same
     np.testing.assert_array_equal(output1, output2, err_msg="matrices do not match")
@@ -60,11 +65,17 @@ def test_tensor(class_name):
     output1 = np.zeros_like(input, dtype=float)
     for d1 in range(input.shape[1]):
         for d2 in range(input.shape[2]):
-            output1[:, d1, d2] = obj1.transform(input[:, d1, d2])
+            if hasattr(obj1, 'transform'):
+                output1[:, d1, d2] = obj1.transform(input[:, d1, d2])
+            else:
+                output1[:, d1, d2] = obj1(input[:, d1, d2])
 
     # Process tensor in one go
     obj2 = cls(arg)
-    output2 = obj2.transform(input)
+    if hasattr(obj2, 'transform'):
+        output2 = obj2.transform(input)
+    else:
+        output2 = obj2(input)
 
     # Should be exactly the same
     np.testing.assert_array_equal(output1, output2, err_msg="tensors do not match")

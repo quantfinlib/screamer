@@ -16,9 +16,10 @@ def pytest_generate_tests(metafunc):
 
 # Test function that uses the dynamically parametrized class_name and class_info
 def test_stream_vs_batch(class_name):
+    
     module = importlib.import_module("screamer.screamer_bindings")
     cls = getattr(module, class_name) 
-      
+    
     # generate some input
     input = np.cos(np.arange(100))
 
@@ -30,7 +31,10 @@ def test_stream_vs_batch(class_name):
 
     # Vectorized transform
     obj2 = cls(10)
-    output2 = obj2.transform(input)
+    if hasattr(cls, 'transform'):
+        output2 = obj2.transform(input)
+    else:
+        output2 = obj2(input)
 
     # Should be the same
     np.testing.assert_allclose(

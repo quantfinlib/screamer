@@ -6,6 +6,15 @@ def screamer__rolling_sum(array, window_size):
 def screamer__rolling_mean(array, window_size):
     return sc.RollingMean(window_size).transform(array)
 
+
+
+
+def screamer__rolling_mean2(array, window_size):
+    return sc.RollingMean2(window_size)(array)
+
+
+
+
 def screamer__rolling_var(array, window_size):
     return sc.RollingVar(window_size).transform(array)
 

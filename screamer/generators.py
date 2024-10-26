@@ -18,7 +18,8 @@ from .screamer_bindings import (
     RollingStd,
     RollingSum,
     RollingVar,
-    RollingZscore             
+    RollingZscore,
+    Two             
 )
 
 def diff_generator(iterable, delay):
@@ -221,6 +222,18 @@ def rolling_zscore_generator(iterable, window_size):
     :param window_size: The window_size parameter.    
     """
     indicator = RollingZscore(window_size)
+    for value in iterable:
+        yield indicator(value)
+
+
+def two_generator(iterable, ):
+    """
+    Generator version of the Two class.
+
+    :param iterable: An iterable of numerical values.
+    
+    """
+    indicator = Two()
     for value in iterable:
         yield indicator(value)
 

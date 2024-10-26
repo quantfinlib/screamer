@@ -6,6 +6,15 @@ def pandas__rolling_sum(array, window_size):
 def pandas__rolling_mean(array, window_size):
     return pd.Series(array).rolling(window=window_size).mean().to_numpy()
 
+
+
+
+def pandas__rolling_mean2(array, window_size):
+    return pd.Series(array).rolling(window=window_size).mean().to_numpy()
+
+
+
+
 def pandas__rolling_std(array, window_size):
     return pd.Series(array).rolling(window=window_size).std().to_numpy()
 

@@ -49,6 +49,8 @@ def collect_class_info(module):
     info = {}
     classes = inspect.getmembers(module, inspect.isclass)
     for class_name, class_obj in classes:
+        if class_name.startswith('_'):
+            continue
         info[class_name] = {}
         info[class_name]['args'] = get_constructor_arguments_from_doc(class_obj)
         info[class_name]['doc'] = class_obj.__doc__
@@ -128,4 +130,7 @@ from .screamer_bindings import (
 with open("screamer/generators.py", "w") as file:
     file.write(generators_py)
     for class_name, class_info in info.items():
+        print('class_name = [',class_name,']')
+        if class_name.startswith('_'):
+            continue
         file.write(generator_code(class_name, class_info['snake_name'], class_info['args']) + '\n')

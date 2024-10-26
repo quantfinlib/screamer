@@ -3,7 +3,6 @@
 
 #include <limits>
 #include <deque>
-#include <vector>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <screamer/transforms.h>
@@ -13,44 +12,41 @@ namespace py = pybind11;
 
 namespace screamer {
 
-// The ascending minima algorithm
-// https://richardhartersworld.com/slidingmin/
-
 class RollingMin {
 public:
 
-    RollingMin(int window_size) : window_size(window_size) 
+    RollingMin(int window_size) : window_size(window_size), index(0)
     {
         if (window_size <= 0) {
-            throw std::invalid_argument("N must be positive.");
+            throw std::invalid_argument("Window size must be positive.");
         }
     }
     
     double operator()(const double newValue) 
     {
-        // Add the new value to the list
-        values.push_back(newValue);
-
-        // Remove elements from the back of the deque that are larger than the new value
-        while (!deque.empty() && values[deque.back()] >= newValue) {
-            deque.pop_back();
+        // Remove elements from the back that are larger than the new value
+        while (!min_deque.empty() && min_deque.back().first >= newValue) {
+            min_deque.pop_back();
         }
 
-        // Add the index of the new value to the deque
-        deque.push_back(values.size() - 1);
+        // Add the new value and its index to the deque
+        min_deque.emplace_back(newValue, index);
 
-        // Remove the front element if it's out of the window
-        if (deque.front() <= static_cast<int>(values.size()) - window_size - 1) {
-            deque.pop_front();
+        // Remove the front element if it's outside the window
+        if (min_deque.front().second <= index - window_size) {
+            min_deque.pop_front();
         }
 
-        return values[deque.front()];
+        index++;
+
+        // The front of the deque contains the minimum value in the window
+        return min_deque.front().first;
     }
 
     void reset() 
     {
-        deque.clear();
-        values.clear();
+        min_deque.clear();
+        index = 0;
     }
 
     py::array_t<double> transform(const py::array_t<const double> input_array) 
@@ -60,8 +56,8 @@ public:
 
 private:
     const int window_size;
-    std::deque<double> deque;
-    std::vector<double> values;
+    int index; // Current index
+    std::deque<std::pair<double, int>> min_deque; // Stores pairs of (value, index)
 };
 
 } // namespace screamer

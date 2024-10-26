@@ -20,6 +20,22 @@ def numpy__rolling_mean__stride(array, window_size):
     ans  = np.mean(windowed_array, axis=-1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
+
+
+
+def numpy__rolling_mean2__cumsum(array, window_size):
+    ans = np.cumsum(array)
+    ans[window_size:] = ans[window_size:] - ans[:-window_size]
+    return ans / window_size
+
+def numpy__rolling_mean2__stride(array, window_size):
+    windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
+    ans  = np.mean(windowed_array, axis=-1)
+    return np.concatenate((np.full(window_size-1, np.nan), ans))
+
+
+
+
 def numpy__rolling_std__stride(array, window_size):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
     ans = np.std(windowed_array, axis=-1, ddof=1)

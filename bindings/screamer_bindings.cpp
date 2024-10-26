@@ -18,6 +18,9 @@
 #include "screamer/ew_var.h"
 #include "screamer/ew_std.h"
 
+#include "screamer/base.h"
+#include "screamer/two.h"
+
 namespace py = pybind11;
 
 PYBIND11_MODULE(screamer_bindings, m) {
@@ -77,6 +80,19 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("transform", &screamer::RollingMean::transform, py::arg("input_array"),
              "Apply the simple moving average transformation to a NumPy array.")
         .doc() = "Simple moving average, the average of the most recent values in a sequence.";
+
+
+
+    py::class_<screamer::ScreamerBase>(m, "_ScreamerBase");
+
+    py::class_<screamer::ScreamerBase::LazyIterator>(m, "_LazyIterator")
+        .def("__iter__", &screamer::ScreamerBase::LazyIterator::__iter__, py::return_value_policy::reference_internal)
+        .def("__next__", &screamer::ScreamerBase::LazyIterator::__next__);
+
+    py::class_<screamer::Two, screamer::ScreamerBase>(m, "Two")
+        .def(py::init<>())
+        .def("__call__", &screamer::Two::operator(), py::arg("value"))
+        .def("reset", &screamer::Two::reset, "Reset to the initial state.");
 
 
     py::class_<screamer::RollingStd>(m, "RollingStd")

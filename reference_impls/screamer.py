@@ -1,48 +1,42 @@
 import screamer as sc
 
-def screamer__rolling_sum(array, window_size):
+def RollingSum__screamer(array, window_size):
     return sc.RollingSum(window_size).transform(array)
 
-def screamer__rolling_mean(array, window_size):
+def RollingMean__screamer(array, window_size):
     return sc.RollingMean(window_size).transform(array)
 
-
-
-
-def screamer__rolling_mean2(array, window_size):
+def RollingMean2__screamer(array, window_size):
     return sc.RollingMean2(window_size)(array)
 
-
-
-
-def screamer__rolling_var(array, window_size):
+def RollingVar__screamer(array, window_size):
     return sc.RollingVar(window_size).transform(array)
 
-def screamer__rolling_std(array, window_size):
+def RollingStd__screamer(array, window_size):
     return sc.RollingStd(window_size).transform(array)
 
-def screamer__rolling_skew(array, window_size):
+def RollingSkew__screamer(array, window_size):
     return sc.RollingSkew(window_size).transform(array)
 
-def screamer__rolling_kurt(array, window_size):
+def RollingKurt__screamer(array, window_size):
     return sc.RollingKurt(window_size).transform(array)
 
-def screamer__rolling_min(array, window_size):
+def RollingMin__screamer(array, window_size):
     return sc.RollingMin(window_size).transform(array)
 
-def screamer__rolling_max(array, window_size):
+def RollingMax__screamer(array, window_size):
     return sc.RollingMax(window_size).transform(array)
 
-def screamer__rolling_median(array, window_size):
+def RollingMedian__screamer(array, window_size):
     return sc.RollingMedian(window_size).transform(array)
 
 """
-def screamer__rolling_quantile(array, window_size, quantile):
+def RollingQuantile__screamer(array, window_size, quantile):
     return sc.RollingQuantile(window_size, quantile).transform(array)
 """
 
-def screamer__diff(array, window_size):
+def Diff__screamer(array, window_size):
     return sc.Diff(window_size).transform(array)
 
-def screamer__lag(array, window_size):
+def Lag__screamer(array, window_size):
     return sc.Lag(window_size).transform(array)

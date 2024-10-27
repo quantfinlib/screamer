@@ -1,47 +1,41 @@
 import numpy as np
 
-def numpy__rolling_sum__cumsum(array, window_size):
+def RollingSum__numpy__cumsum(array, window_size):
     ans = np.cumsum(array)
     ans[window_size:] = ans[window_size:] - ans[:-window_size]
     return ans 
 
-def numpy__rolling_sum__stride(array, window_size):
+def RollingSum__numpy__stride(array, window_size):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
-    ans  = np.sum(windowed_array, axis=-1)
+    ans = np.sum(windowed_array, axis=-1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
-def numpy__rolling_mean__cumsum(array, window_size):
+def RollingMean__numpy__cumsum(array, window_size):
     ans = np.cumsum(array)
     ans[window_size:] = ans[window_size:] - ans[:-window_size]
     return ans / window_size
 
-def numpy__rolling_mean__stride(array, window_size):
+def RollingMean__numpy__stride(array, window_size):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
-    ans  = np.mean(windowed_array, axis=-1)
+    ans = np.mean(windowed_array, axis=-1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
-
-
-
-def numpy__rolling_mean2__cumsum(array, window_size):
+def RollingMean2__numpy__cumsum(array, window_size):
     ans = np.cumsum(array)
     ans[window_size:] = ans[window_size:] - ans[:-window_size]
     return ans / window_size
 
-def numpy__rolling_mean2__stride(array, window_size):
+def RollingMean2__numpy__stride(array, window_size):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
-    ans  = np.mean(windowed_array, axis=-1)
+    ans = np.mean(windowed_array, axis=-1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
-
-
-
-def numpy__rolling_std__stride(array, window_size):
+def RollingStd__numpy__stride(array, window_size):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
     ans = np.std(windowed_array, axis=-1, ddof=1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
-def numpy__rolling_skew__stride(array, window_size):
+def RollingSkew__numpy__stride(array, window_size):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
     mean = np.mean(windowed_array, axis=-1)
     std = np.std(windowed_array, axis=-1, ddof=1)
@@ -49,7 +43,7 @@ def numpy__rolling_skew__stride(array, window_size):
     skewness = skewness * window_size * window_size / (window_size-1) / (window_size-2)
     return np.concatenate((np.full(window_size-1, np.nan), skewness))
 
-def numpy__rolling_kurt__stride(array, window_size):
+def RollingKurt__numpy__stride(array, window_size):
     N = window_size
     x = np.lib.stride_tricks.sliding_window_view(array, N)
 
@@ -59,47 +53,39 @@ def numpy__rolling_kurt__stride(array, window_size):
     sum_xxx = np.sum(x**3, axis=1)
     sum_xxxx = np.sum(x**4, axis=1)
 
-    # Compute m4 (fourth central moment)
     m4 = sum_xxxx - 4 * mean * sum_xxx + 6 * mean * mean * sum_xx - 3 * N * mean**4
-
-    # Calculate numerator and denominator for kurtosis
     numerator = N * (N + 1) * m4
     denominator = (N - 1) * (N - 2) * (N - 3) * std**4
-
-    # Calculate adjustment term
     adjustment = (3 * (N - 1)**2) / ((N - 2)*(N - 3))
-
-    # Compute kurtosis
     kurtosis = numerator / denominator - adjustment
     return np.concatenate((np.full(window_size-1, np.nan), kurtosis))
 
-
-def numpy__rolling_min__stride(array, window_size):
+def RollingMin__numpy__stride(array, window_size):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
     ans = np.min(windowed_array, axis=-1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
-def numpy__rolling_max__stride(array, window_size):
+def RollingMax__numpy__stride(array, window_size):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
     ans = np.max(windowed_array, axis=-1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
-def numpy__rolling_median__stride(array, window_size):
+def RollingMedian__numpy__stride(array, window_size):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
     ans = np.median(windowed_array, axis=-1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
-def numpy__rolling_quantile__stride(array, window_size, quantile=0.75):
+def RollingQuantile__numpy__stride(array, window_size, quantile=0.75):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
     ans = np.percentile(windowed_array, quantile*100, axis=-1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
-def numpy__diff(array, window_size):
+def Diff__numpy(array, window_size):
     ans = np.empty_like(array)
     ans[window_size:] = array[window_size:] - array[:-window_size]
     return ans
 
-def numpy__lag(array, window_size):
+def Lag__numpy(array, window_size):
     ans = np.empty_like(array)
     ans[window_size:] = array[:-window_size]
     return ans

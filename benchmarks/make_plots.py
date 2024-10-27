@@ -2,9 +2,8 @@ import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
-# Get the directory of the current script
-script_dir = os.path.dirname(os.path.abspath(__file__))
+import argparse
+from benchmarks import read_expiriments
 
 
 def make_func_plot(df_filtered, func_name):
@@ -60,28 +59,11 @@ def make_func_plot(df_filtered, func_name):
     plt.grid(True)
     plt.tight_layout()
 
+    # Get the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
 
     plt.savefig(os.path.join(script_dir, 'plots', f'benchmark_{func_name.lower()}_ratio.png'))
 
-
-# Read the data
-results = pd.read_csv(
-    os.path.join(script_dir, 'experiments', 'benchmark_results.csv'),
-    dtype={
-        'func': str, 
-        'lib': str, 
-        'var': str,
-        'window_size': int, 
-        'n': int, 
-        'time': float
-    },
-    keep_default_na=False
-)
-# Group by all columns except 'time' and reduce to the minimum 'time' for each group
-results = results.groupby(['func', 'lib', 'var', 'window_size', 'n'], as_index=False).agg({'time': 'min'})
-
-# sort 
-results = results.sort_values(by=['func', 'lib', 'var', 'window_size', 'n'])
 
 
 def plot1(screamer_data, ref_data, func, lib, var):
@@ -90,7 +72,7 @@ def plot1(screamer_data, ref_data, func, lib, var):
         ref_name += f' ({var})'
 
     fig, axs = plt.subplots(2, 1, figsize=(8,6), sharex=True)
-    fig.subplots_adjust(right=0.75)
+    fig.subplots_adjust(right=0.73)
 
     for i, window_size in enumerate(ref_data['window_size'].unique()):
         a = screamer_data[screamer_data['window_size'] == window_size]
@@ -111,17 +93,32 @@ def plot1(screamer_data, ref_data, func, lib, var):
     # Add the primary legend for Method A and Method B
     marker_line = plt.Line2D([], [], color='black', marker='o', linestyle='-', label='screamer')
     line_only = plt.Line2D([], [], color='black', linestyle='-', label=f'{ref_name}')
-    first_legend = axs[0].legend(handles=[marker_line, line_only], loc='upper left',
-                         title="Methods", bbox_to_anchor=(0.80, 0.93), bbox_transform=fig.transFigure)
+    
+    first_legend = axs[0].legend(
+        handles=[marker_line, line_only], 
+        loc='upper left',
+        title="Library", 
+        bbox_to_anchor=(0.78, 0.94), 
+        bbox_transform=fig.transFigure, 
+        frameon=False,
+        alignment='left'        
+    )
     axs[0].add_artist(first_legend)  # Add this legend manually to avoid being replaced
 
     # Window size legend
-    second_legend = axs[0].legend(loc='upper left', title="Window Sizes", bbox_to_anchor=(0.80, 0.8), bbox_transform=fig.transFigure)
+    second_legend = axs[0].legend(
+        loc='upper left', 
+        title="Window Size", 
+        bbox_to_anchor=(0.78, 0.8), 
+        bbox_transform=fig.transFigure,
+        frameon=False,
+        alignment='left'
+    )
 
     # axis labels
     axs[1].set_xlabel('data size')
     axs[0].set_ylabel('time')
-    axs[1].set_ylabel('Speedup factor')
+    axs[1].set_ylabel(f'Speedup factor')
 
     # axis ranges, get the current y-axis limits
     _, y_max = axs[1].get_ylim()
@@ -132,7 +129,7 @@ def plot1(screamer_data, ref_data, func, lib, var):
         ha='left', va='top', fontsize=12,
         bbox=dict(facecolor='white', alpha=0.5, edgecolor='none')
     )
-    axs[1].text(0.02, 0.97, "speedup factor", transform=axs[1].transAxes,
+    axs[1].text(0.02, 0.97, f'speedup factor  {merged["time_ratio"].mean():.2f}', transform=axs[1].transAxes,
         ha='left', va='top', fontsize=12,
         bbox=dict(facecolor='white', alpha=0.5, edgecolor='none')
     )
@@ -146,24 +143,43 @@ def plot1(screamer_data, ref_data, func, lib, var):
 
     # save
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    plt.savefig(os.path.join(script_dir, 'plots', f'benchmark_{func}_{lib}_{var}.png'))
+    plt.savefig(os.path.join(script_dir, 'plots', f'bm_{func}_{lib}_{var}.png'))
     plt.close()
 
-# Loop over all screamer functions
-screamer_funcs = results[results['lib'] == 'screamer']['func'].unique()
 
-for func in screamer_funcs:
+def main():
+    # Initialize the parser
+    parser = argparse.ArgumentParser(description="Make plots.")
 
-    # Benchmark data for this screamer function
-    screamer_data = results[(results['lib'] == 'screamer') & (results['func'] == func)]
+    # Add a positional argument named `func`, with a default value
+    parser.add_argument("--func", type=str, default=None, help="The function to plot")
 
-    # Find ref functions
-    ref_funcs = results[(results['func'] == func) & (results['lib'] !=  'screamer')]
+    # Parse the arguments
+    cmd_args = parser.parse_args()
+ 
+    experiments = read_expiriments(cmd_args.func)
 
-    if not ref_funcs.empty:
+    # Loop over all screamer functions
+    screamer_funcs = experiments[experiments['lib'] == 'screamer']['func'].unique()
 
-        # Get the lib and var of all the reference functions
-        for lib, var in ref_funcs[['lib', 'var']].drop_duplicates().values:
-            ref_data = results[(results['lib'] == lib) & (results['func'] == func) & (results['var'] == var)]
-            plot1(screamer_data, ref_data, func, lib, var)
+    for func in screamer_funcs:
 
+        # Benchmark data for this screamer function
+        screamer_data = experiments[(experiments['lib'] == 'screamer') & (experiments['func'] == func)]
+
+        # Find ref functions
+        ref_funcs = experiments[(experiments['func'] == func) & (experiments['lib'] !=  'screamer')]
+
+        if not ref_funcs.empty:
+
+            # Get the lib and var of all the reference functions
+            for lib, var in ref_funcs[['lib', 'var']].drop_duplicates().values:
+                print('plotting',func,'vs',lib,var)
+                ref_data = experiments[(experiments['lib'] == lib) & (experiments['func'] == func) & (experiments['var'] == var)]
+                plot1(screamer_data, ref_data, func, lib, var)
+
+
+
+# Entry point for the script
+if __name__ == "__main__":
+    main()

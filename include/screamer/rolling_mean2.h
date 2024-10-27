@@ -43,21 +43,16 @@ namespace screamer {
 
         void process_array_no_stride(double* y, double* x, size_t size) override {
 
-            // cumsum
-            double sum = 0.0;
-            for (size_t i=0; i<size; i++) {
-                sum += x[i];
-                y[i] = sum;
-            }
+            y[0] = x[0] * one_over_w_;
 
-            // diff
-            for (size_t i=window_size_; i<size; i++) {
-                y[i] -= y[i - window_size_];
-            }
+            size_t split = std::min(size, window_size_);
 
-            // scale
-            for (size_t i=0; i<size; i++) {
-                y[i] *= one_over_w_;
+            for (size_t i=1; i<split; i++) {
+                y[i] = y[i - 1] + x[i] * one_over_w_;
+            }
+            
+            for (size_t i=split; i<size; i++) {
+                y[i] = y[i - 1] + (x[i] - x[i - window_size_]) * one_over_w_;
             }
         }
 

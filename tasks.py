@@ -60,7 +60,11 @@ def docs(c):
         c.run('make clean')
         c.run('make html')        
 
-@task
-def benchmark(c):
-    c.run('python benchmarks/run_benchmarks.py', pty=True)
-    c.run('python benchmarks/make_plots.py', pty=True)
+@task(optional=['func', 'lib'])
+def benchmark(c, func=None, lib=None):
+    func_arg = f' --func {func}' if func else ''
+    lib_arg = f' --lib {lib}' if lib else ''
+
+    c.run(f'python benchmarks/run_benchmarks.py {func_arg}{lib_arg}', pty=True)
+    c.run(f'python benchmarks/make_plots.py {func_arg}', pty=True)
+    c.run(f'python benchmarks/make_rank_plot.py', pty=True)

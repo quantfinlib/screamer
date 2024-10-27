@@ -21,7 +21,7 @@ def all():
                 # Get the function signature (argument names)
                 signature = inspect.signature(obj)
                 args = ','.join([param.name for param in signature.parameters.values()])
-                lib, func, var = (name.split('__') + ['','',''])[:3] 
+                func, lib, var = (name.split('__') + ['','',''])[:3] 
                 ans.append({
                     'callable': name,
                     'lib': lib, 

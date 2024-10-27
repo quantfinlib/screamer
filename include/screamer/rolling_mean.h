@@ -4,46 +4,94 @@
 #include <limits>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/transforms_mean.h>
 #include <screamer/buffer.h>
+#include "screamer/base.h"
 
 namespace py = pybind11;
 
 namespace screamer {
 
-class RollingMean  {
-public:
-    RollingMean(int N) : N(N), one_over_N(1.0 / N), sum(0.0), buffer(N, 0.0) {}
+    class RollingMean : public ScreamerBase {
+    public:
 
-    double operator()(double newValue) 
-    {
-        if (!std::isnan(newValue)) {
-            double oldValue = buffer.append(newValue);
-            sum -= oldValue;
-            sum += newValue;
+        RollingMean(int window_size) : 
+            window_size_(window_size), 
+            one_over_w_(1.0 / window_size), 
+            sum_(0.0),
+             buffer_(window_size, 0.0) 
+        {
+            if (window_size <= 0) {
+                throw std::invalid_argument("Window size must be positive.");
+            }
         }
 
-        return sum * one_over_N;
-    }
+        void reset() override {
+            buffer_.reset(0.0);
+            sum_ = 0.0;
+        }
+        
+    private:
 
-    void reset()
-    {
-        buffer.reset(0.0);
-        sum = 0.0;
-    }
+        double process_scalar(double newValue) override {
 
-    py::array_t<double> transform(const py::array_t<const double> input_array) 
-    {
-        return transform_mean(N, input_array);
-    }
+            sum_ -= buffer_.append(newValue);
+            sum_ += newValue;
 
-private:
-    FixedSizeBuffer buffer;
-    double sum;
-    const double one_over_N;
-    const int N;
-};
+            return sum_ * one_over_w_;            
+        }
 
-} // namespace screamer
+        void process_array_no_stride(double* y, double* x, size_t size) override {
 
-#endif // SCREAMER_ROL_MEAN_H
+            y[0] = x[0] * one_over_w_;
+
+            size_t split = std::min(size, window_size_);
+
+            for (size_t i=1; i<split; i++) {
+                y[i] = y[i - 1] + x[i] * one_over_w_;
+            }
+            
+            for (size_t i=split; i<size; i++) {
+                y[i] = y[i - 1] + (x[i] - x[i - window_size_]) * one_over_w_;
+            }
+        }
+
+        void process_array_stride(double* y, size_t dyi, double* x, size_t dxi, size_t size) override {
+
+            // the first element, we don't have a previous y value
+            y[0] = x[0] * one_over_w_;
+
+            // the elements < window_size don't have a x[i - window_size]
+            size_t split = std::min(size, window_size_);
+
+            // start at the 2nd element, i=1 in the loop below
+            size_t xi = dxi;
+            size_t yi = dyi;
+
+            for (size_t i=1; i<split; i++) { // start at 1
+                y[yi] = y[yi - dyi] + x[xi] * one_over_w_;
+                xi += dxi;
+                yi += dyi;
+            }
+
+            // all other elements
+            size_t window_size_shift = window_size_ * dxi;
+            for (size_t i=split; i<size; i++) {
+                y[yi] = y[yi - dyi] + (x[xi] - x[xi - window_size_shift]) * one_over_w_;
+                xi += dxi;
+                yi += dyi;                
+            }
+           
+        }
+
+    private:
+        FixedSizeBuffer buffer_;
+        double sum_;
+        const size_t window_size_;
+        const double one_over_w_; // multiplication is faster than dividsion
+
+
+    }; // end of class
+
+} // end of namespace
+
+#endif // end of include guards

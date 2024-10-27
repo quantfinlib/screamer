@@ -1,57 +1,51 @@
+
 #ifndef SCREAMER_ROLLING_VAR_H
 #define SCREAMER_ROLLING_VAR_H
 
-#include <limits>
-#include <cmath>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/transforms.h>
 #include <screamer/buffer.h>
+#include "screamer/base.h"
 
-namespace py = pybind11; // Alias for pybind11 namespace
+namespace py = pybind11;
 
 namespace screamer {
 
-class RollingVar {
-public:
+    class RollingVar : public ScreamerBase {
+    public:
 
-    RollingVar(int N) : 
-        N(N), 
-        var(std::numeric_limits<double>::quiet_NaN()),
-        sum_x_buffer(N, std::numeric_limits<double>::quiet_NaN()),
-        sum_xx_buffer(N, std::numeric_limits<double>::quiet_NaN())
-    {}
-    
-    double operator()(const double newValue) 
-    {
-        if (!std::isnan(newValue)) {
-            double sum_x = sum_x_buffer.append(newValue);
-            double sum_xx = sum_x_buffer.append(newValue * newValue);
-            var =(sum_xx - sum_x * sum_x / N) / (N - 1);
-        } 
+        RollingVar(int window_size) : 
+            window_size_(window_size), 
+            sum_x_buffer(window_size),
+            sum_xx_buffer(window_size)
+        {
+            if (window_size <= 0) {
+                throw std::invalid_argument("Window size must be positive.");
+            }
+        }
 
-        return var;
-    }
+        void reset() override {
+            sum_x_buffer.reset();
+            sum_xx_buffer.reset();        
+        }
+        
+    private:
 
-    void reset() 
-    {
-        sum_x_buffer.reset(std::numeric_limits<double>::quiet_NaN());
-        sum_xx_buffer.reset(std::numeric_limits<double>::quiet_NaN());        
-        var = std::numeric_limits<double>::quiet_NaN();
-    }
+        double process_scalar(double newValue) override {
+            double sum_x = sum_x_buffer(newValue);
+            double sum_xx = sum_xx_buffer(newValue * newValue);
+            return (window_size_ * sum_xx - sum_x * sum_x) / (window_size_ * (window_size_ - 1));
+        }
 
-    py::array_t<double> transform(const py::array_t<const double> input_array) 
-    {
-        return transform_1(*this, input_array);
-    }
+    private:
+        RollingSum sum_x_buffer;
+        RollingSum sum_xx_buffer;
+        double std_;
+        const int window_size_;
 
-private:
-    FixedSizeBuffer sum_x_buffer;
-    FixedSizeBuffer sum_xx_buffer;
-    double var;
-    const int N;
-};
+    }; // end of class
 
-} // namespace screamer
+} // end of namespace
 
-#endif // SCREAMER_ROLLING_VAR_H
+#endif // end of include guards
+

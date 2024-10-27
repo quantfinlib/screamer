@@ -16,10 +16,13 @@ All notable changes to this project are documented in this file.
 * rolling max
 * rolling median
 * rolling quantile
+* support for iterator / generator processing
 
 ### Fixed
-
 * Fixed incorrect results when applying transforms to a view on a numpy array.
+
+### Changed
+* removed the transform member functions, instead use __call__()
 
 Version v0.1.32 (2024-10-20)
 -------------------------

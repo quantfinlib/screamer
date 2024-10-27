@@ -20,19 +20,14 @@ def RollingMean__numpy__stride(array, window_size):
     ans = np.mean(windowed_array, axis=-1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
-def RollingMean2__numpy__cumsum(array, window_size):
-    ans = np.cumsum(array)
-    ans[window_size:] = ans[window_size:] - ans[:-window_size]
-    return ans / window_size
-
-def RollingMean2__numpy__stride(array, window_size):
-    windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
-    ans = np.mean(windowed_array, axis=-1)
-    return np.concatenate((np.full(window_size-1, np.nan), ans))
-
 def RollingStd__numpy__stride(array, window_size):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
     ans = np.std(windowed_array, axis=-1, ddof=1)
+    return np.concatenate((np.full(window_size-1, np.nan), ans))
+
+def RollingVar__numpy__stride(array, window_size):
+    windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
+    ans = np.var(windowed_array, axis=-1, ddof=1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
 def RollingSkew__numpy__stride(array, window_size):
@@ -82,6 +77,7 @@ def RollingQuantile__numpy__stride(array, window_size, quantile=0.75):
 
 def Diff__numpy(array, window_size):
     ans = np.empty_like(array)
+    ans[:window_size] = 0.0
     ans[window_size:] = array[window_size:] - array[:-window_size]
     return ans
 

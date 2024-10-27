@@ -27,7 +27,7 @@ def read_expiriments(func=None):
     experiments = pd.concat(experiments,axis=0)
 
     # Group by all columns except 'time' and reduce to the minimum 'time' for each group
-    experiments = experiments.groupby(['func', 'lib', 'var', 'window_size', 'n'], as_index=False).agg({'time': 'median'})
+    experiments = experiments.groupby(['func', 'lib', 'var', 'window_size', 'n'], as_index=False).agg({'time': 'mean'})
 
     # sort 
     experiments = experiments.sort_values(by=['func', 'lib', 'var', 'window_size', 'n'])

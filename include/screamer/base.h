@@ -36,12 +36,11 @@ namespace screamer {
                 py::array_t<double> double_array = py::cast<py::array_t<double>>(input);
                 ssize_t size = double_array.size();
 
-                if (size == 1) {
+                if (size > 1) {
+                    return process_python_array(double_array);
+                } else {
                     double value = py::cast<double>(double_array[0]);
                     return py::float_(process_scalar(value));
-
-                } else if (size > 1) {
-                    return process_python_array(double_array);
                 }
             }
 

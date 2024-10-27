@@ -1,38 +1,52 @@
+
 #ifndef SCREAMER_ROLLING_KURT_H
 #define SCREAMER_ROLLING_KURT_H
 
-#include <limits>
-#include <cmath>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/transforms.h>
 #include <screamer/buffer.h>
+#include "screamer/base.h"
 
-namespace py = pybind11; // Alias for pybind11 namespace
+namespace py = pybind11;
 
 namespace screamer {
 
-class RollingKurt {
-public:
+    class RollingKurt : public ScreamerBase {
+    public:
 
-    RollingKurt(int N) : 
-        N(N), 
-        kurt(0.0),
-        sum_x_buffer(N),
-        sum_xx_buffer(N),
-        sum_xxx_buffer(N),
-        sum_xxxx_buffer(N)
-    {}
-    
-    double operator()(const double newValue) 
-    {
-        if (!std::isnan(newValue)) {
+        RollingKurt(int window_size) : 
+            window_size_(window_size), 
+            sum_x_buffer(window_size),
+            sum_xx_buffer(window_size),
+            sum_xxx_buffer(window_size),
+            sum_xxxx_buffer(window_size)
+        {
+            if (window_size <= 0) {
+                throw std::invalid_argument("Window size must be positive.");
+            }
+            double N = window_size;
+            c0 = N * (N + 1);
+            c1 = (N - 1) * (N - 2) * (N - 3);
+            c2 = (3 * (N - 1) * (N - 1)) / ((N - 2) * (N - 3));
+        }
+
+        void reset() override {
+            sum_x_buffer.reset();
+            sum_xx_buffer.reset();
+            sum_xxx_buffer.reset();
+            sum_xxxx_buffer.reset();    
+        }
+        
+    private:
+
+        double process_scalar(double newValue) override {
+            double N = window_size_;
+
             // Update the rolling sums
             double sum_x = sum_x_buffer(newValue);
             double sum_xx = sum_xx_buffer(newValue * newValue);
             double sum_xxx = sum_xxx_buffer(newValue * newValue * newValue);
             double sum_xxxx = sum_xxxx_buffer(newValue * newValue * newValue * newValue);
-
 
             // Calculate the mean
             double mean = sum_x / N;
@@ -46,44 +60,32 @@ public:
                 double m4 = sum_xxxx - 4 * mean * sum_xxx + 6 * mean * mean * sum_xx - 3 * N * mean * mean * mean * mean;
 
                 // Calculate numerator and denominator for kurtosis
-                double numerator = N * (N + 1) * m4;
-                double denominator = (N - 1) * (N - 2) * (N - 3) * std_dev * std_dev * std_dev * std_dev;
+                double numerator = c0 * m4;
+                double denominator = c1 * std_dev * std_dev * std_dev * std_dev;
 
                 // Calculate kurtosis
-                double excess_kurtosis = (numerator / denominator) - (3 * (N - 1) * (N - 1)) / ((N - 2) * (N - 3));
+                double excess_kurtosis = (numerator / denominator) - c2;
+                return excess_kurtosis;
 
-                kurt = excess_kurtosis;
             } else {
-                kurt = std::numeric_limits<double>::quiet_NaN();  // Undefined kurtosis
+                return std::numeric_limits<double>::quiet_NaN();  // Undefined kurtosis
             }
+
         }
 
-        return kurt;
-    }
+    private:
+        RollingSum sum_x_buffer;
+        RollingSum sum_xx_buffer;
+        RollingSum sum_xxx_buffer;
+        RollingSum sum_xxxx_buffer;
+        const int window_size_;
 
-    void reset() 
-    {
-        sum_x_buffer.reset();
-        sum_xx_buffer.reset();
-        sum_xxx_buffer.reset();
-        sum_xxxx_buffer.reset();
-        kurt = std::numeric_limits<double>::quiet_NaN();
-    }
+        double c0;
+        double c1;
+        double c2;
 
-    py::array_t<double> transform(const py::array_t<const double> input_array) 
-    {
-        return transform_1(*this, input_array);
-    }
+    }; // end of class
 
-private:
-    RollingSum sum_x_buffer;
-    RollingSum sum_xx_buffer;
-    RollingSum sum_xxx_buffer;
-    RollingSum sum_xxxx_buffer;
-    double kurt;
-    const int N;
-};
+} // end of namespace
 
-} // namespace screamer
-
-#endif // SCREAMER_ROLLING_KURT_H
+#endif // end of include guards

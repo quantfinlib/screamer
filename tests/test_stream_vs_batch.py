@@ -1,36 +1,43 @@
 import screamer.screamer_bindings
 from lib_info import collect_class_info
 import importlib
+import inspect
 import numpy as np
 
 
 # Dynamic test collection using the pytest_generate_tests hook
 def pytest_generate_tests(metafunc):
-    if 'class_name' in metafunc.fixturenames:
-        # Dynamically create the dictionary with metadata
+    if 'ci' in metafunc.fixturenames:
+        # Dynamically create the dictionary with metadata for the classes in our bindings
         class_meta = collect_class_info(screamer.screamer_bindings)
 
         # Parametrize the test based on the keys (class names) in the dictionary
-        metafunc.parametrize("class_name", class_meta.keys())
+        metafunc.parametrize("ci", class_meta.items())
 
 
 # Test function that uses the dynamically parametrized class_name and class_info
-def test_stream_vs_batch(class_name):
+def test_stream_vs_batch(ci):
     
+    # unpack
+    class_name, class_info = ci
+    args = {arg['name']: arg['example'] for arg in class_info.get('args',[])}
+
     module = importlib.import_module("screamer.screamer_bindings")
     cls = getattr(module, class_name) 
+
+    # Instantiate the class with filtered arguments
+    obj1 = cls(**args)
     
     # generate some input
     input = np.cos(np.arange(100))
 
-    # Stream loop
-    obj1 = cls(10)
+
     output1 = np.zeros_like(input)
     for i in range(100):
         output1[i] = obj1(input[i])
 
     # Vectorized transform
-    obj2 = cls(10)
+    obj2 = cls(**args)
     if hasattr(cls, 'transform'):
         output2 = obj2.transform(input)
     else:

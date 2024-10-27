@@ -1,57 +1,51 @@
+
 #ifndef SCREAMER_ROLLING_STD_H
 #define SCREAMER_ROLLING_STD_H
 
-#include <limits>
-#include <cmath>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/transforms.h>
-#include <screamer/rolling_sum.h>
+#include <screamer/buffer.h>
+#include "screamer/base.h"
 
-namespace py = pybind11; // Alias for pybind11 namespace
+namespace py = pybind11;
 
 namespace screamer {
 
-class RollingStd {
-public:
+    class RollingStd : public ScreamerBase {
+    public:
 
-    RollingStd(int N) : 
-        N(N), 
-        std(0.0),
-        sum_x_buffer(N),
-        sum_xx_buffer(N)
-    {}
-    
-    double operator()(const double newValue) 
-    {
-        if (!std::isnan(newValue)) {
+        RollingStd(int window_size) : 
+            window_size_(window_size), 
+            sum_x_buffer(window_size),
+            sum_xx_buffer(window_size)
+        {
+            if (window_size <= 0) {
+                throw std::invalid_argument("Window size must be positive.");
+            }
+        }
+
+        void reset() override {
+            sum_x_buffer.reset();
+            sum_xx_buffer.reset();        
+        }
+        
+    private:
+
+        double process_scalar(double newValue) override {
             double sum_x = sum_x_buffer(newValue);
             double sum_xx = sum_xx_buffer(newValue * newValue);
-            std = std::sqrt((N * sum_xx - sum_x * sum_x) / (N * (N - 1)));
-        } 
+            return std::sqrt((window_size_ * sum_xx - sum_x * sum_x) / (window_size_ * (window_size_ - 1)));
+        }
 
-        return std;
-    }
+    private:
+        RollingSum sum_x_buffer;
+        RollingSum sum_xx_buffer;
+        double std_;
+        const int window_size_;
 
-    void reset() 
-    {
-        sum_x_buffer.reset();
-        sum_xx_buffer.reset();        
-        std = std::numeric_limits<double>::quiet_NaN();
-    }
+    }; // end of class
 
-    py::array_t<double> transform(const py::array_t<const double> input_array) 
-    {
-        return transform_1(*this, input_array);
-    }
+} // end of namespace
 
-private:
-    RollingSum sum_x_buffer;
-    RollingSum sum_xx_buffer;
-    double std;
-    const int N;
-};
+#endif // end of include guards
 
-} // namespace screamer
-
-#endif // SCREAMER_ROLLING_STD_H

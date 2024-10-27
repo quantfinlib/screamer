@@ -21,7 +21,8 @@ array_sizes = [int(f*10**p) for p in range(1, 6) for f in [1, 1.6, 2.5, 4, 6.3]]
 window_sizes = [10, 100,  1000, 10000]
 
 extra_args = {
-    'quantile': 0.75
+    'quantile': 0.75,
+    'fill': 0.0
 }
 
 def main():

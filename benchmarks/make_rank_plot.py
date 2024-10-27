@@ -8,21 +8,30 @@ import os
 df = read_expiriments()
 print(df)
 
+# get largest n size
+#max_n = df['n'].max()
+#df = df[df['n']==max_n]
 
+# Compute average time (across all delays/window sizes)
 df = df.groupby(['func', 'lib', 'var'], as_index=False).agg({'time': 'mean'})
+
+# If we have multiple implementation in a specific lib, use the fastest
 df = df.groupby(['func', 'lib'], as_index=False).agg({'time': 'min'})
-print(df)
 
-
-# Pivot `ours` to columns with `time` as values
+# Pivot 
 df = df.pivot(index="func", columns="lib", values="time")
 print(df)
-df = df.div(df['screamer'], axis=0)
-df = df.drop(columns='screamer')
-print(df)
 
-# Sort rows by the smallest value in each row
-df = df.assign(min_value=df.min(axis=1)).sort_values(by="min_value").drop(columns="min_value")
+# Find the best alternative
+df['min_non_screamer'] = df.drop('screamer', axis=1).min(axis=1, skipna=True)
+
+# Compute relative to the best alternative
+df = df.div(df['min_non_screamer'], axis=0)
+df = 1/df
+df = df.drop('min_non_screamer', axis=1)
+
+df = df.sort_values(by="screamer")
+print(df)
 
 
 # ----------------------------------------------------------------------------------
@@ -32,14 +41,20 @@ df = df.assign(min_value=df.min(axis=1)).sort_values(by="min_value").drop(column
 
 # Define colors for each column
 colors = {
-    "numpy": "lightblue",
+    "numpy": "skyblue",
     "pandas": "steelblue",
+    "screamer": "green",
+}
+
+text_colors = {
+    "numpy": "steelblue",
+    "pandas": "steelblue",
+    "screamer": "green",
 }
 
 
-
 # Set threshold for the break point
-break_threshold = 8.5
+break_threshold = 4
 bar_width = 0.3
 
 fig, ax = plt.subplots(figsize=(10, 6))
@@ -47,9 +62,12 @@ positions = np.arange(len(df.index))
 
 for i, (col, color) in enumerate(colors.items()):
     for j, (func, value) in enumerate(df[col].items()):
+        
         # Determine positions for the two parts of each bar
         bar_position = positions[j] + i * bar_width
+        
         if pd.notna(value):
+            
             # Part below threshold
             part_below = min(value, break_threshold)
             ax.barh(bar_position, part_below, height=bar_width, color=color)
@@ -62,27 +80,26 @@ for i, (col, color) in enumerate(colors.items()):
                     left=break_threshold, hatch='//'  # Hatch pattern to indicate continuation
                 )
 
-                # Add a break symbol (tilde) to indicate the gap
-                #ax.text(break_threshold - 0.5, bar_position, '~', ha='center', va='center', fontsize=12, color='black')
-
             # Annotate with the value
-            if value <= break_threshold:
-                text_pos = value
-            else:
-                text_pos = break_threshold + 0.2*np.log(value - break_threshold)
-            ax.text(
-                text_pos + 0.2, 
-                bar_position, 
-                f"{(value - 1) * 100:+,.0f}%", 
-                va='center', 
-                fontsize=8
-            )
+            if np.abs(value - 1.0) > 0.01:
+                if value <= break_threshold:
+                    text_pos = value
+                else:
+                    text_pos = break_threshold + 0.2*np.log(value - break_threshold)
+                ax.text(
+                    text_pos + 0.05, 
+                    bar_position, 
+                    f"{(value - 1) * 100:+,.0f}%", 
+                    va='center', 
+                    fontsize=9,
+                    color=text_colors[col]
+                )
 
 # Customize plot appearance
 ax.set_yticks(positions + bar_width)  # Center tick labels between grouped bars
 ax.set_yticklabels(df.index)          # Set function names as y-axis labels
 ax.set_xlabel("Speedup factor")                # Label for x-axis
-ax.set_title("Screamer speedup")
+ax.set_title("Screamer speedup versus best alternative")
 
 # Set x-axis to logarithmic scale
 #ax.set_xscale('log')
@@ -101,13 +118,12 @@ ax.add_patch(plt.Rectangle((gap_x - gap_width / 2, .5), gap_width, len(df) + 2, 
 # Adjust x-ticks to stop at the break_threshold
 ax.set_xticks(np.arange(1+int(break_threshold)))
 
-
 # Add legend at the top below the title
-legend_patches = [plt.Line2D([0], [0], color=color, lw=4, label=col) for col, color in colors.items()]
+legend_patches = [plt.Line2D([0], [0], color=color, lw=4, label=col) for col, color in colors.items()][::-1]
 ax.legend(handles=legend_patches, loc='lower right',  frameon=False)
 
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
-
+plt.tight_layout()
 plt.savefig(os.path.join(script_dir, 'plots', f'rank_plot.png'))
 plt.close()

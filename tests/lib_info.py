@@ -2,6 +2,14 @@ import inspect
 import re
 import screamer.screamer_bindings
 
+example_args = {
+    'window_size': 10,
+    'delay': 10,
+    'fill': 0.0,
+    'weight': 0.8,
+    'quantile': 0.75,
+}
+
 def camel_to_snake(name):
     # Insert an underscore before an uppercase letter if preceded by a lowercase letter
     return re.sub(r'(?<=[a-z])([A-Z])', r'_\1', name).lower()
@@ -37,7 +45,8 @@ def get_constructor_arguments_from_doc(cls):
             arg_info.append({
                 'name': name,
                 'type': arg_type,
-                'description': param_descriptions.get(name, 'No description available')
+                'description': param_descriptions.get(name, 'No description available'),
+                'example': example_args[name]
             })
     
     return arg_info

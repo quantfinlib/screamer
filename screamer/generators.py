@@ -6,13 +6,14 @@ from .screamer_bindings import (
     EWMA,
     EwStd,
     EwVar,
+    Ffill,
+    FillNa,
     Lag,
     LogReturn,
     Return,
     RollingKurt,
     RollingMax,
     RollingMean,
-    RollingMean2,
     RollingMedian,
     RollingMin,
     RollingSkew,
@@ -23,14 +24,14 @@ from .screamer_bindings import (
     Two             
 )
 
-def diff_generator(iterable, delay):
+def diff_generator(iterable, window_size):
     """
     Generator version of the Diff class.
 
     :param iterable: An iterable of numerical values.
-    :param delay: The delay parameter, d.    
+    :param window_size: No description available    
     """
-    indicator = Diff(delay)
+    indicator = Diff(window_size)
     for value in iterable:
         yield indicator(value)
 
@@ -71,14 +72,38 @@ def ew_var_generator(iterable, weight):
         yield indicator(value)
 
 
-def lag_generator(iterable, delay):
+def ffill_generator(iterable, ):
+    """
+    Generator version of the Ffill class.
+
+    :param iterable: An iterable of numerical values.
+    
+    """
+    indicator = Ffill()
+    for value in iterable:
+        yield indicator(value)
+
+
+def fill_na_generator(iterable, fill):
+    """
+    Generator version of the FillNa class.
+
+    :param iterable: An iterable of numerical values.
+    :param fill: No description available    
+    """
+    indicator = FillNa(fill)
+    for value in iterable:
+        yield indicator(value)
+
+
+def lag_generator(iterable, window_size):
     """
     Generator version of the Lag class.
 
     :param iterable: An iterable of numerical values.
-    :param delay: The delay parameter, d.    
+    :param window_size: No description available    
     """
-    indicator = Lag(delay)
+    indicator = Lag(window_size)
     for value in iterable:
         yield indicator(value)
 
@@ -112,7 +137,7 @@ def rolling_kurt_generator(iterable, window_size):
     Generator version of the RollingKurt class.
 
     :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
+    :param window_size: No description available    
     """
     indicator = RollingKurt(window_size)
     for value in iterable:
@@ -136,21 +161,9 @@ def rolling_mean_generator(iterable, window_size):
     Generator version of the RollingMean class.
 
     :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
-    """
-    indicator = RollingMean(window_size)
-    for value in iterable:
-        yield indicator(value)
-
-
-def rolling_mean2_generator(iterable, window_size):
-    """
-    Generator version of the RollingMean2 class.
-
-    :param iterable: An iterable of numerical values.
     :param window_size: No description available    
     """
-    indicator = RollingMean2(window_size)
+    indicator = RollingMean(window_size)
     for value in iterable:
         yield indicator(value)
 
@@ -196,7 +209,7 @@ def rolling_std_generator(iterable, window_size):
     Generator version of the RollingStd class.
 
     :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
+    :param window_size: No description available    
     """
     indicator = RollingStd(window_size)
     for value in iterable:
@@ -220,7 +233,7 @@ def rolling_var_generator(iterable, window_size):
     Generator version of the RollingVar class.
 
     :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
+    :param window_size: No description available    
     """
     indicator = RollingVar(window_size)
     for value in iterable:

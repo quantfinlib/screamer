@@ -1,3 +1,4 @@
+/*
 #ifndef SCREAMER_EWMA_H
 #define SCREAMER_EWMA_H
 
@@ -52,3 +53,4 @@ private:
 } // namespace screamer
 
 #endif // SCREAMER_EWMA_H
+*/

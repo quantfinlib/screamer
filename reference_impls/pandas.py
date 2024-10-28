@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 def RollingSum__pandas(array, window_size):
     return pd.Series(array).rolling(window=window_size).sum().to_numpy()
@@ -47,3 +48,9 @@ def Ffill__pandas(array):
 
 def FillNa__pandas(array, fill):
     return pd.Series(array).fillna(value=fill).to_numpy()
+
+def Return__pandas(array, window_size):
+    return pd.Series(array).pct_change(periods=window_size).to_numpy()
+
+def LogReturn__pandas(array, window_size):
+    return np.log1p(Return__pandas(array, window_size))

@@ -46,3 +46,12 @@ def RollingSkew__screamer(array, window_size):
 
 def RollingMedian__screamer(array, window_size):
     return sc.RollingMedian(window_size)(array)
+
+def RollingQuantile__screamer(array, window_size, quantile=0.75):
+    return sc.RollingQuantile(window_size, quantile)(array)
+
+def Return__screamer(array, window_size):
+    return sc.Return(window_size)(array)
+
+def LogReturn__screamer(array, window_size):
+    return sc.LogReturn(window_size)(array)

@@ -5,9 +5,6 @@ __version__ = "Unreleased"
 
 from .screamer_bindings import (
     Diff,
-    EWMA,
-    EwStd,
-    EwVar,
     Ffill,
     FillNa,
     Lag,
@@ -18,6 +15,7 @@ from .screamer_bindings import (
     RollingMean,
     RollingMedian,
     RollingMin,
+    RollingQuantile,
     RollingSkew,
     RollingStd,
     RollingSum,
@@ -27,9 +25,6 @@ from .screamer_bindings import (
 
 from .generators import (
     diff_generator,
-    ewma_generator,
-    ew_std_generator,
-    ew_var_generator,
     ffill_generator,
     fill_na_generator,
     lag_generator,
@@ -40,6 +35,7 @@ from .generators import (
     rolling_mean_generator,
     rolling_median_generator,
     rolling_min_generator,
+    rolling_quantile_generator,
     rolling_skew_generator,
     rolling_std_generator,
     rolling_sum_generator,
@@ -49,9 +45,6 @@ from .generators import (
 
 __all__ = [
     "Diff", "diff_generator",
-    "EWMA", "ewma_generator",
-    "EwStd", "ew_std_generator",
-    "EwVar", "ew_var_generator",
     "Ffill", "ffill_generator",
     "FillNa", "fill_na_generator",
     "Lag", "lag_generator",
@@ -62,6 +55,7 @@ __all__ = [
     "RollingMean", "rolling_mean_generator",
     "RollingMedian", "rolling_median_generator",
     "RollingMin", "rolling_min_generator",
+    "RollingQuantile", "rolling_quantile_generator",
     "RollingSkew", "rolling_skew_generator",
     "RollingStd", "rolling_std_generator",
     "RollingSum", "rolling_sum_generator",

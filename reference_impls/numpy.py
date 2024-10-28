@@ -110,3 +110,15 @@ def _np_ffill(arr, axis):
 
 def Ffill__numpy(array):
     return _np_ffill(array, 0)
+
+def Return__numpy(array, window_size):
+    ans = np.empty_like(array)
+    ans[:window_size] = np.nan
+    ans[window_size:] = (array[window_size:] - array[:-window_size]) / array[:-window_size]
+    return ans
+
+def LogReturn__numpy(array, window_size):
+    ans = np.empty_like(array)
+    ans[:window_size] = np.nan
+    ans[window_size:] = np.log(array[window_size:] / array[:-window_size])
+    return ans

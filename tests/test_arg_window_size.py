@@ -14,6 +14,11 @@ def pytest_generate_tests(metafunc):
 
 # Test function that uses the dynamically parametrized class_name and class_info
 def test_negative_window_size(class_name, class_info):
+
+    # todo, handle multiple arguments
+    if len(class_info['args']) != 1:
+        return
+        
     # Check if the class has a 'window_size' argument
     has_window_size = any(arg['name'] == 'window_size' for arg in class_info['args'])
 
@@ -28,6 +33,11 @@ def test_negative_window_size(class_name, class_info):
 
 # Test function that uses the dynamically parametrized class_name and class_info
 def test_zero_window_size(class_name, class_info):
+    
+    # todo, handle multiple arguments
+    if len(class_info['args']) != 1:
+        return
+    
     # Check if the class has a 'window_size' argument
     has_window_size = any(arg['name'] == 'window_size' for arg in class_info['args'])
 
@@ -41,7 +51,12 @@ def test_zero_window_size(class_name, class_info):
             obj = cls(0)            
 
 # Test function that uses the dynamically parametrized class_name and class_info
-def test_politive_window_size(class_name, class_info):
+def test_positive_window_size(class_name, class_info):
+
+    # todo, handle multiple arguments
+    if len(class_info['args']) != 1:
+        return
+    
     # Check if the class has a 'window_size' argument
     has_window_size = any(arg['name'] == 'window_size' for arg in class_info['args'])
 

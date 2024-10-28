@@ -21,6 +21,7 @@
 #include "screamer/rolling_var.h"
 #include "screamer/ffill.h"
 #include "screamer/fillna.h"
+#include "screamer/rolling_quantile.h"
 
 namespace py = pybind11;
 
@@ -97,40 +98,26 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("__call__", &screamer::RollingMedian::operator(), py::arg("value"))
         .def("reset", &screamer::RollingMedian::reset, "Reset to the initial state.");
 
+    py::class_<screamer::RollingQuantile, screamer::ScreamerBase>(m, "RollingQuantile")
+        .def(py::init<int, double>(), py::arg("window_size"), py::arg("quantile"))
+        .def("__call__", &screamer::RollingQuantile::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingQuantile::reset, "Reset to the initial state.");
+
     py::class_<screamer::RollingZscore, screamer::ScreamerBase>(m, "RollingZscore")
         .def(py::init<int>(), py::arg("window_size"))
         .def("__call__", &screamer::RollingZscore::operator(), py::arg("value"))
         .def("reset", &screamer::RollingZscore::reset, "Reset to the initial state.");
 
+    py::class_<screamer::Return, screamer::ScreamerBase>(m, "Return")
+        .def(py::init<int>(), py::arg("window_size"))
+        .def("__call__", &screamer::Return::operator(), py::arg("value"))
+        .def("reset", &screamer::Return::reset, "Reset to the initial state.");
 
-    py::class_<screamer::Return>(m, "Return")
-        .def(py::init<int>(), py::arg("delay"),
-             "Initialize the simple return indicator.\n\n"
-             ":param window_size: The return delay parameter.")
-        .def("__call__", &screamer::Return::operator(), py::arg("value"),
-             "Update and return the simple return.\n\n"
-             ".. math::\n"
-             "    f(X[i]) = X[i] / X[i-d] - 1\n\n"
-             "This applies a simple return to the stream of input values `X`.")
-        .def("reset", &screamer::Return::reset, "Reset the simple return indicator to its initial state.")
-        .def("transform", &screamer::Return::transform, py::arg("input_array"),
-             "Apply the simple return transformation to a NumPy array.")
-        .doc() = "Simple return, the percentage change compared to a previous value";
-
-    py::class_<screamer::LogReturn>(m, "LogReturn")
-        .def(py::init<int>(), py::arg("delay"),
-             "Initialize the log return indicator.\n\n"
-             ":param window_size: The return delay parameter.")
-        .def("__call__", &screamer::LogReturn::operator(), py::arg("value"),
-             "Update and return the log return.\n\n"
-             ".. math::\n"
-             "    f(X[i]) = ln( X[i] / X[i-d] )\n\n"
-             "This applies a log return to the stream of input values `X`.")
-        .def("reset", &screamer::LogReturn::reset, "Reset the log return indicator to its initial state.")
-        .def("transform", &screamer::LogReturn::transform, py::arg("input_array"),
-             "Apply the log return transformation to a NumPy array.")
-        .doc() = "Log return, the logarithmic change compared to a previous value.";
-
+    py::class_<screamer::LogReturn, screamer::ScreamerBase>(m, "LogReturn")
+        .def(py::init<int>(), py::arg("window_size"))
+        .def("__call__", &screamer::LogReturn::operator(), py::arg("value"))
+        .def("reset", &screamer::LogReturn::reset, "Reset to the initial state.");
+/*
     py::class_<screamer::EWMA>(m, "EWMA")
         .def(py::init<double>(), py::arg("weight"),
              "Initialize the exponentially weighted moving average indicator.\n\n"
@@ -168,5 +155,7 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("transform", &screamer::EwVar::transform, py::arg("input_array"),
              "Apply the exponentially weighted variance transformation to a NumPy array.")
         .doc() = "Exponentially weighted variance of values in a sequence.";
+
+*/
 
 }

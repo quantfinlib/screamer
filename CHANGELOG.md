@@ -17,6 +17,10 @@ All notable changes to this project are documented in this file.
 * rolling quantile
 * fillna
 * ffill
+* diff
+* lag
+* return 
+* log return
 * support for iterator / generator processing
 
 ### Fixed

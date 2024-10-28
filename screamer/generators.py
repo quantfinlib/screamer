@@ -3,9 +3,6 @@
 
 from .screamer_bindings import (
     Diff,
-    EWMA,
-    EwStd,
-    EwVar,
     Ffill,
     FillNa,
     Lag,
@@ -16,6 +13,7 @@ from .screamer_bindings import (
     RollingMean,
     RollingMedian,
     RollingMin,
+    RollingQuantile,
     RollingSkew,
     RollingStd,
     RollingSum,
@@ -31,42 +29,6 @@ def diff_generator(iterable, window_size):
     :param window_size: No description available    
     """
     indicator = Diff(window_size)
-    for value in iterable:
-        yield indicator(value)
-
-
-def ewma_generator(iterable, weight):
-    """
-    Generator version of the EWMA class.
-
-    :param iterable: An iterable of numerical values.
-    :param weight: Weight of new values.    
-    """
-    indicator = EWMA(weight)
-    for value in iterable:
-        yield indicator(value)
-
-
-def ew_std_generator(iterable, weight):
-    """
-    Generator version of the EwStd class.
-
-    :param iterable: An iterable of numerical values.
-    :param weight: Weight of new values.    
-    """
-    indicator = EwStd(weight)
-    for value in iterable:
-        yield indicator(value)
-
-
-def ew_var_generator(iterable, weight):
-    """
-    Generator version of the EwVar class.
-
-    :param iterable: An iterable of numerical values.
-    :param weight: Weight of new values.    
-    """
-    indicator = EwVar(weight)
     for value in iterable:
         yield indicator(value)
 
@@ -107,26 +69,26 @@ def lag_generator(iterable, window_size):
         yield indicator(value)
 
 
-def log_return_generator(iterable, delay):
+def log_return_generator(iterable, window_size):
     """
     Generator version of the LogReturn class.
 
     :param iterable: An iterable of numerical values.
-    :param delay: No description available    
+    :param window_size: No description available    
     """
-    indicator = LogReturn(delay)
+    indicator = LogReturn(window_size)
     for value in iterable:
         yield indicator(value)
 
 
-def return_generator(iterable, delay):
+def return_generator(iterable, window_size):
     """
     Generator version of the Return class.
 
     :param iterable: An iterable of numerical values.
-    :param delay: No description available    
+    :param window_size: No description available    
     """
-    indicator = Return(delay)
+    indicator = Return(window_size)
     for value in iterable:
         yield indicator(value)
 
@@ -187,6 +149,19 @@ def rolling_min_generator(iterable, window_size):
     :param window_size: No description available    
     """
     indicator = RollingMin(window_size)
+    for value in iterable:
+        yield indicator(value)
+
+
+def rolling_quantile_generator(iterable, window_size, quantile):
+    """
+    Generator version of the RollingQuantile class.
+
+    :param iterable: An iterable of numerical values.
+    :param window_size: No description available
+    :param quantile: No description available    
+    """
+    indicator = RollingQuantile(window_size, quantile)
     for value in iterable:
         yield indicator(value)
 

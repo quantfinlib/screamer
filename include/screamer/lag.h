@@ -34,16 +34,6 @@ namespace screamer {
             return buffer_.append(newValue);         
         }
 
-        /*
-        void process_array_no_stride(double* y, double* x, size_t size) override {
-            if (size > window_size_) {
-                std::fill_n(y, window_size_, 0.0);
-                std::memcpy(y + window_size_, x, (size - window_size_) * sizeof(double));
-            } else {
-                std::fill_n(y, size, 0.0);
-            }
-        }
-        */
         void process_array_no_stride(double* y,  const double* x, size_t size) override {
             if (size > window_size_) {
                 // Use memset for zero-initialization (often faster than std::fill_n for large blocks)

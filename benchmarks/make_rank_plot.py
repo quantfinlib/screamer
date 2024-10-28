@@ -9,8 +9,8 @@ df = read_expiriments()
 print(df)
 
 # get largest n size
-#max_n = df['n'].max()
-#df = df[df['n']==max_n]
+max_n = df['n'].max()
+df = df[df['n']==max_n]
 
 # Compute average time (across all delays/window sizes)
 df = df.groupby(['func', 'lib', 'var'], as_index=False).agg({'time': 'mean'})
@@ -54,10 +54,10 @@ text_colors = {
 
 
 # Set threshold for the break point
-break_threshold = 4
+break_threshold = 10
 bar_width = 0.3
 
-fig, ax = plt.subplots(figsize=(10, 6))
+fig, ax = plt.subplots(figsize=(10, 7))
 positions = np.arange(len(df.index))
 
 for i, (col, color) in enumerate(colors.items()):
@@ -92,7 +92,9 @@ for i, (col, color) in enumerate(colors.items()):
                     f"{(value - 1) * 100:+,.0f}%", 
                     va='center', 
                     fontsize=9,
-                    color=text_colors[col]
+                    color=text_colors[col],
+                    zorder=6
+
                 )
 
 # Customize plot appearance

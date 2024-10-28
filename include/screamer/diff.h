@@ -34,18 +34,46 @@ namespace screamer {
             return newValue - oldValue;     
         }
 
+        /*
         void process_array_no_stride(double* y, double* x, size_t size) override {
             if (size > window_size_) {
                 std::memcpy(y, x,  window_size_ * sizeof(double));
+
                 for (size_t i=window_size_; i<size; i++) {
                     y[i] = x[i] - x[i - window_size_];
                 }
+
             } else {
                 std::memcpy(y, x,  size * sizeof(double));
             }
         }
+        */
+        void process_array_no_stride(double* y,  const double* x, size_t size) override {
+            if (size > window_size_) {
+                // Copy the first `window_size_` elements directly
+                std::memcpy(y, x, window_size_ * sizeof(double));
 
-        void process_array_stride(double* y, size_t dyi, double* x, size_t dxi, size_t size) override {
+                // Process elements in chunks of 4, starting from `window_size_`
+                size_t i = window_size_;
+                for (; i + 4 <= size; i += 4) {
+                    y[i]     = x[i]     - x[i - window_size_];
+                    y[i + 1] = x[i + 1] - x[i + 1 - window_size_];
+                    y[i + 2] = x[i + 2] - x[i + 2 - window_size_];
+                    y[i + 3] = x[i + 3] - x[i + 3 - window_size_];
+                }
+
+                // Process any remaining elements one by one
+                for (; i < size; i++) {
+                    y[i] = x[i] - x[i - window_size_];
+                }
+
+            } else {
+                // If `size` is smaller than `window_size_`, copy everything directly
+                std::memcpy(y, x, size * sizeof(double));
+            }
+        }       
+
+        void process_array_stride(double* y, size_t dyi, const double* x, size_t dxi, size_t size) override {
 
 
             // the elements < window_size don't have a x[i - window_size], we set them to zero

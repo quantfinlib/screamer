@@ -1,21 +1,5 @@
 import screamer as sc
 
-def RollingSum__screamer(array, window_size):
-    return sc.RollingSum(window_size).transform(array)
-
-
-def RollingSkew__screamer(array, window_size):
-    return sc.RollingSkew(window_size).transform(array)
-
-def RollingMin__screamer(array, window_size):
-    return sc.RollingMin(window_size).transform(array)
-
-def RollingMax__screamer(array, window_size):
-    return sc.RollingMax(window_size).transform(array)
-
-def RollingMedian__screamer(array, window_size):
-    return sc.RollingMedian(window_size).transform(array)
-
 """
 def RollingQuantile__screamer(array, window_size, quantile):
     return sc.RollingQuantile(window_size, quantile).transform(array)
@@ -36,6 +20,9 @@ def RollingStd__screamer(array, window_size):
 def RollingVar__screamer(array, window_size):
     return sc.RollingVar(window_size)(array)
 
+def RollingZscore__screamer(array, window_size):
+    return sc.RollingZscore(window_size)(array)
+
 def RollingKurt__screamer(array, window_size):
     return sc.RollingKurt(window_size)(array)
 
@@ -44,3 +31,18 @@ def Ffill__screamer(array):
 
 def FillNa__screamer(array, fill):
     return sc.FillNa(fill)(array)
+
+def RollingMin__screamer(array, window_size):
+    return sc.RollingMin(window_size)(array)
+
+def RollingMax__screamer(array, window_size):
+    return sc.RollingMax(window_size)(array)
+
+def RollingSum__screamer(array, window_size):
+    return sc.RollingSum(window_size)(array)
+
+def RollingSkew__screamer(array, window_size):
+    return sc.RollingSkew(window_size)(array)
+
+def RollingMedian__screamer(array, window_size):
+    return sc.RollingMedian(window_size)(array)

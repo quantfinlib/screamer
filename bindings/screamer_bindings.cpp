@@ -16,7 +16,6 @@
 #include "screamer/ew_std.h"
 
 #include "screamer/base.h"
-#include "screamer/two.h"
 #include "screamer/rolling_mean.h"
 #include "screamer/rolling_std.h"
 #include "screamer/rolling_var.h"
@@ -27,36 +26,21 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(screamer_bindings, m) {
 
-    py::class_<screamer::RollingSum>(m, "RollingSum")
-        .def(py::init<int>(), py::arg("window_size"),
-             "Initialize the rolling sum indicator.\n\n"
-             ":param window_size: The window_size parameter.")
-        .def("__call__", &screamer::RollingSum::operator(), py::arg("value"),
-             "Update and return the rolling sum.\n\n"
-             ".. math::\n"
-             "    f(X[i]) = \\sum_{i=0}^{w-1}X[i-w]\n\n"
-             "This applies a rolling sum the stream of input values `X`.")
-        .def("reset", &screamer::RollingSum::reset, "Reset the rolling sum indicator to its initial state.")
-        .def("transform", &screamer::RollingSum::transform, py::arg("input_array"),
-             "Apply the rolling sum transformation to a NumPy array.")
-        .doc() = "Rolling sum, the sum of the most recent values in a sequence.";
-
-
     py::class_<screamer::ScreamerBase>(m, "_ScreamerBase");
 
     py::class_<screamer::ScreamerBase::LazyIterator>(m, "_LazyIterator")
         .def("__iter__", &screamer::ScreamerBase::LazyIterator::__iter__, py::return_value_policy::reference_internal)
         .def("__next__", &screamer::ScreamerBase::LazyIterator::__next__);
 
-    py::class_<screamer::Two, screamer::ScreamerBase>(m, "Two")
-        .def(py::init<>())
-        .def("__call__", &screamer::Two::operator(), py::arg("value"))
-        .def("reset", &screamer::Two::reset, "Reset to the initial state.");
-
     py::class_<screamer::RollingMean, screamer::ScreamerBase>(m, "RollingMean")
         .def(py::init<int>(), py::arg("window_size"))
         .def("__call__", &screamer::RollingMean::operator(), py::arg("value"))
         .def("reset", &screamer::RollingMean::reset, "Reset to the initial state.");
+
+    py::class_<screamer::RollingSum, screamer::ScreamerBase>(m, "RollingSum")
+        .def(py::init<int>(), py::arg("window_size"))
+        .def("__call__", &screamer::RollingSum::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingSum::reset, "Reset to the initial state.");
 
     py::class_<screamer::Diff, screamer::ScreamerBase>(m, "Diff")
         .def(py::init<int>(), py::arg("window_size"))
@@ -78,6 +62,11 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("__call__", &screamer::RollingVar::operator(), py::arg("value"))
         .def("reset", &screamer::RollingVar::reset, "Reset to the initial state.");
 
+    py::class_<screamer::RollingSkew, screamer::ScreamerBase>(m, "RollingSkew")
+        .def(py::init<int>(), py::arg("window_size"))
+        .def("__call__", &screamer::RollingSkew::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingSkew::reset, "Reset to the initial state.");
+
     py::class_<screamer::RollingKurt, screamer::ScreamerBase>(m, "RollingKurt")
         .def(py::init<int>(), py::arg("window_size"))
         .def("__call__", &screamer::RollingKurt::operator(), py::arg("value"))
@@ -88,35 +77,31 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("__call__", &screamer::Ffill::operator(), py::arg("value"))
         .def("reset", &screamer::Ffill::reset, "Reset to the initial state.");
 
-
     py::class_<screamer::FillNa, screamer::ScreamerBase>(m, "FillNa")
         .def(py::init<double>(), py::arg("fill"))
         .def("__call__", &screamer::FillNa::operator(), py::arg("value"))
         .def("reset", &screamer::FillNa::reset, "Reset to the initial state.");
 
+    py::class_<screamer::RollingMin, screamer::ScreamerBase>(m, "RollingMin")
+        .def(py::init<int>(), py::arg("window_size"))
+        .def("__call__", &screamer::RollingMin::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingMin::reset, "Reset to the initial state.");
 
+    py::class_<screamer::RollingMax, screamer::ScreamerBase>(m, "RollingMax")
+        .def(py::init<int>(), py::arg("window_size"))
+        .def("__call__", &screamer::RollingMax::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingMax::reset, "Reset to the initial state.");
 
-    py::class_<screamer::RollingSkew>(m, "RollingSkew")
-        .def(py::init<int>(), py::arg("window_size"),
-             "Initialize the rolling skew indicator.\n\n"
-             ":param window_size: The window_size parameter.")
-        .def("__call__", &screamer::RollingSkew::operator(), py::arg("value"),
-             "This applies a rolling skew to the stream of input values `X`.")
-        .def("reset", &screamer::RollingSkew::reset, "Reset the indicator to its initial state.")
-        .def("transform", &screamer::RollingSkew::transform, py::arg("input_array"),
-             "Apply the indicator to a NumPy array.")
-        .doc() = "Rolling skew, the skew of the most recent values in a sequence.";
+    py::class_<screamer::RollingMedian, screamer::ScreamerBase>(m, "RollingMedian")
+        .def(py::init<int>(), py::arg("window_size"))
+        .def("__call__", &screamer::RollingMedian::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingMedian::reset, "Reset to the initial state.");
 
-    py::class_<screamer::RollingZscore>(m, "RollingZscore")
-        .def(py::init<int>(), py::arg("window_size"),
-             "Initialize the rolling zscore indicator.\n\n"
-             ":param window_size: The window_size parameter.")
-        .def("__call__", &screamer::RollingZscore::operator(), py::arg("value"),
-             "This applies a rolling zscore the stream of input values `X`.")
-        .def("reset", &screamer::RollingZscore::reset, "Reset the indicator to its initial state.")
-        .def("transform", &screamer::RollingZscore::transform, py::arg("input_array"),
-             "Apply the indicator to a NumPy array.")
-        .doc() = "Rolling zscore, the zscore of the most recent values in a sequence.";
+    py::class_<screamer::RollingZscore, screamer::ScreamerBase>(m, "RollingZscore")
+        .def(py::init<int>(), py::arg("window_size"))
+        .def("__call__", &screamer::RollingZscore::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingZscore::reset, "Reset to the initial state.");
+
 
     py::class_<screamer::Return>(m, "Return")
         .def(py::init<int>(), py::arg("delay"),
@@ -183,39 +168,5 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("transform", &screamer::EwVar::transform, py::arg("input_array"),
              "Apply the exponentially weighted variance transformation to a NumPy array.")
         .doc() = "Exponentially weighted variance of values in a sequence.";
-
-    py::class_<screamer::RollingMin>(m, "RollingMin")
-        .def(py::init<int>(), py::arg("window_size"),
-             "Initialize the rolling min indicator.\n\n"
-             ":param window_size: The window_size parameter.")
-        .def("__call__", &screamer::RollingMin::operator(), py::arg("value"),
-             "Update and return the rolling min.")
-        .def("reset", &screamer::RollingMin::reset, "Reset the indicator to its initial state.")
-        .def("transform", &screamer::RollingMin::transform, py::arg("input_array"),
-             "Apply the indicator to a NumPy array.")
-        .doc() = "Rolling min, the minimum value of the most recent values in a sequence.";
-
-    py::class_<screamer::RollingMax>(m, "RollingMax")
-        .def(py::init<int>(), py::arg("window_size"),
-             "Initialize the rolling max indicator.\n\n"
-             ":param window_size: The window_size parameter.")
-        .def("__call__", &screamer::RollingMax::operator(), py::arg("value"),
-             "Update and return the rolling max.")
-        .def("reset", &screamer::RollingMax::reset, "Reset the indicator to its initial state.")
-        .def("transform", &screamer::RollingMax::transform, py::arg("input_array"),
-             "Apply the indicator to a NumPy array.")
-        .doc() = "Rolling max, the max value of the most recent values in a sequence.";
-
-    py::class_<screamer::RollingMedian>(m, "RollingMedian")
-        .def(py::init<int>(), py::arg("window_size"),
-             "Initialize the rolling median indicator.\n\n"
-             ":param window_size: The window_size parameter.")
-        .def("__call__", &screamer::RollingMedian::operator(), py::arg("value"),
-             "Update and return the rolling median.")
-        .def("reset", &screamer::RollingMedian::reset, "Reset the indicator to its initial state.")
-        .def("transform", &screamer::RollingMedian::transform, py::arg("input_array"),
-             "Apply the indicator to a NumPy array.")
-        .doc() = "Rolling median, the median value of the most recent values in a sequence.";
-
 
 }

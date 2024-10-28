@@ -40,7 +40,9 @@ namespace screamer {
             return sum_ * one_over_w_;            
         }
 
-        void process_array_no_stride(double* y, double* x, size_t size) override {
+        void process_array_no_stride(double* y, const double* x, size_t size) override {
+            double one_over_w_ = this->one_over_w_;
+            size_t window_size_ = this->window_size_;
 
             y[0] = x[0] * one_over_w_;
 
@@ -55,7 +57,7 @@ namespace screamer {
             }
         }
 
-        void process_array_stride(double* y, size_t dyi, double* x, size_t dxi, size_t size) override {
+        void process_array_stride(double* y, size_t dyi, const double* x, size_t dxi, size_t size) override {
 
             // the first element, we don't have a previous y value
             y[0] = x[0] * one_over_w_;

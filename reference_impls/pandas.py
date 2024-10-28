@@ -12,6 +12,12 @@ def RollingStd__pandas(array, window_size):
 def RollingVar__pandas(array, window_size):
     return pd.Series(array).rolling(window=window_size).var().to_numpy()
 
+def RollingZscore__pandas(array, window_size):
+    r = pd.Series(array).rolling(window=window_size)
+    m = r.mean().to_numpy()
+    s = r.std(ddof=1).to_numpy()
+    return (array - m) / s
+
 def RollingSkew__pandas(array, window_size):
     return pd.Series(array).rolling(window=window_size).skew().to_numpy()
 

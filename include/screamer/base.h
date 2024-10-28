@@ -97,8 +97,6 @@ namespace screamer {
             friend class LazyIterator;            
         };
 
-    protected:
-
         // Pure virtual function to process a single scalar
         virtual double process_scalar(double value) = 0;
 
@@ -106,8 +104,8 @@ namespace screamer {
         // defaulting to looping with process_scalar.
         virtual void process_array_no_stride(
         double* result_data, 
-        double* input_data,
-         size_t size) {
+        const double* input_data,
+        size_t size) {
 
             for (size_t i=0; i<size; i++) {
                 result_data[i] = process_scalar(input_data[i]);
@@ -120,7 +118,7 @@ namespace screamer {
         virtual void process_array_stride(
             double* result_data, 
             size_t result_stride,
-            double* input_data, 
+            const double* input_data, 
             size_t input_stride,
             size_t size) {
 
@@ -135,6 +133,7 @@ namespace screamer {
            
         }
 
+    protected:
 
         // function for numpy array processing
         py::array_t<double> process_python_array(py::array_t<double> input_array) {

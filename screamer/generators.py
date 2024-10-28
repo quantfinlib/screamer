@@ -20,8 +20,7 @@ from .screamer_bindings import (
     RollingStd,
     RollingSum,
     RollingVar,
-    RollingZscore,
-    Two             
+    RollingZscore             
 )
 
 def diff_generator(iterable, window_size):
@@ -149,7 +148,7 @@ def rolling_max_generator(iterable, window_size):
     Generator version of the RollingMax class.
 
     :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
+    :param window_size: No description available    
     """
     indicator = RollingMax(window_size)
     for value in iterable:
@@ -173,7 +172,7 @@ def rolling_median_generator(iterable, window_size):
     Generator version of the RollingMedian class.
 
     :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
+    :param window_size: No description available    
     """
     indicator = RollingMedian(window_size)
     for value in iterable:
@@ -185,7 +184,7 @@ def rolling_min_generator(iterable, window_size):
     Generator version of the RollingMin class.
 
     :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
+    :param window_size: No description available    
     """
     indicator = RollingMin(window_size)
     for value in iterable:
@@ -197,7 +196,7 @@ def rolling_skew_generator(iterable, window_size):
     Generator version of the RollingSkew class.
 
     :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
+    :param window_size: No description available    
     """
     indicator = RollingSkew(window_size)
     for value in iterable:
@@ -221,7 +220,7 @@ def rolling_sum_generator(iterable, window_size):
     Generator version of the RollingSum class.
 
     :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
+    :param window_size: No description available    
     """
     indicator = RollingSum(window_size)
     for value in iterable:
@@ -245,21 +244,9 @@ def rolling_zscore_generator(iterable, window_size):
     Generator version of the RollingZscore class.
 
     :param iterable: An iterable of numerical values.
-    :param window_size: The window_size parameter.    
+    :param window_size: No description available    
     """
     indicator = RollingZscore(window_size)
-    for value in iterable:
-        yield indicator(value)
-
-
-def two_generator(iterable, ):
-    """
-    Generator version of the Two class.
-
-    :param iterable: An iterable of numerical values.
-    
-    """
-    indicator = Two()
     for value in iterable:
         yield indicator(value)
 

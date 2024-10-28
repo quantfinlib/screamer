@@ -22,8 +22,7 @@ from .screamer_bindings import (
     RollingStd,
     RollingSum,
     RollingVar,
-    RollingZscore,
-    Two             
+    RollingZscore             
 )
 
 from .generators import (
@@ -45,8 +44,7 @@ from .generators import (
     rolling_std_generator,
     rolling_sum_generator,
     rolling_var_generator,
-    rolling_zscore_generator,
-    two_generator             
+    rolling_zscore_generator             
 )
 
 __all__ = [
@@ -68,6 +66,5 @@ __all__ = [
     "RollingStd", "rolling_std_generator",
     "RollingSum", "rolling_sum_generator",
     "RollingVar", "rolling_var_generator",
-    "RollingZscore", "rolling_zscore_generator",
-    "Two", "two_generator"
+    "RollingZscore", "rolling_zscore_generator"
 ]

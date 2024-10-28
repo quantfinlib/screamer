@@ -7,7 +7,6 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
-* exponentially weighted moving averge
 * rolling std
 * rolling skew
 * rolling kurtosis
@@ -16,6 +15,8 @@ All notable changes to this project are documented in this file.
 * rolling max
 * rolling median
 * rolling quantile
+* fillna
+* ffill
 * support for iterator / generator processing
 
 ### Fixed

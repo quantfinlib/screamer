@@ -30,6 +30,13 @@ def RollingVar__numpy__stride(array, window_size):
     ans = np.var(windowed_array, axis=-1, ddof=1)
     return np.concatenate((np.full(window_size-1, np.nan), ans))
 
+def RollingZscore__numpy__stride(array, window_size):
+    windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
+    mean = np.mean(windowed_array, axis=-1)
+    std = np.std(windowed_array, axis=-1, ddof=1)
+    ans = (windowed_array[:,-1] - mean) / std
+    return np.concatenate((np.full(window_size-1, np.nan), ans))
+
 def RollingSkew__numpy__stride(array, window_size):
     windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
     mean = np.mean(windowed_array, axis=-1)
@@ -85,3 +92,21 @@ def Lag__numpy(array, window_size):
     ans = np.empty_like(array)
     ans[window_size:] = array[:-window_size]
     return ans
+
+def FillNa__numpy(array, fill):
+    ans = array.copy()
+    ans[np.isnan(ans)] = fill
+    return ans
+
+def _np_ffill(arr, axis):
+    idx_shape = tuple([slice(None)] + [np.newaxis] * (len(arr.shape) - axis - 1))
+    idx = np.where(~np.isnan(arr), np.arange(arr.shape[axis])[idx_shape], 0)
+    np.maximum.accumulate(idx, axis=axis, out=idx)
+    slc = [np.arange(k)[tuple([slice(None) if dim==i else np.newaxis
+        for dim in range(len(arr.shape))])]
+        for i, k in enumerate(arr.shape)]
+    slc[axis] = idx
+    return arr[tuple(slc)]
+
+def Ffill__numpy(array):
+    return _np_ffill(array, 0)

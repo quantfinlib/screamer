@@ -42,7 +42,11 @@ target_compile_options(screamer_bindings PRIVATE
     -O3                # Enable maximum optimization
     -march=native      # Enable architecture-specific optimizations
     -flto              # Enable Link Time Optimization
-    #-ffast-math        # Enable fast math operations (may be unsafe for some code)
+    -ffast-math        # Enable fast math operations (may be unsafe for some code)
+    #-mavx              # Enable AVX
+    #-mavx2             # Enable AVX2
+    #-mno-mmx           # Disable MMX
+    -mcpu=apple-m1     # Use Apple M1-specific optimizations if on Apple Silicon    
 )
 
 

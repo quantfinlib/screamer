@@ -34,6 +34,7 @@ namespace screamer {
             return buffer_.append(newValue);         
         }
 
+        /*
         void process_array_no_stride(double* y, double* x, size_t size) override {
             if (size > window_size_) {
                 std::fill_n(y, window_size_, 0.0);
@@ -42,8 +43,21 @@ namespace screamer {
                 std::fill_n(y, size, 0.0);
             }
         }
+        */
+        void process_array_no_stride(double* y,  const double* x, size_t size) override {
+            if (size > window_size_) {
+                // Use memset for zero-initialization (often faster than std::fill_n for large blocks)
+                std::memset(y, 0, window_size_ * sizeof(double));
 
-        void process_array_stride(double* y, size_t dyi, double* x, size_t dxi, size_t size) override {
+                // Copy remaining elements from x to y, starting after the zeros
+                std::memcpy(y + window_size_, x, (size - window_size_) * sizeof(double));
+            } else {
+                // If size <= window_size_, only fill with zeros up to `size`
+                std::memset(y, 0, size * sizeof(double));
+            }
+        }       
+
+        void process_array_stride(double* y, size_t dyi, const double* x, size_t dxi, size_t size) override {
 
 
             // the elements < window_size don't have a x[i - window_size], we set them to zero

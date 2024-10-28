@@ -21,7 +21,7 @@
 #include "screamer/rolling_var.h"
 #include "screamer/ffill.h"
 #include "screamer/fillna.h"
-#include "screamer/rolling_quantile.h"
+#include "screamer/rolling_quantile_ost_v2.h"
 
 namespace py = pybind11;
 

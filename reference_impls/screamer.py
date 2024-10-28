@@ -55,3 +55,7 @@ def Return__screamer(array, window_size):
 
 def LogReturn__screamer(array, window_size):
     return sc.LogReturn(window_size)(array)
+
+def EwMean__screamer(array, window_size):
+    alpha = 1 / (1 + window_size)
+    return sc.EwMean(alpha=alpha)(array)

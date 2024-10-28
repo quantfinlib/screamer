@@ -54,3 +54,7 @@ def Return__pandas(array, window_size):
 
 def LogReturn__pandas(array, window_size):
     return np.log1p(Return__pandas(array, window_size))
+
+def EwMean__pandas(array, window_size):
+    alpha = 1 / (1 + window_size)
+    return pd.Series(array).ewm(alpha=alpha, adjust=True).mean().to_numpy()

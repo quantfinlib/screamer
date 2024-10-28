@@ -5,6 +5,7 @@ __version__ = "Unreleased"
 
 from .screamer_bindings import (
     Diff,
+    EwMean,
     Ffill,
     FillNa,
     Lag,
@@ -26,6 +27,7 @@ from .screamer_bindings import (
 
 __all__ = [
     "Diff",
+    "EwMean",
     "Ffill",
     "FillNa",
     "Lag",

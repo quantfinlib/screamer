@@ -18,7 +18,8 @@ def pytest_generate_tests(metafunc):
 # Test processing a matrix columns wise, vs in one go with .transform()
 def test_matrix(ci):
     class_name, class_info = ci
-    args = {arg['name']: arg['example'] for arg in class_info.get('args',[])}
+    class_args = class_info.get('args',[])
+    args = {arg['name']: arg.get('example') for arg in class_args if 'example' in arg}
 
     # Instantiate an indicator class
     module = importlib.import_module("screamer.screamer_bindings")
@@ -50,8 +51,8 @@ def test_matrix(ci):
 # Test processing a tensor columns wise, vs in one go with .transform()
 def test_tensor(ci):
     class_name, class_info = ci
-    args = {arg['name']: arg['example'] for arg in class_info.get('args',[])}
-
+    class_args = class_info.get('args',[])
+    args = {arg['name']: arg.get('example') for arg in class_args if 'example' in arg}
 
     # Instantiate an indicator class
     module = importlib.import_module("screamer.screamer_bindings")

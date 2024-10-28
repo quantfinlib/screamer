@@ -8,6 +8,7 @@ example_args = {
     'fill': 0.0,
     'weight': 0.8,
     'quantile': 0.75,
+    'alpha': 0.1,
 }
 
 def camel_to_snake(name):
@@ -42,12 +43,14 @@ def get_constructor_arguments_from_doc(cls):
     arg_info = []
     for name, arg_type in args:
         if name != 'self':  # Ignore 'self'
-            arg_info.append({
+            arg = {
                 'name': name,
                 'type': arg_type,
-                'description': param_descriptions.get(name, 'No description available'),
-                'example': example_args[name]
-            })
+                'description': param_descriptions.get(name, 'No description available')
+            }
+            if name in example_args:
+                arg['example'] = example_args[name]
+            arg_info.append(arg)
     
     return arg_info
 

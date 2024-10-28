@@ -122,3 +122,10 @@ def LogReturn__numpy(array, window_size):
     ans[:window_size] = np.nan
     ans[window_size:] = np.log(array[window_size:] / array[:-window_size])
     return ans
+
+"""
+def EwMean__numpy(array, window_size):
+    x = 0
+    alpha = 1 / (1 + window_size)
+    return np.array([x*(1-alpha)+ alpha*y for y in array])
+"""    

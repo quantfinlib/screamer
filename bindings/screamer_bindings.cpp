@@ -1,5 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
+#include <pybind11/stl.h> // Required for std::optional support
+
 #include "screamer/lag.h"
 #include "screamer/diff.h"
 #include "screamer/rolling_sum.h"
@@ -11,7 +13,6 @@
 #include "screamer/rolling_median.h"
 #include "screamer/return.h"
 #include "screamer/log_return.h"
-#include "screamer/ewma.h"
 #include "screamer/ew_var.h"
 #include "screamer/ew_std.h"
 
@@ -21,7 +22,9 @@
 #include "screamer/rolling_var.h"
 #include "screamer/ffill.h"
 #include "screamer/fillna.h"
-#include "screamer/rolling_quantile_ost_v2.h"
+#include "screamer/rolling_quantile_ost_v3.h"
+
+#include "screamer/ew_mean.h"
 
 namespace py = pybind11;
 
@@ -157,5 +160,21 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .doc() = "Exponentially weighted variance of values in a sequence.";
 
 */
+
+     py::class_<screamer::EwMean>(m, "EwMean")
+        .def(
+          py::init<
+               std::optional<double>,
+               std::optional<double>,
+               std::optional<double>,
+               std::optional<double>
+          >(),
+          py::arg("com") = std::nullopt,
+          py::arg("span") = std::nullopt,
+          py::arg("halflife") = std::nullopt,
+          py::arg("alpha") = std::nullopt
+        )
+        .def("__call__", &screamer::EwMean::operator(), py::arg("value"))
+        .def("reset", &screamer::EwMean::reset, "Reset to the initial state.");
 
 }

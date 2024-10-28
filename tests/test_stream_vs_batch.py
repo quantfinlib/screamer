@@ -20,7 +20,8 @@ def test_stream_vs_batch(ci):
     
     # unpack
     class_name, class_info = ci
-    args = {arg['name']: arg['example'] for arg in class_info.get('args',[])}
+    class_args = class_info.get('args',[])
+    args = {arg['name']: arg['example'] for arg in class_args if 'example' in arg}
 
     module = importlib.import_module("screamer.screamer_bindings")
     cls = getattr(module, class_name) 

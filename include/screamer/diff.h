@@ -25,9 +25,7 @@ namespace screamer {
 
         void reset() override {
             buffer_.reset(0.0);
-        }
-        
-    private:
+        }    
 
         double process_scalar(double newValue) override {
             double oldValue = buffer_.append(newValue);

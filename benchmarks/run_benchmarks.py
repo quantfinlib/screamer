@@ -22,7 +22,8 @@ window_sizes = [10, 100,  1000, 10000]
 
 extra_args = {
     'quantile': 0.75,
-    'fill': 0.0
+    'fill': 0.0,
+    'alpha': 0.1
 }
 
 def main():

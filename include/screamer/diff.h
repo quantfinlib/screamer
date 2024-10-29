@@ -32,20 +32,6 @@ namespace screamer {
             return newValue - oldValue;     
         }
 
-        /*
-        void process_array_no_stride(double* y, double* x, size_t size) override {
-            if (size > window_size_) {
-                std::memcpy(y, x,  window_size_ * sizeof(double));
-
-                for (size_t i=window_size_; i<size; i++) {
-                    y[i] = x[i] - x[i - window_size_];
-                }
-
-            } else {
-                std::memcpy(y, x,  size * sizeof(double));
-            }
-        }
-        */
         void process_array_no_stride(double* y,  const double* x, size_t size) override {
             if (size > window_size_) {
                 // Copy the first `window_size_` elements directly

@@ -41,12 +41,14 @@ print(df)
 
 # Define colors for each column
 colors = {
+    "scipy": "gray",
     "numpy": "skyblue",
     "pandas": "steelblue",
     "screamer": "green",
 }
 
 text_colors = {
+    "scipy": "gray",
     "numpy": "steelblue",
     "pandas": "steelblue",
     "screamer": "green",
@@ -54,10 +56,10 @@ text_colors = {
 
 
 # Set threshold for the break point
-break_threshold = 10
+break_threshold = 6.5
 bar_width = 0.3
 
-fig, ax = plt.subplots(figsize=(10, 7))
+fig, ax = plt.subplots(figsize=(10, 10))
 positions = np.arange(len(df.index))
 
 for i, (col, color) in enumerate(colors.items()):

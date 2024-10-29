@@ -7,6 +7,31 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+#### Data handeling
+
+* fillna
+* ffill
+* clip
+
+#### Math
+
+* Abs
+* Sign
+* Exp
+* Log
+* Sqrt
+* Erf
+* Erfc
+
+#### Simple transforms
+
+* Diff
+* Lag
+* Return 
+* LogReturn
+
+#### Rolling window functions
+
 * rolling std
 * rolling skew
 * rolling kurtosis
@@ -15,19 +40,25 @@ All notable changes to this project are documented in this file.
 * rolling max
 * rolling median
 * rolling quantile
-* fillna
-* ffill
-* diff
-* lag
-* return 
-* log return
+* rolling rms
+
+#### Exponentiually weighted functions
+
+* EwMean
+* EwStd
+* EwVar
+* EwSkew
+* EwKurt
+* EwRms
+  
+#### Interface
 * support for iterator / generator processing
 
 ### Fixed
 * Fixed incorrect results when applying transforms to a view on a numpy array.
 
 ### Changed
-* removed the transform member functions, instead use __call__()
+* removed the transform member functions
 
 Version v0.1.32 (2024-10-20)
 -------------------------

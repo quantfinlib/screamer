@@ -1,6 +1,5 @@
-// rolling_mean.h
-#ifndef SCREAMER_EW_MEAN_H
-#define SCREAMER_EW_MEAN_H
+#ifndef SCREAMER_EW_KURT_H
+#define SCREAMER_EW_KURT_H
 
 #include <optional>
 #include <stdexcept>
@@ -9,15 +8,14 @@
 
 namespace screamer {
 
-    class EwMean : public ScreamerBase {
+    class EwKurt : public ScreamerBase {
     public:
-        explicit EwMean(
+        explicit EwKurt(
             std::optional<double> com = std::nullopt,
             std::optional<double> span = std::nullopt,
             std::optional<double> halflife = std::nullopt,
             std::optional<double> alpha = std::nullopt)
         {
-            // Count the number of provided arguments
             int provided_args = (com.has_value() ? 1 : 0) +
                                 (span.has_value() ? 1 : 0) +
                                 (halflife.has_value() ? 1 : 0) +
@@ -27,7 +25,6 @@ namespace screamer {
                 throw std::invalid_argument("Exactly one of com, span, halflife, or alpha must be provided");
             }
 
-            // Map provided argument to alpha
             if (alpha.has_value()) {
                 alpha_ = alpha.value();
             } else if (com.has_value()) {
@@ -38,70 +35,77 @@ namespace screamer {
                 alpha_ = 1.0 - std::exp(-std::log(2.0) / halflife.value());
             }
 
-            // Validate alpha
             if (alpha_ <= 0.0 || alpha_ >= 1.0) {
                 throw std::invalid_argument("Alpha must be between 0 and 1 (exclusive)");
             }
             one_minus_alpha_ = 1.0 - alpha_;
+            one_minus_alpha2_ = one_minus_alpha_ * one_minus_alpha_;
 
             reset();
         }
 
         void reset() override {
             sum_x_ = 0.0;
+            sum_xx_ = 0.0;
+            sum_xxx_ = 0.0;
+            sum_xxxx_ = 0.0;
             sum_w_ = 0.0;
-
+            sum_w2_ = 0.0;
         }
 
         double process_scalar(double newValue) override {
             sum_x_ *= one_minus_alpha_;
+            sum_xx_ *= one_minus_alpha_;
+            sum_xxx_ *= one_minus_alpha_;
+            sum_xxxx_ *= one_minus_alpha_;
+
             sum_w_ *= one_minus_alpha_;
+            sum_w2_ *= one_minus_alpha2_;
+
             sum_x_ += newValue;
+            sum_xx_ += newValue * newValue;
+            sum_xxx_ += newValue * newValue * newValue;
+            sum_xxxx_ += newValue * newValue * newValue * newValue;
+
             sum_w_ += 1.0;
-            return sum_x_ / sum_w_;  
+            sum_w2_ += 1.0;
+
+            double n_eff = sum_w_ * sum_w_ / sum_w2_;
+
+            // Compute the weighted mean
+            double mean = sum_x_ / sum_w_;
+            double mean2 = mean * mean;
+
+            // Compute the weighted variance
+            double variance = (sum_xx_ / sum_w_) - mean2;
+            variance *= n_eff / (n_eff - 1.0);
+            double std_dev = std::sqrt(variance);
+
+            // Compute the fourth central moment (m4)
+            double m4 = (sum_xxxx_ / sum_w_) - 4 * mean * (sum_xxx_ / sum_w_) +
+                        6 * mean2 * (sum_xx_ / sum_w_) - 3 * mean2 * mean2;
+
+            // Calculate kurtosis with bias correction (similar to Pandas' convention)
+            double g2 = m4 / (variance * variance);
+            double excess_kurtosis = ((n_eff * (n_eff + 1) * g2 - 3 * (n_eff - 1) * (n_eff - 1)) /
+                                      ((n_eff - 1) * (n_eff - 2) * (n_eff - 3)));
+
+            return excess_kurtosis;
         }
-
-        void process_array_no_stride(double* y, const double* x, size_t size) override {
-            double one_minus_alpha_ = this->one_minus_alpha_;
-            double sum_x_ = 0.0;
-            double sum_w_ = 0.0;
-            for (size_t i=0; i<size; i++) {
-                sum_x_ *= one_minus_alpha_;
-                sum_w_ *= one_minus_alpha_;
-                sum_x_ += x[i];
-                sum_w_ += 1.0;
-                y[i] = sum_x_ / sum_w_;                  
-            }
-        }
-
-        void process_array_stride(double* y, size_t dyi, const double* x, size_t dxi, size_t size) override {
-            
-            double one_minus_alpha_ = this->one_minus_alpha_;
-            double sum_x_ = 0.0;
-            double sum_w_ = 0.0;
-            
-            size_t xi = 0;
-            size_t yi = 0;
-
-            for (size_t i=0; i<size; i++) { // start at 1
-                sum_x_ *= one_minus_alpha_;
-                sum_w_ *= one_minus_alpha_;
-                sum_x_ += x[xi];
-                sum_w_ += 1.0;
-                y[yi] = sum_x_ / sum_w_;   
-                xi += dxi;
-                yi += dyi;                
-            }
-        }  
 
     private:
         double alpha_;
         
         double one_minus_alpha_;
+        double one_minus_alpha2_;
         double sum_x_;
+        double sum_xx_;
+        double sum_xxx_;
+        double sum_xxxx_;  // For fourth central moment
         double sum_w_;
+        double sum_w2_;
     };
 
 } // namespace screamer
 
-#endif // SCREAMER_EW_MEAN_H
+#endif // SCREAMER_EW_KURT_H

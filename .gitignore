@@ -158,3 +158,5 @@ cython_debug/
 .DS_Store
 _skbuild/
 .vscode
+
+benchmarks/experiments/

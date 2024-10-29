@@ -58,3 +58,27 @@ def LogReturn__pandas(array, window_size):
 def EwMean__pandas(array, window_size):
     alpha = 1 / (1 + window_size)
     return pd.Series(array).ewm(alpha=alpha, adjust=True).mean().to_numpy()
+
+def EwVar__pandas(array, window_size):
+    alpha = 1 / (1 + window_size)
+    return pd.Series(array).ewm(alpha=alpha, adjust=True).var().to_numpy()
+
+def EwStd__pandas(array, window_size):
+    alpha = 1 / (1 + window_size)
+    return pd.Series(array).ewm(alpha=alpha, adjust=True).std().to_numpy()
+
+def EwZscore__pandas(array, window_size):
+    alpha = 1 / (1 + window_size)
+    obj = pd.Series(array).ewm(alpha=alpha, adjust=True)
+    mean_ = obj.mean().to_numpy()
+    std_ = obj.std().to_numpy()
+    return (array - mean_) / std_
+
+"""
+def EwSkew__pandas(array, window_size):
+    alpha = 1 / (1 + window_size)
+    return pd.Series(array).ewm(alpha=alpha, adjust=True).skew().to_numpy()
+"""
+
+def Clip__pandas(array, lower=-0.1, upper=0.5):
+    return pd.Series(array).clip(lower=lower, upper=upper)

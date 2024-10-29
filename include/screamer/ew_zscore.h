@@ -1,6 +1,6 @@
 // rolling_mean.h
-#ifndef SCREAMER_EW_STD_H
-#define SCREAMER_EW_STD_H
+#ifndef SCREAMER_EW_ZSCORE_H
+#define SCREAMER_EW_ZSCORE_H
 
 #include <optional>
 #include <stdexcept>
@@ -10,9 +10,9 @@
 
 namespace screamer {
 
-    class EwStd : public ScreamerBase {
+    class EwZscore : public ScreamerBase {
     public:
-        explicit EwStd(
+        explicit EwZscore(
             std::optional<double> com = std::nullopt,
             std::optional<double> span = std::nullopt,
             std::optional<double> halflife = std::nullopt,
@@ -77,7 +77,7 @@ namespace screamer {
             // Compute the weighted variance
             double variance = (sum_xx_ / sum_w_) - (mean * mean);
             variance *= n_eff / (n_eff - 1.0);
-            return std::sqrt(variance);
+            return (newValue - mean) / std::sqrt(variance);
         }
 
         void process_array_no_stride(double* y, const double* x, size_t size) override {
@@ -104,7 +104,7 @@ namespace screamer {
                 double mean = sum_x_ / sum_w_;
                 double variance = (sum_xx_ / sum_w_) - (mean * mean);
                 variance *= n_eff / (n_eff - 1.0);
-                y[i] = std::sqrt(variance);      
+                y[i] = (x[i] - mean) / std::sqrt(variance);      
             }
         }
 
@@ -136,7 +136,7 @@ namespace screamer {
                 double mean = sum_x_ / sum_w_;
                 double variance = (sum_xx_ / sum_w_) - (mean * mean);
                 variance *= n_eff / (n_eff - 1.0);
-                y[yi] = std::sqrt(variance);
+                y[yi] = (x[xi] - mean) / std::sqrt(variance);
                 xi += dxi;
                 yi += dyi;                
             }
@@ -156,4 +156,4 @@ namespace screamer {
 
 } // namespace screamer
 
-#endif // SCREAMER_EW_VAR_H
+#endif // SCREAMER_EW_ZSCORE_H

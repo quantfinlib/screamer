@@ -29,15 +29,6 @@ namespace screamer {
         }
 
         void process_array_no_stride(double* y, const double* x, size_t size) override {
-            /*
-            double last = std::numeric_limits<double>::quiet_NaN();
-            for (size_t i=0; i<size; i++) {
-                if (!std::isnan(x[i])) {
-                    last = x[i];
-                }
-                y[i] = last;
-            } 
-            */
 
             double lastValidValue = this->lastValidValue;  // Use a local variable to avoid accessing `this` in the loop
 

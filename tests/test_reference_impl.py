@@ -23,6 +23,8 @@ test_args = {
     'fill': 0.0,                          # Fill value for any gaps
     'weight': 0.8,                        # Weight parameter, if applicable
     'quantile': 0.75,                     # Quantile parameter, if applicable
+    'lower': -0.1,
+    'upper': 0.5
 }
 
 # Load a DataFrame from the reference_impls module containing metadata on all reference functions

@@ -2,6 +2,7 @@ import inspect
 from .numpy import *
 from .pandas import *
 from .screamer import *
+from .scipy import *
 import pandas as pd
 
 

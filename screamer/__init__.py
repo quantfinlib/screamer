@@ -4,11 +4,23 @@
 __version__ = "Unreleased"
 
 from .screamer_bindings import (
+    Abs,
+    Clip,
     Diff,
+    Erf,
+    Erfc,
+    EwKurt,
     EwMean,
+    EwRms,
+    EwSkew,
+    EwStd,
+    EwVar,
+    EwZscore,
+    Exp,
     Ffill,
     FillNa,
     Lag,
+    Log,
     LogReturn,
     Return,
     RollingKurt,
@@ -17,20 +29,35 @@ from .screamer_bindings import (
     RollingMedian,
     RollingMin,
     RollingQuantile,
+    RollingRms,
     RollingSkew,
     RollingStd,
     RollingSum,
     RollingVar,
-    RollingZscore             
+    RollingZscore,
+    Sign,
+    Sqrt             
 )
 
 
 __all__ = [
+    "Abs",
+    "Clip",
     "Diff",
+    "Erf",
+    "Erfc",
+    "EwKurt",
     "EwMean",
+    "EwRms",
+    "EwSkew",
+    "EwStd",
+    "EwVar",
+    "EwZscore",
+    "Exp",
     "Ffill",
     "FillNa",
     "Lag",
+    "Log",
     "LogReturn",
     "Return",
     "RollingKurt",
@@ -39,9 +66,12 @@ __all__ = [
     "RollingMedian",
     "RollingMin",
     "RollingQuantile",
+    "RollingRms",
     "RollingSkew",
     "RollingStd",
     "RollingSum",
     "RollingVar",
-    "RollingZscore"
+    "RollingZscore",
+    "Sign",
+    "Sqrt"
 ]

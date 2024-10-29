@@ -30,29 +30,14 @@ namespace screamer {
 
         
         void process_array_no_stride(double* y, const double* x, size_t size) override {
-            /*
-            std::transform(x, x + size, y, [this](double val) {
-                return std::isnan(val) ? fill_ : val;
-            });  
-            */
+
             size_t i = 0;
 
             // Process elements in chunks of 4
             double fill_ = this->fill_;
 
             for (; i + 4 <= size; i += 4) {
-                /*
-                y[i]     = x[i];
-                y[i + 1] = x[i + 1];
-                y[i + 2] = x[i + 2];
-                y[i + 3] = x[i + 3];
 
-                if (std::isnan(y[i]))   y[i]   = fill_;
-                if (std::isnan(y[i+1])) y[i+1] = fill_;
-                if (std::isnan(y[i+2])) y[i+2] = fill_;
-                if (std::isnan(y[i+3])) y[i+3] = fill_;
-                */
-                
                 y[i]     = std::isnan(x[i])     ? fill_ : x[i];
                 y[i + 1] = std::isnan(x[i + 1]) ? fill_ : x[i + 1];
                 y[i + 2] = std::isnan(x[i + 2]) ? fill_ : x[i + 2];

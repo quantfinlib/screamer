@@ -7,6 +7,10 @@
 #include <screamer/buffer.h>
 #include "screamer/base.h"
 
+/*
+todo: this implementation might  suffer from numerical instability
+      https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_online_algorithm
+*/
 namespace py = pybind11;
 
 namespace screamer {

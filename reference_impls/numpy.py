@@ -124,8 +124,30 @@ def LogReturn__numpy(array, window_size):
     return ans
 
 """
-def EwMean__numpy(array, window_size):
-    x = 0
-    alpha = 1 / (1 + window_size)
-    return np.array([x*(1-alpha)+ alpha*y for y in array])
+todo
+def EwSkew__numpy(array, window_size):
+def EwKurt_numpy(array, window_size):
 """    
+
+def Clip__numpy(array, lower=-0.1, upper=0.5):
+    return np.clip(array, a_min=lower, a_max=upper)
+
+def RollingRms__numpy(array, window_size):
+    ans = RollingMean__numpy__cumsum(array**2, window_size)
+    return np.sqrt(ans)
+
+def Abs__numpy(array):
+    return np.abs(array)
+
+def Log__numpy(array):
+    return np.log(array)
+
+def Exp__numpy(array):
+    return np.exp(array)
+
+def Sqrt__numpy(array):
+    return np.sqrt(array)
+
+def Sign__numpy(array):
+    return np.sign(array)
+

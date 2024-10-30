@@ -29,5 +29,5 @@ jobs:
           CIBW_BUILD_VERBOSITY: 1
           CIBW_BUILD: cp311-manylinux*
           CIBW_ARCHS_LINUX: x86_64
-          CIBW_TEST_REQUIRES: pytest numpy pandas
+          CIBW_TEST_REQUIRES: pytest numpy pandas scipy
           CIBW_TEST_COMMAND: "pytest {project}/tests"

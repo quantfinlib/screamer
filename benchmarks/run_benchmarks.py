@@ -25,7 +25,9 @@ extra_args = {
     'fill': 0.0,
     'alpha': 0.1,
     'lower': -0.1,
-    'upper': 0.5
+    'upper': 0.5,
+    'cutoff_freq': 0.1,
+    'derivative_order': 0
 }
 
 def main():

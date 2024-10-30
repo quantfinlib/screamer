@@ -5,6 +5,7 @@ __version__ = "Unreleased"
 
 from .screamer_bindings import (
     Abs,
+    Butter2,
     Clip,
     Diff,
     Erf,
@@ -28,6 +29,8 @@ from .screamer_bindings import (
     RollingMean,
     RollingMedian,
     RollingMin,
+    RollingPoly1,
+    RollingPoly2,
     RollingQuantile,
     RollingRms,
     RollingSkew,
@@ -42,6 +45,7 @@ from .screamer_bindings import (
 
 __all__ = [
     "Abs",
+    "Butter2",
     "Clip",
     "Diff",
     "Erf",
@@ -65,6 +69,8 @@ __all__ = [
     "RollingMean",
     "RollingMedian",
     "RollingMin",
+    "RollingPoly1",
+    "RollingPoly2",
     "RollingQuantile",
     "RollingRms",
     "RollingSkew",

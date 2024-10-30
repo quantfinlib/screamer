@@ -41,6 +41,7 @@ All notable changes to this project are documented in this file.
 * rolling median
 * rolling quantile
 * rolling rms
+* rolling 1rst order polynomial fit
 
 #### Exponentiually weighted functions
 
@@ -51,6 +52,11 @@ All notable changes to this project are documented in this file.
 * EwKurt
 * EwRms
   
+#### Filters
+
+* 2nd order Butterworth
+
+
 #### Interface
 * support for iterator / generator processing
 

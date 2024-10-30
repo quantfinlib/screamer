@@ -24,7 +24,9 @@ test_args = {
     'weight': 0.8,                        # Weight parameter, if applicable
     'quantile': 0.75,                     # Quantile parameter, if applicable
     'lower': -0.1,
-    'upper': 0.5
+    'upper': 0.5,
+    'cutoff_freq': 0.1,
+    'derivative_order': 0
 }
 
 # Load a DataFrame from the reference_impls module containing metadata on all reference functions
@@ -44,7 +46,13 @@ def do_test_call(callable_name, args, **kwargs):
     - The result of executing the dynamically called function.
     """
     function_call = f'reference_impls.{callable_name}({args})'
-    return eval(function_call, {'reference_impls': reference_impls}, kwargs)
+    ans = eval(function_call, {'reference_impls': reference_impls}, kwargs)
+    if 1==1:
+        print('DEBUG CALL: name =', callable_name)
+        print('DEBUG CALL: args =', args)
+        print('DEBUG CALL: kwargs =', kwargs)
+        print('DEBUG CALL: ans =', ans)
+    return ans
 
 
 @pytest.mark.parametrize(

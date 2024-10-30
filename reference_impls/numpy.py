@@ -151,3 +151,40 @@ def Sqrt__numpy(array):
 def Sign__numpy(array):
     return np.sign(array)
 
+
+def RollingPoly1__numpy(array, window_size, derivative_order):
+
+    windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
+    x = np.arange(window_size)
+    # Perform a first-order polynomial fit (linear fit)
+    coefficients = np.polyfit(x, windowed_array.T, 1)
+    slope, intercept = coefficients
+    slope = np.concatenate((np.full(window_size-1, np.nan), slope))
+    intercept = np.concatenate((np.full(window_size-1, np.nan), intercept))
+    endpoint = intercept + slope * (window_size - 1)
+    if derivative_order == 0:
+        return endpoint
+    else:
+        return slope
+
+        
+def RollingPoly2__numpy(array, window_size, derivative_order):
+
+    windowed_array = np.lib.stride_tricks.sliding_window_view(array, window_size)
+    x = np.arange(window_size)
+    coefficients = np.polyfit(x, windowed_array.T, 2)
+    a, b, c = coefficients
+    a = np.concatenate((np.full(window_size-1, np.nan), a))
+    b = np.concatenate((np.full(window_size-1, np.nan), b))
+    c = np.concatenate((np.full(window_size-1, np.nan), c))
+
+    endpoint = a * (window_size - 1)**2 + b * (window_size - 1)  + c
+    endpoint_d =  2 * a * (window_size - 1) + b
+    endpoint_d2 = 2 * a
+    if derivative_order == 0:
+        return endpoint
+    if derivative_order == 1:
+        return endpoint_d
+    return endpoint_d
+
+        

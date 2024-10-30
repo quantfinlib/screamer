@@ -111,3 +111,12 @@ def Erf__screamer(array):
 
 def Erfc__screamer(array):
     return sc.Erfc()(array)
+
+def Butter2__screamer(array, cutoff_freq):
+    return sc.Butter2(cutoff_freq)(array)
+
+def RollingPoly1__screamer(array, window_size, derivative_order):
+    return sc.RollingPoly1(window_size, derivative_order)(array)
+
+def RollingPoly2__screamer(array, window_size, derivative_order):
+    return sc.RollingPoly2(window_size, derivative_order)(array)

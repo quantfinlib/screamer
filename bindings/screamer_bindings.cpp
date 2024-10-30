@@ -36,6 +36,10 @@
 
 #include "screamer/transform.h"
 
+#include "screamer/butter2.h"
+#include "screamer/rolling_poly1.h"
+#include "screamer/rolling_poly2.h"
+
 template <typename T> T signum(T val) {
     return (T(0) < val) - (val < T(0));
 }
@@ -312,6 +316,31 @@ PYBIND11_MODULE(screamer_bindings, m) {
         )
         .def("__call__", &screamer::Clip::operator(), py::arg("value"))
         .def("reset", &screamer::Clip::reset, "Reset to the initial state.");
+
+
+    py::class_<screamer::Butter2, screamer::ScreamerBase>(m, "Butter2")
+        .def(py::init<double>(), py::arg("cutoff_freq"))
+        .def("__call__", &screamer::Butter2::operator(), py::arg("value"))
+        .def("reset", &screamer::Butter2::reset, "Reset to the initial state.");
+
+    py::class_<screamer::RollingPoly1>(m, "RollingPoly1")
+        .def(
+            py::init<int, int>(),
+            py::arg("window_size"),
+            py::arg("derivative_order") = 0
+        )
+        .def("__call__", &screamer::RollingPoly1::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingPoly1::reset, "Reset to the initial state.");
+
+
+    py::class_<screamer::RollingPoly2>(m, "RollingPoly2")
+        .def(
+            py::init<int, int>(),
+            py::arg("window_size"),
+            py::arg("derivative_order") = 0
+        )
+        .def("__call__", &screamer::RollingPoly2::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingPoly2::reset, "Reset to the initial state.");
 
 
 }

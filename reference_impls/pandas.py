@@ -81,4 +81,39 @@ def EwSkew__pandas(array, window_size):
 """
 
 def Clip__pandas(array, lower=-0.1, upper=0.5):
-    return pd.Series(array).clip(lower=lower, upper=upper)
+    return pd.Series(array).clip(lower=lower, upper=upper).to_numpy()
+
+
+def RollingPoly1__pandas(array, window_size, derivative_order=0):
+    """
+    Calculate rolling slope and endpoint using numpy polyfit (OLS)
+    
+    Parameters:
+        series (pd.Series): Data series to fit
+        window_size (int): Size of the rolling window
+        derivative_order (int): 0 for endpoint, 1 for slope
+
+    Returns:
+        pd.Series: Result of the slope or endpoint for each rolling window
+    """
+    # Define a helper function for each rolling window
+    def ols_fit(y_values):
+        # Check that we have enough values for the window
+        if len(y_values) < window_size:
+            return np.nan
+
+        # Generate x values for the fit: e.g., [0, 1, 2, ..., window_size-1]
+        x = np.arange(window_size)
+        
+        # Perform a first-order polynomial fit (linear fit)
+        coefficients = np.polyfit(x, y_values, 1)
+        slope, intercept = coefficients
+        
+        # Calculate the endpoint of the polynomial at the end of the window
+        endpoint = intercept + slope * (window_size - 1)
+        
+        # Return based on mode: 0 for endpoint, 1 for slope
+        return endpoint if derivative_order == 0 else slope
+
+    # Apply the function on a rolling basis
+    return pd.Series(array).rolling(window=window_size).apply(ols_fit, raw=False).to_numpy()

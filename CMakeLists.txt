@@ -46,7 +46,7 @@ target_compile_options(screamer_bindings PRIVATE
     #-mavx              # Enable AVX
     #-mavx2             # Enable AVX2
     #-mno-mmx           # Disable MMX
-    -mcpu=apple-m1     # Use Apple M1-specific optimizations if on Apple Silicon    
+    #-mcpu=apple-m1     # Use Apple M1-specific optimizations if on Apple Silicon    
 )
 
 

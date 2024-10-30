@@ -41,7 +41,8 @@ All notable changes to this project are documented in this file.
 * rolling median
 * rolling quantile
 * rolling rms
-* rolling 1rst order polynomial fit
+* rolling poly1, 1rst order polynomial fit
+* rolling poly2, 2nd order polynomial fit
 
 #### Exponentiually weighted functions
 

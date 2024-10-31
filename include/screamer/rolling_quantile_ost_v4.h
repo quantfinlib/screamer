@@ -72,26 +72,22 @@ namespace screamer {
             ost.erase(x);
         }
 
-        double getQuantile()
-        {
+        double getQuantile() {
             if (ost.size() == 0) {
                 return std::numeric_limits<double>::quiet_NaN();
             }
 
             int n = ost.size();
-            double pos = quantile * (n - 1);
-            int index = static_cast<int>(std::floor(pos));
-            double fraction = pos - index;
+            double h = (n + 1) * quantile; // Hyndman and Fan Type 7
+            int index = static_cast<int>(std::floor(h));
+            double fraction = h - index;
 
-            double lower = ost.kth_element(index);
-            double upper = lower;
-
-            if (fraction > 0.0 && index + 1 < n) {
-                upper = ost.kth_element(index + 1);
-            }
+            double lower = ost.kth_element(index - 1);
+            double upper = (index < n) ? ost.kth_element(index) : lower;
 
             return lower + fraction * (upper - lower);
         }
+
 
     }; // end of class
 

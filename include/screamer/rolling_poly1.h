@@ -46,6 +46,18 @@ namespace screamer {
             double intercept = (sum_y - slope * sum_x) / window_size_;
             double endpoint = intercept + slope * (window_size_ - 1.0);
             // Return based on mode: endpoint if mode == 0, or slope if mode == 1
+            std::cout << "RollingPoly1::process_scalar(" << y << ")" << std::endl;
+            std::cout 
+                << "sum_x=" << sum_x << ", " 
+                << "sum_y=" << sum_y << ", " 
+                << "sum_xy=" << sum_xy << ", " 
+                << "n_var_x=" << n_var_x << ", " 
+                << "n_covar_xy=" << n_covar_xy << std::endl;
+            std::cout
+                << "slope=" << slope << ", " 
+                << "intercept=" << intercept << ", " 
+                << "endpoint=" << endpoint << std::endl;
+
             return derivative_order_ == 0 ? endpoint : slope;
         }
 

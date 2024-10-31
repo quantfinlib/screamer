@@ -30,22 +30,11 @@ namespace screamer {
             }
 
             double key = 0.5;
-            double nanValue = std::numeric_limits<double>::quiet_NaN();
-
-            std::cout << "nan > key: " << (nanValue > key) << std::endl;
-            std::cout << "nan < key: " << (nanValue < key) << std::endl;
-            std::cout << "nan == key: " << (nanValue == key) << std::endl;
-            std::cout << "std::isnan(nan):" << (std::isnan(nanValue)) << std::endl;
-            std::cout << "!std::isnan(nan):" << (!std::isnan(nanValue)) << std::endl;
-
-            std::cout << "isnan2(nan):" << (isnan2(nanValue)) << std::endl;
-            std::cout << "!isnan2(nan):" << (!isnan2(nanValue)) << std::endl;
-                        
+            double nanValue = std::numeric_limits<double>::quiet_NaN();     
         }
 
         void reset() override
         {
-            std::cout << "RollingQuantile::reset()" << std::endl;
             buffer.reset(std::numeric_limits<double>::quiet_NaN());
             ost.clear();
         }
@@ -54,16 +43,13 @@ namespace screamer {
 
         double process_scalar(double newValue) override
         {
-            std::cout << "RollingQuantile::process_scalar(" << newValue << ")" << std::endl;
             double oldValue = buffer.append(newValue);
 
             if (!isnan2(oldValue)) {
-                std::cout << "RollingQuantile::process_scalar - remove(oldValue=" << oldValue << ")" << std::endl;
                 remove(oldValue);
             }
 
             if (!isnan2(newValue)) {
-                std::cout << "RollingQuantile::process_scalar - add(newValue=" <<  newValue << ")" << std::endl;
                 add(newValue);
             }
 

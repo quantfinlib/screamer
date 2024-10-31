@@ -137,7 +137,6 @@ namespace screamer {
 
         // function for numpy array processing
         py::array_t<double> process_python_array(py::array_t<double> input_array) {
-            std::cout << "ScreamerBase::process_python_array(...)" << std::endl;
             // Inspect the input
             py::buffer_info buf_info = input_array.request();
 
@@ -164,8 +163,6 @@ namespace screamer {
 
             // If this is a contiguous 1d array then we have optimized code!
             if (buf_info.ndim == 1 && buf_info.strides[0] == sizeof(double)) {
-                std::cout << "ScreamerBase::process_python_array ->  contiguous 1d array" << std::endl;
-
                 reset(); // we do this in the base class, to ensure consistent behaviour
                 process_array_no_stride(result_data, input_data, size);
                 reset();
@@ -174,7 +171,6 @@ namespace screamer {
             }
 
             // We have multidimensional and/or strided data
-            std::cout << "ScreamerBase::process_python_array ->  multidimensional and/or strided data" << std::endl;
 
             // Total size of the rest of the dimensions
             size_t rest_size = 1;  

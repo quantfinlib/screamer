@@ -12,7 +12,7 @@ The `screamer` library’s unified interface supports both batch and streaming d
 
 ---
 
-### Batch Processing with NumPy Arrays
+### Example 1: Batch Processing with NumPy Arrays
 
 This example shows the simplest use of `screamer` for batch processing a NumPy array with `RollingMax`. Given a one-dimensional array, `RollingMax` computes the rolling maximum over a specified window size, here set to 4. You can initialize the object once and apply it, or perform this in a single line with `RollingMax(window_size=4)(data)`. This approach efficiently processes pre-loaded data with results returned as a new array.
 
@@ -92,13 +92,13 @@ with all screamer transformations.
 
 ---
 
-### Batch Processing Multi-Dimensional Arrays
+### Example 2: Batch Processing Multi-Dimensional Arrays
 
 For multi-dimensional arrays like matrices, `screamer` applies rolling operations column-by-column
 as if they were independent vectors. 
 
 
-![Description of the image](img/per_column.png "Processing columns separately as individual streams")
+![Column processing](img/per_column.png "Processing columns separately as individual streams")
 
 Using `RollingMax` of the following two column data will give the exact same result as applying it to 
 each column separately.
@@ -127,7 +127,7 @@ This method is particularly useful for time series data with multiple features, 
 
 ---
 
-### Element-Wise Stream Processing
+### Example 3: Element-Wise Stream Processing
 
 `screamer` functions support element-by-element processing for streaming applications. In this example, `RollingMax` calculates the rolling maximum for each new element as it arrives, using a window size of 4. Processing data sequentially enables real-time transformation without loading the entire dataset into memory, ideal for streaming use cases.
 
@@ -168,7 +168,7 @@ This method is particularly useful for time series data with multiple features, 
 
 ---
 
-### Using `screamer` Objects as Generators
+### Example 4: Using `screamer` Objects as Generators
 
 `screamer` objects can act as generators for real-time data transformation. This example sets up `RollingMax` as a generator with a 4-element window, allowing it to compute the rolling maximum as elements arrive. This approach processes data as an iterable, suitable for large or streaming datasets where loading everything at once is impractical.
 
@@ -212,7 +212,7 @@ This method is particularly useful for time series data with multiple features, 
 
 ---
 
-### Composing Generators
+### Example 5: Composing Generators
 
 `screamer` supports chaining multiple generators for complex transformations. Here, `Diff` first applies a 3-point difference operation, and `RollingMax` then computes the rolling maximum on the results with a window size of 4. This composition processes each data element sequentially, making it efficient for streaming applications where memory conservation is key.
 

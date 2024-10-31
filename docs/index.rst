@@ -35,6 +35,11 @@ Engineered in C++ and leveraging state-of-the-art numerical algorithms, Screamer
 exceptional computational efficiency, consistently outperforming traditional libraries 
 like NumPy and Pandas—often by factors of two or more, and in some cases by orders of magnitude. 
 
+.. image:: /img/speed.png
+   :target: /img/speed.png
+   :alt: speed comparison
+
+
 Screamer's polymorphic design allows all functions to operate seamlessly on both static arrays
 and streaming data, enabling smooth integration and consistent syntax without code modification. 
 Built for secure, real-time analysis, Screamer's stream-processing approach ensures every 

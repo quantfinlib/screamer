@@ -31,6 +31,7 @@ namespace screamer {
 
         void reset() override
         {
+            std::cout << "RollingQuantile::reset()" << std::endl;
             buffer.reset(std::numeric_limits<double>::quiet_NaN());
             ost.clear();
         }
@@ -39,14 +40,16 @@ namespace screamer {
 
         double process_scalar(double newValue) override
         {
-            std::cout << "process_scalar(" << newValue << ") tree size =" << ost.size() << std::endl;
+            std::cout << "RollingQuantile::process_scalar(" << newValue << ")" << std::endl;
             double oldValue = buffer.append(newValue);
 
             if (!std::isnan(oldValue)) {
+                std::cout << "RollingQuantile::process_scalar - remove(oldValue)" << std::endl;
                 remove(oldValue);
             }
 
             if (!std::isnan(newValue)) {
+                std::cout << "RollingQuantile::process_scalar - add(newValue)" << std::endl;
                 add(newValue);
             }
 

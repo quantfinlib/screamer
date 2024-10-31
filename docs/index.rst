@@ -29,22 +29,9 @@ accuracy, and versatility in handling both NumPy arrays and streaming data.
    :target: https://pypi.org/project/screamer/
    :alt: PyPI
 
-
-
-Engineered in C++ and leveraging state-of-the-art numerical algorithms, Screamer delivers 
-exceptional computational efficiency, consistently outperforming traditional libraries 
-like NumPy and Pandas—often by factors of two or more, and in some cases by orders of magnitude. 
-
-.. image:: /img/speed.png
-   :target: /img/speed.png
-   :alt: speed comparison
-
-
-Screamer's polymorphic design allows all functions to operate seamlessly on both static arrays
-and streaming data, enabling smooth integration and consistent syntax without code modification. 
-Built for secure, real-time analysis, Screamer's stream-processing approach ensures every 
-function is free from look-ahead bias, guaranteeing accurate results you can trust.
-
+Here is an example that does a least squared fit a 2nd degree polynomial `y = ax^2 + bx + c` to a
+sliding window of length 50, and then return the slope of that polynomial. The slope gets fed into a 
+second stream processor that returns the sign of that slope (upward or downward trending).
 
 .. code-block:: python
    :emphasize-lines: 6
@@ -55,6 +42,11 @@ function is free from look-ahead bias, guaranteeing accurate results you can tru
     sign = Sign()
 
     result = sign(slope(data))
+
+
+The plot below shows the input data (top, blue), the slope fitted to the previous 50 samples (middle, orange),
+and the sign of the slope (bottom, red).
+
 
 .. plotly::
    :include-source: False
@@ -89,14 +81,33 @@ function is free from look-ahead bias, guaranteeing accurate results you can tru
 
     # Update layout with titles and axis labels
     fig.update_layout(
-        title="Estimating the sign of the slope of the data: y = sign(slope(data))",
+        title=None,
         xaxis3_title="Sample index",
         yaxis=dict(title="Data"),
         yaxis2=dict(title="Moving Average"),
-        yaxis3=dict(title="Sign")
+        yaxis3=dict(title="Sign"),
+         margin=dict(l=20, r=20, t=20, b=20)  # Adjust left, right, top, and bottom margins        
     )
 
     fig.show()
+
+
+
+Engineered in C++ and leveraging state-of-the-art numerical algorithms, Screamer delivers 
+exceptional computational efficiency, consistently outperforming traditional libraries 
+like NumPy and Pandas—often by factors of two or more, and in some cases by orders of magnitude. 
+
+.. image:: /img/speed.png
+   :target: /img/speed.png
+   :alt: speed comparison
+
+
+Screamer's polymorphic design allows all functions to operate seamlessly on both static arrays
+and streaming data, enabling smooth integration and consistent syntax without code modification. 
+Built for secure, real-time analysis, Screamer's stream-processing approach ensures every 
+function is free from look-ahead bias, guaranteeing accurate results you can trust.
+
+
 
 
 

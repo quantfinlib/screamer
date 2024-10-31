@@ -84,6 +84,7 @@ namespace screamer {
             node->size = 1;
             node->left = nullptr;
             node->right = nullptr;
+            std::cout << "Allocated node with key " << key << std::endl;
             return node;
         }        
 
@@ -92,6 +93,7 @@ namespace screamer {
             // Before adding to free list, check if it's already deallocated
             if (std::find(free_list.begin(), free_list.end(), node) == free_list.end()) {
                 free_list.push_back(node);
+                std::cout << "Deallocated node with key " << node->key << std::endl;
             }
         }        
 
@@ -178,13 +180,12 @@ namespace screamer {
             } else if (key > node->key) {
                 node->right = erase(node->right, key);
             } else {
-                // Key found
                 if (node->count > 1) {
-                    // Decrement count and size
+                    // Only decrement count if the node exists more than once
                     node->count -= 1;
                     node->size -= 1;
                 } else {
-                    // Remove the node as before
+                    // Only deallocate when absolutely necessary
                     if (!node->left || !node->right) {
                         OSTNode* temp = node->left ? node->left : node->right;
                         deallocate_node(node);
@@ -193,20 +194,16 @@ namespace screamer {
                         OSTNode* temp = min_value_node(node->right);
                         node->key = temp->key;
                         node->count = temp->count;
-                        temp->count = 1; // Reset temp's count to 1 so we can remove it properly
+                        temp->count = 1;  // Set count to 1 for deletion
                         node->right = erase(node->right, temp->key);
                     }
                 }
             }
 
-            if (!node) {
-                return node;
-            }
+            if (!node) return node;
 
-            // Update height and size
+            // Update and balance after deletion
             update(node);
-
-            // Balance the node
             return balance(node);
         }
 

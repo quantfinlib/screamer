@@ -27,6 +27,15 @@ namespace screamer {
             if (quantile < 0.0 || quantile > 1.0) {
                 throw std::invalid_argument("Quantile must be between 0 and 1.");
             }
+
+            double key = 0.5;
+            double nanValue = std::numeric_limits<double>::quiet_NaN();
+
+            std::cout << "nan > key: " << (nanValue > key) << std::endl;
+            std::cout << "nan < key: " << (nanValue < key) << std::endl;
+            std::cout << "nan == key: " << (nanValue == key) << std::endl;
+            std::cout << "std::isnan(nan):" << (std::isnan(nanValue)) << std::endl;
+            std::cout << "!std::isnan(nan):" << (!std::isnan(nanValue)) << std::endl;
         }
 
         void reset() override

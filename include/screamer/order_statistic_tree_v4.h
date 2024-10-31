@@ -45,12 +45,12 @@ namespace screamer {
     private:
         struct OSTNode {
             double key;
+            int count; // Number of times this key appears
             int height;
             int size;
             OSTNode* left;
             OSTNode* right;
-
-            OSTNode() : key(0), height(1), size(1), left(nullptr), right(nullptr) {}
+            OSTNode() : key(0), count(1), height(1), size(1), left(nullptr), right(nullptr) {}
         };
 
         OSTNode* root;
@@ -99,9 +99,10 @@ namespace screamer {
         void update(OSTNode* node) {
             if (node) {
                 node->height = 1 + std::max(get_height(node->left), get_height(node->right));
-                node->size = 1 + get_size(node->left) + get_size(node->right);
+                node->size = node->count + get_size(node->left) + get_size(node->right);
             }
         }
+
 
         int get_balance(OSTNode* node) const {
             return node ? get_height(node->left) - get_height(node->right) : 0;
@@ -143,15 +144,20 @@ namespace screamer {
             if (!node) {
                 return allocate_node(key);
             }
-            if (key <= node->key) {
+
+            if (key < node->key) {
                 node->left = insert(node->left, key);
-            } else {
+            } else if (key > node->key) {
                 node->right = insert(node->right, key);
+            } else {
+                // Key already exists, increment count
+                node->count += 1;
             }
 
             update(node);
             return balance(node);
         }
+
 
         OSTNode* erase(OSTNode* node, double key) {
             if (!node) {
@@ -163,33 +169,27 @@ namespace screamer {
             } else if (key > node->key) {
                 node->right = erase(node->right, key);
             } else {
-                // Node with only one child or no child
-                if (!node->left || !node->right) {
-                    OSTNode* temp = node->left ? node->left : node->right;
-
-                    // No child case
-                    if (!temp) {
-                        temp = node;
-                        node = nullptr;
-                    } else {
-                        // One child case
-                        *node = *temp;
-                    }
-
-                    deallocate_node(temp);
+                // Key found
+                if (node->count > 1) {
+                    // Decrement count and size
+                    node->count -= 1;
+                    node->size -= 1;
                 } else {
-                    // Node with two children: Get the inorder successor
-                    OSTNode* temp = min_value_node(node->right);
-
-                    // Copy the inorder successor's content to this node
-                    node->key = temp->key;
-
-                    // Delete the inorder successor
-                    node->right = erase(node->right, temp->key);
+                    // Remove the node as before
+                    if (!node->left || !node->right) {
+                        OSTNode* temp = node->left ? node->left : node->right;
+                        deallocate_node(node);
+                        node = temp;
+                    } else {
+                        OSTNode* temp = min_value_node(node->right);
+                        node->key = temp->key;
+                        node->count = temp->count;
+                        temp->count = 1; // Reset temp's count to 1 so we can remove it properly
+                        node->right = erase(node->right, temp->key);
+                    }
                 }
             }
 
-            // If the tree had only one node then return
             if (!node) {
                 return node;
             }
@@ -200,6 +200,7 @@ namespace screamer {
             // Balance the node
             return balance(node);
         }
+
 
 
 
@@ -243,12 +244,15 @@ namespace screamer {
             int left_size = get_size(node->left);
             if (k < left_size) {
                 return kth_element(node->left, k);
-            } else if (k > left_size) {
-                return kth_element(node->right, k - left_size - 1);
-            } else {
+            } else if (k < left_size + node->count) {
                 return node->key;
+            } else {
+                return kth_element(node->right, k - left_size - node->count);
             }
         }
+
+
+
     };
 
 } // namespace screamer

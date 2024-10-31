@@ -35,6 +35,9 @@ namespace screamer {
             Zxx2 = Sxxx - Sxx * Sx / N;
             Zx2x2 = Sxxxx - Sxx * Sxx / N;
             d = Zxx * Zx2x2 - Zxx2 * Zxx2;
+
+            // reset the dynamic variables
+            reset();
         }
 
         void reset() override {
@@ -102,7 +105,7 @@ namespace screamer {
                 << "endpoint=" << endpoint << ", " 
                 << "slope=" << slope << ", " 
                 << "curvature=" << curvature << std::endl;
-            
+
             // Return based on derivative_order_
             return derivative_order_ == 0 ? endpoint : (derivative_order_ == 1 ? slope : curvature);
         }

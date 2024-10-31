@@ -29,6 +29,8 @@ namespace screamer {
             // the population variance of x-values multiplied by n (window_size).
             n_var_x = (N - 1.0) * N * (N + 1.0) / 12.0;
 
+            // reset the dynamic variables
+            reset();
         }
 
         void reset() override {

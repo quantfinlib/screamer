@@ -29,6 +29,11 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx_autodoc_typehints',  # To capture type hints
     'myst_parser', # markdown    
+    "nbsphinx",  # Include Jupyter notebooks (examples)
+    "nbsphinx_link",  # Link to Jupyternotebook that are outside the /docs tree
+    "matplotlib.sphinxext.plot_directive",  # A directive for including a matplotlib plot in a Sphinx document.
+    "sphinx_plotly_directive",  # A directive for including plotly plots in a Sphinx document.
+    "sphinx_exec_code",  # executing python code snippets in the docs and showing result
 ]
 
 templates_path = ['_templates']
@@ -50,6 +55,15 @@ source_suffix = {
 html_theme = 'sphinx_rtd_theme'
 
 html_static_path = ['_static']
+
+html_theme_options = {
+    'collapse_navigation': False,  # Disable collapsible side navigation
+    'navigation_depth': 1,         # Limit depth to prevent subsection display
+}
+
+exec_code_working_dir = '..'
+exec_code_source_folders = ['../']
+exec_code_example_dir = '../examples/'
 
 # Display the type hints but hide the 'self' argument
 autodoc_typehints = "description"  # Shows type hints in the description, not in the signature

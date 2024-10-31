@@ -2,14 +2,19 @@ Usage
 =====
 
 This section provides examples demonstrating different ways to use `screamer` functions. 
+
 All `screamer` functions operate similarly, with slight variations based on the specific settings
 or each function. For instance, rolling functions require a `window_size` parameter,
 while `RollingPoly` functions additionally include a `derivative_order` parameter.
 
-Using `screamer` functions generally involves two main steps. First, create a `screamer` 
-function object with the desired parameters. Once initialized, you can pass either streaming 
-or batch data to this function object, which will then process each data element according to
-its defined behavior. The `screamer` library supports both batch and streaming data processing, 
+Using `screamer` functions generally involves two steps:
+
+* First, create a `screamer` function object with the details and parameters on how to transform the data.
+E.g. `obj = RollingMean(30)` creates a an screamer object that applies a 30 step moving average transform to inmput data. 
+* You can pass either pass streaming `obj(datafeed)` or batch data `obj(dataset)` to this function object, 
+which will then process each data element.
+
+The `screamer` library supports both batch and streaming data processing, 
 enabling smooth transitions between backtesting transformation on a training dataset, and puting
 it live in production to run on streaming data-feeds.
 

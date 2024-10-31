@@ -50,8 +50,10 @@ source_suffix = {
 }
 
 
-# -- Options for HTML output -------------------------------------------------
+# -----------------------------------------------------------------------------
+# HTML Outpiut options
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+# -----------------------------------------------------------------------------
 html_theme = 'sphinx_rtd_theme'
 
 html_static_path = ['_static']
@@ -61,10 +63,22 @@ html_theme_options = {
     'navigation_depth': 1,         # Limit depth to prevent subsection display
 }
 
+# -----------------------------------------------------------------------------
+# Plotly
+#  -----------------------------------------------------------------------------
+plotly_html_show_source_link = False
+plotly_html_show_formats = False
+
+# -----------------------------------------------------------------------------
+# Code fragment execution
+# -----------------------------------------------------------------------------
 exec_code_working_dir = '..'
 exec_code_source_folders = ['../']
 exec_code_example_dir = '../examples/'
 
+# -----------------------------------------------------------------------------
+# Autodoc
+# -----------------------------------------------------------------------------
 # Display the type hints but hide the 'self' argument
 autodoc_typehints = "description"  # Shows type hints in the description, not in the signature
 autodoc_typehints_format = "short"  # Simplifies the displayed types (e.g., 'numpy.ndarray' instead of the full path)

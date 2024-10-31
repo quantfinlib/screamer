@@ -11,7 +11,7 @@ namespace screamer {
     class OrderStatisticTree {
     public:
         OrderStatisticTree(int max_window_size)
-            : root(nullptr), pool_index(0)
+            : root(nullptr), pool_index(0), max_window_size(max_window_size)
         {
             // Initialize node pool with extra capacity to handle balancing
             node_pool.reserve(max_window_size * 2);
@@ -40,7 +40,9 @@ namespace screamer {
             root = nullptr;
             pool_index = 0;
             free_list.clear();
-        }
+            node_pool.clear(); // Ensure all nodes are cleared
+            node_pool.reserve(max_window_size * 2); // Re-reserve to ensure pool capacity
+        }        
 
     private:
         struct OSTNode {
@@ -54,6 +56,7 @@ namespace screamer {
         };
 
         OSTNode* root;
+        int max_window_size;
 
         // Memory pool for nodes
         std::vector<OSTNode> node_pool;
@@ -62,8 +65,8 @@ namespace screamer {
         // Free list of nodes
         std::vector<OSTNode*> free_list;
 
-        // Allocate a node from the pool or free list
         OSTNode* allocate_node(double key) {
+            std::cout << "allocate_node(" << key << ")" << std::endl;
             OSTNode* node;
             if (!free_list.empty()) {
                 node = free_list.back();
@@ -71,22 +74,26 @@ namespace screamer {
             } else {
                 if (pool_index >= node_pool.size()) {
                     // Expand the pool dynamically
-                    node_pool.emplace_back();
+                    node_pool.emplace_back(); // No other constructor parameters needed, assuming default.
                 }
                 node = &node_pool[pool_index++];
             }
             node->key = key;
+            node->count = 1;
             node->height = 1;
             node->size = 1;
             node->left = nullptr;
             node->right = nullptr;
             return node;
-        }
+        }        
 
-        // Return a node to the free list
         void deallocate_node(OSTNode* node) {
-            free_list.push_back(node);
-        }
+            std::cout << "deallocate_node(" << node->key << ")" << std::endl;
+            // Before adding to free list, check if it's already deallocated
+            if (std::find(free_list.begin(), free_list.end(), node) == free_list.end()) {
+                free_list.push_back(node);
+            }
+        }        
 
         int get_height(OSTNode* node) const {
             return node ? node->height : 0;
@@ -101,6 +108,8 @@ namespace screamer {
                 node->height = 1 + std::max(get_height(node->left), get_height(node->right));
                 node->size = node->count + get_size(node->left) + get_size(node->right);
             }
+            // Debug: Print updated node values
+            std::cout << "Updated node with key " << node->key << ": size = " << node->size << ", height = " << node->height << std::endl;
         }
 
 

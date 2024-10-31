@@ -18,14 +18,18 @@ namespace screamer {
         }
 
         void insert(double key) {
+            std::cout << "OrderStatisticTree::insert(" << key << ")" << std::endl;
             root = insert(root, key);
         }
 
         void erase(double key) {
+            std::cout << "OrderStatisticTree::erase(" << key << ")" << std::endl;
             root = erase(root, key);
         }
 
         double kth_element(int k) const {
+            std::cout << "OrderStatisticTree::kth_element(" << k << ")" << std::endl;
+
             if (!root || k < 0 || k >= root->size) {
                 throw std::out_of_range("k is out of bounds");
             }
@@ -33,10 +37,12 @@ namespace screamer {
         }
 
         int size() const {
+            std::cout << "OrderStatisticTree::size()" << std::endl;
             return get_size(root);
         }
 
         void clear() {
+            std::cout << "OrderStatisticTree::clear()" << std::endl;
             root = nullptr;
             pool_index = 0;
             free_list.clear();
@@ -69,10 +75,13 @@ namespace screamer {
             std::cout << "allocate_node(" << key << ")" << std::endl;
             OSTNode* node;
             if (!free_list.empty()) {
+                std::cout << "- free_list is not empty" << std::endl;
                 node = free_list.back();
                 free_list.pop_back();
             } else {
+                std::cout << "- free_list is empty" << std::endl;
                 if (pool_index >= node_pool.size()) {
+                    std::cout << "- Expand the pool dynamically" << std::endl;
                     // Expand the pool dynamically
                     node_pool.emplace_back(); // No other constructor parameters needed, assuming default.
                 }
@@ -84,7 +93,6 @@ namespace screamer {
             node->size = 1;
             node->left = nullptr;
             node->right = nullptr;
-            std::cout << "Allocated node with key " << key << std::endl;
             return node;
         }        
 
@@ -93,7 +101,7 @@ namespace screamer {
             // Before adding to free list, check if it's already deallocated
             if (std::find(free_list.begin(), free_list.end(), node) == free_list.end()) {
                 free_list.push_back(node);
-                std::cout << "Deallocated node with key " << node->key << std::endl;
+                std::cout << "- std::find, Deallocated node with key " << node->key << std::endl;
             }
         }        
 
@@ -152,16 +160,21 @@ namespace screamer {
         }
 
         OSTNode* insert(OSTNode* node, double key) {
+            std::cout << "insert(" << node << "," << key << std::endl;
             if (!node) {
+                std::cout << "- (!node), returning allocate_node(" << key << ")" << std::endl;
                 return allocate_node(key);
             }
 
             if (key < node->key) {
+                std::cout << "- node->left = insert(" << node->left << "," << key << ")" << std::endl;
                 node->left = insert(node->left, key);
             } else if (key > node->key) {
+                std::cout << "- node->right = insert(" << node->left << "," << key << ")" << std::endl;
                 node->right = insert(node->right, key);
             } else {
                 // Key already exists, increment count
+                std::cout << "Key already exists, increment count" << std::endl;
                 node->count += 1;
             }
 
@@ -171,6 +184,7 @@ namespace screamer {
 
 
         OSTNode* erase(OSTNode* node, double key) {
+            std::cout << "erase(" << node << "," << key << std::endl;
             if (!node) {
                 return node;
             }
@@ -209,8 +223,8 @@ namespace screamer {
 
 
 
-
         OSTNode* min_value_node(OSTNode* node) const {
+            std::cout << "min_value_node(" << node << ")" << std::endl;
             OSTNode* current = node;
             while (current->left) {
                 current = current->left;
@@ -219,6 +233,7 @@ namespace screamer {
         }
 
         OSTNode* balance(OSTNode* node) {
+            std::cout << "balance(" << node << ")" << std::endl;
             int balance_factor = get_balance(node);
 
             // Left Left Case
@@ -248,6 +263,7 @@ namespace screamer {
 
 
         double kth_element(OSTNode* node, int k) const {
+            std::cout << "kth_element(" << node << "," << k << ")" << std::endl;
             int left_size = get_size(node->left);
             if (k < left_size) {
                 return kth_element(node->left, k);

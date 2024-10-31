@@ -1,13 +1,15 @@
 Screamer
 ========
 
+
+Screamer is a high-performance Python library for time series analysis, designed for speed, 
+accuracy, and versatility in handling both NumPy arrays and streaming data. 
+
+
 .. code-block:: console
 
   pip install screamer
 
-
-Screamer is a high-performance Python library for time series analysis, designed for speed, 
-accuracy, and versatility in handling both NumPy arrays and streaming data. 
 
 
 .. image:: https://img.shields.io/pypi/l/screamer?color=#28A745
@@ -34,9 +36,9 @@ accuracy, and versatility in handling both NumPy arrays and streaming data.
 
 
 
-Here is an example that does a least squared fit a 2nd degree polynomial `y = ax^2 + bx + c` to a
-sliding window of length 50, and then return the slope of that polynomial. The slope gets fed into a 
-second stream processor that returns the sign of that slope (upward or downward trending).
+Here is an example of a stream processor that does a least-squares-fit of a 2nd degree polynomial `y = ax^2 + bx + c` to a
+sliding window of the last 50 values. After fitting it return the slope of that polynomial. 
+The slope gets fed into a second stream processor that returns the sign of that slope (upward or downward trending).
 
 .. image:: /img/3lines.png
    :target: /img/3lines.png

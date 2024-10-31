@@ -7,6 +7,7 @@
 #include "screamer/buffer.h"
 #include "screamer/base.h"
 #include "order_statistic_tree_v4.h"
+# include "float_info.h"
 
 namespace py = pybind11;
 
@@ -36,6 +37,10 @@ namespace screamer {
             std::cout << "nan == key: " << (nanValue == key) << std::endl;
             std::cout << "std::isnan(nan):" << (std::isnan(nanValue)) << std::endl;
             std::cout << "!std::isnan(nan):" << (!std::isnan(nanValue)) << std::endl;
+
+            std::cout << "isnan2(nan):" << (isnan2(nanValue)) << std::endl;
+            std::cout << "!isnan2(nan):" << (!isnan2(nanValue)) << std::endl;
+                        
         }
 
         void reset() override
@@ -52,12 +57,12 @@ namespace screamer {
             std::cout << "RollingQuantile::process_scalar(" << newValue << ")" << std::endl;
             double oldValue = buffer.append(newValue);
 
-            if (!std::isnan(oldValue)) {
+            if (!isnan2(oldValue)) {
                 std::cout << "RollingQuantile::process_scalar - remove(oldValue=" << oldValue << ")" << std::endl;
                 remove(oldValue);
             }
 
-            if (!std::isnan(newValue)) {
+            if (!isnan2(newValue)) {
                 std::cout << "RollingQuantile::process_scalar - add(newValue=" <<  newValue << ")" << std::endl;
                 add(newValue);
             }

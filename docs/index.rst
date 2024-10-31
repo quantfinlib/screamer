@@ -31,14 +31,13 @@ accuracy, and versatility in handling both NumPy arrays and streaming data.
    :target: https://pypi.org/project/screamer/
    :alt: PyPI
 
+Easy to use, and powerfull 
+--------------------------
 
+The example below shows a stream processor that fits a 2nd-degree polynomial, y = ax^2 + bx + c, to a sliding 
+window of the last 50 values. It then returns the slope of this fitted polynomial. This slope is fed into a 
+second stream processor, which outputs the sign of the slope, indicating the trend direction (upward or downward).
 
-
-
-
-Here is an example of a stream processor that does a least-squares-fit of a 2nd degree polynomial `y = ax^2 + bx + c` to a
-sliding window of the last 50 values. After fitting it return the slope of that polynomial. 
-The slope gets fed into a second stream processor that returns the sign of that slope (upward or downward trending).
 
 .. image:: /img/3lines.png
    :target: /img/3lines.png
@@ -57,8 +56,8 @@ The slope gets fed into a second stream processor that returns the sign of that 
     result = sign(slope(data))
 
 
-The plot below shows the input data (top, blue), the slope fitted to the previous 50 samples (middle, orange),
-and the sign of the slope (bottom, red).
+The plot below shows the input data (top, blue), the slope calculated over the previous 50 samples 
+(middle, orange), and the sign of the slope (bottom, red).
 
 
 .. plotly::
@@ -105,24 +104,34 @@ and the sign of the slope (bottom, red).
     fig.show()
 
 
+Build for speed
+---------------
 
-Engineered in C++ and leveraging state-of-the-art numerical algorithms, Screamer delivers 
-exceptional computational efficiency, consistently outperforming traditional libraries 
-like NumPy and Pandas—often by factors of two or more, and in some cases by orders of magnitude. 
+Engineered in C++ with state-of-the-art numerical algorithms, Screamer delivers exceptional 
+computational efficiency, consistently outperforming traditional libraries like NumPy and 
+Pandas—often by factors of two or more, and in some cases by orders of magnitude.
+
 
 .. image:: /img/speed.png
    :target: /img/speed.png
    :alt: speed comparison
 
 
-Screamer's polymorphic design allows all functions to operate seamlessly on both static arrays
-and streaming data, enabling smooth integration and consistent syntax without code modification. 
-Built for secure, real-time analysis, Screamer's stream-processing approach ensures every 
-function is free from look-ahead bias, guaranteeing accurate results you can trust.
+Streaming- or batch- processing
+-------------------------------
+
+Screamer seamlessly handles both batch and streaming data with the same code, producing identical 
+results regardless of the data source. This design means that models tested offline on batch 
+datasets will perform exactly the same when deployed with live streaming data, providing 
+confidence in the consistency and reliability of your results.
+
+Screamer's streaming design ensures that all transformations are naturally free from look-ahead bias, 
+guaranteeing accurate and reliable results
 
 
 
-
+Mini Tutorial
+=============
 
 .. include:: usage.md
    :parser: myst_parser.sphinx_

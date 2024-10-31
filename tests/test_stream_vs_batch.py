@@ -45,6 +45,10 @@ def test_stream_vs_batch(ci):
         output2 = obj2(input)
 
     # Should be the same
+    print('args', args)
+    print('output1', output1)
+    print('output2', output2)
+
     np.testing.assert_allclose(
         output1, 
         output2, 

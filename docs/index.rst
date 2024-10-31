@@ -84,7 +84,7 @@ function is free from look-ahead bias, guaranteeing accurate results you can tru
 
     # Update layout with titles and axis labels
     fig.update_layout(
-        title="Estimating the sign of the slope of the data",
+        title="Estimating the sign of the slope of the data: y = sign(slope(data))",
         xaxis3_title="Sample index",
         yaxis=dict(title="Data"),
         yaxis2=dict(title="Moving Average"),

@@ -37,7 +37,6 @@ namespace screamer {
         }
 
         int size() const {
-            std::cout << "OrderStatisticTree::size()" << std::endl;
             return get_size(root);
         }
 
@@ -184,27 +183,37 @@ namespace screamer {
 
 
         OSTNode* erase(OSTNode* node, double key) {
-            std::cout << "erase(" << node << "," << key << std::endl;
+            std::cout << "OSTNode::erase(" << node << "," << key << ")" << std::endl;
             if (!node) {
+                std::cout << "- !node, return node" << node << std::endl;
                 return node;
             }
 
             if (key < node->key) {
+                std::cout << "- left erase key=" << key << std::endl;
                 node->left = erase(node->left, key);
             } else if (key > node->key) {
+                std::cout << "- right erase key=" << key << std::endl;
                 node->right = erase(node->right, key);
             } else {
+                std::cout << "- not left nor right erase" << key << std::endl;
+
                 if (node->count > 1) {
+                    std::cout << "- count=" << node->count << " > 1 ==> decrement" << std::endl;
                     // Only decrement count if the node exists more than once
                     node->count -= 1;
                     node->size -= 1;
                 } else {
                     // Only deallocate when absolutely necessary
+                    std::cout << "- count == 1" << std::endl;
                     if (!node->left || !node->right) {
+                        std::cout << "- left || right is empty" << std::endl;
                         OSTNode* temp = node->left ? node->left : node->right;
                         deallocate_node(node);
                         node = temp;
                     } else {
+                        std::cout << "- we have both left and right" << std::endl;
+
                         OSTNode* temp = min_value_node(node->right);
                         node->key = temp->key;
                         node->count = temp->count;

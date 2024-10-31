@@ -44,12 +44,12 @@ namespace screamer {
             double oldValue = buffer.append(newValue);
 
             if (!std::isnan(oldValue)) {
-                std::cout << "RollingQuantile::process_scalar - remove(oldValue)" << std::endl;
+                std::cout << "RollingQuantile::process_scalar - remove(oldValue=" << oldValue << ")" << std::endl;
                 remove(oldValue);
             }
 
             if (!std::isnan(newValue)) {
-                std::cout << "RollingQuantile::process_scalar - add(newValue)" << std::endl;
+                std::cout << "RollingQuantile::process_scalar - add(newValue=" <<  newValue << ")" << std::endl;
                 add(newValue);
             }
 

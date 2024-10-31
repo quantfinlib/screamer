@@ -39,6 +39,7 @@ namespace screamer {
 
         double process_scalar(double newValue) override
         {
+            std::cout << "process_scalar(" << newValue << ") tree size =" << ost.size() << std::endl;
             double oldValue = buffer.append(newValue);
 
             if (!std::isnan(oldValue)) {

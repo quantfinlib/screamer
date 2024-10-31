@@ -8,7 +8,16 @@
    
    usage
 
-   
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Preprocessing
+   :hidden:
+
+   preprocessing/Clip
+   preprocessing/Ffill
+   preprocessing/FillNa
+
 .. toctree::
    :maxdepth: 1
    :caption: Rolling Functions

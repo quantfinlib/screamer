@@ -29,9 +29,20 @@ accuracy, and versatility in handling both NumPy arrays and streaming data.
    :target: https://pypi.org/project/screamer/
    :alt: PyPI
 
+
+
+
+
+
 Here is an example that does a least squared fit a 2nd degree polynomial `y = ax^2 + bx + c` to a
 sliding window of length 50, and then return the slope of that polynomial. The slope gets fed into a 
 second stream processor that returns the sign of that slope (upward or downward trending).
+
+.. image:: /img/3lines.png
+   :target: /img/3lines.png
+   :alt: Three lines of code by Herminio Vazquez
+   :width: 170px
+   :align: right
 
 .. code-block:: python
    :emphasize-lines: 6

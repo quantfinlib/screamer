@@ -167,8 +167,8 @@ namespace screamer {
                 std::cout << "ScreamerBase::process_python_array ->  contiguous 1d array" << std::endl;
 
                 reset(); // we do this in the base class, to ensure consistent behaviour
-
                 process_array_no_stride(result_data, input_data, size);
+                reset();
 
                 return result;
             }
@@ -229,6 +229,7 @@ namespace screamer {
                 );
 
             } 
+            reset(); // post-columns processing reset
 
             return result;
 

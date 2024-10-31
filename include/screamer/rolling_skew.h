@@ -98,6 +98,7 @@ namespace screamer {
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include "screamer/rolling_sum.h"
+#include "float_info.h"
 
 namespace py = pybind11; // Alias for pybind11 namespace
 
@@ -116,7 +117,7 @@ public:
     
     double operator()(const double newValue) 
     {
-        if (!std::isnan(newValue)) {
+        if (!isnan2(newValue)) {
             // Update the rolling sums
             double sum_x = sum_x_buffer(newValue);
             double sum_xx = sum_xx_buffer(newValue * newValue);

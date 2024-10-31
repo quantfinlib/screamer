@@ -6,6 +6,7 @@
 #include <pybind11/numpy.h>
 #include <screamer/buffer.h>
 #include "screamer/base.h"
+#include "float_info.h"
 
 namespace py = pybind11;
 
@@ -36,11 +37,11 @@ namespace screamer {
         {
             double oldValue = buffer.append(newValue);
 
-            if (!std::isnan(oldValue)) {
+            if (!isnan2(oldValue)) {
                 remove(oldValue);
             }
 
-            if (!std::isnan(newValue)) {
+            if (!isnan2(newValue)) {
                 add(newValue);
             }
 

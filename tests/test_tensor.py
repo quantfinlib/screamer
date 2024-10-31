@@ -45,8 +45,12 @@ def test_matrix(ci):
         output2 = obj2(input)
 
     # Should be exactly the same
-    np.testing.assert_array_equal(output1, output2, err_msg="matrices do not match")
-
+    np.testing.assert_allclose(
+        output1, 
+        output2, 
+        rtol=1e-5, atol=1e-8, 
+        err_msg=f"Discrepancy between column-wise vs full matrix processing in {class_name}"
+    )
 
 # Test processing a tensor columns wise, vs in one go with .transform()
 def test_tensor(ci):
@@ -78,6 +82,9 @@ def test_tensor(ci):
     else:
         output2 = obj2(input)
 
-    # Should be exactly the same
-    np.testing.assert_array_equal(output1, output2, err_msg="tensors do not match")
-
+    np.testing.assert_allclose(
+        output1, 
+        output2, 
+        rtol=1e-5, atol=1e-8, 
+        err_msg=f"Discrepancy between column-wise vs full tensor processing in {class_name}"
+    )

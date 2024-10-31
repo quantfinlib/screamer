@@ -5,6 +5,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include "screamer/base.h"
+#include "float_info.h"
 
 namespace py = pybind11;
 
@@ -22,7 +23,7 @@ namespace screamer {
     private:
 
         double process_scalar(double newValue) override {
-            if (!std::isnan(newValue)) {
+            if (!isnan2(newValue)) {
                 lastValidValue = newValue;
             }
             return lastValidValue;   
@@ -35,22 +36,22 @@ namespace screamer {
             // Process 4 elements per loop iteration (loop unrolling)
             size_t i = 0;
             for (; i + 4 <= size; i += 4) {
-                if (!std::isnan(x[i])) lastValidValue = x[i];
+                if (!isnan2(x[i])) lastValidValue = x[i];
                 y[i] = lastValidValue;
 
-                if (!std::isnan(x[i + 1])) lastValidValue = x[i + 1];
+                if (!isnan2(x[i + 1])) lastValidValue = x[i + 1];
                 y[i + 1] = lastValidValue;
 
-                if (!std::isnan(x[i + 2])) lastValidValue = x[i + 2];
+                if (!isnan2(x[i + 2])) lastValidValue = x[i + 2];
                 y[i + 2] = lastValidValue;
 
-                if (!std::isnan(x[i + 3])) lastValidValue = x[i + 3];
+                if (!isnan2(x[i + 3])) lastValidValue = x[i + 3];
                 y[i + 3] = lastValidValue;
             }
 
             // Process any remaining elements
             for (; i < size; i++) {
-                if (!std::isnan(x[i])) lastValidValue = x[i];
+                if (!isnan2(x[i])) lastValidValue = x[i];
                 y[i] = lastValidValue;
             }
         }
@@ -61,7 +62,7 @@ namespace screamer {
             size_t xi = 0;
 
             for (size_t i=0; i<size; i++) {
-                if (!std::isnan(x[xi])) {
+                if (!isnan2(x[xi])) {
                     lastValidValue = x[xi];
                 }
                 y[yi] = lastValidValue;

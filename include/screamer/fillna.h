@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <execution>
 #include <cmath>
+#include "float_info.h"
 
 namespace py = pybind11;
 
@@ -22,7 +23,7 @@ namespace screamer {
     private:
 
         double process_scalar(double newValue) override {
-            if (std::isnan(newValue)) {
+            if (isnan2(newValue)) {
                 return fill_;
             }
             return newValue;   
@@ -38,16 +39,16 @@ namespace screamer {
 
             for (; i + 4 <= size; i += 4) {
 
-                y[i]     = std::isnan(x[i])     ? fill_ : x[i];
-                y[i + 1] = std::isnan(x[i + 1]) ? fill_ : x[i + 1];
-                y[i + 2] = std::isnan(x[i + 2]) ? fill_ : x[i + 2];
-                y[i + 3] = std::isnan(x[i + 3]) ? fill_ : x[i + 3];
+                y[i]     = isnan2(x[i])     ? fill_ : x[i];
+                y[i + 1] = isnan2(x[i + 1]) ? fill_ : x[i + 1];
+                y[i + 2] = isnan2(x[i + 2]) ? fill_ : x[i + 2];
+                y[i + 3] = isnan2(x[i + 3]) ? fill_ : x[i + 3];
                 
             }
 
             // Process any remaining elements
             for (; i < size; i++) {
-                y[i] = std::isnan(x[i]) ? fill_ : x[i];
+                y[i] = isnan2(x[i]) ? fill_ : x[i];
             }                     
         }
         
@@ -58,7 +59,7 @@ namespace screamer {
             size_t xi = 0;
 
             for (size_t i=0; i<size; i++) {
-                if (std::isnan(y[yi])) {
+                if (isnan2(y[yi])) {
                     y[yi] = fill_;
                 } else {
                     y[yi] = x[xi];

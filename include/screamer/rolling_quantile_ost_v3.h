@@ -18,7 +18,7 @@ namespace screamer {
         RollingQuantile(int window_size, double quantile) :
             window_size(window_size),
             quantile(quantile),
-            buffer(window_size, std::numeric_limits<double>::quiet_NaN()),
+            buffer(window_size, -1), // std::numeric_limits<double>::quiet_NaN()
             ost(window_size)
         {
             if (window_size <= 0) {
@@ -50,7 +50,7 @@ namespace screamer {
             }
 
             if (ost.size() < window_size) {
-                return std::numeric_limits<double>::quiet_NaN();
+                return -2; //  std::numeric_limits<double>::quiet_NaN()
             } else {
                 return getQuantile();
             }
@@ -75,7 +75,7 @@ namespace screamer {
         double getQuantile()
         {
             if (ost.size() == 0) {
-                return std::numeric_limits<double>::quiet_NaN();
+                return -3; //std::numeric_limits<double>::quiet_NaN();
             }
 
             int n = ost.size();

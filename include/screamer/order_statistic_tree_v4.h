@@ -240,6 +240,7 @@ namespace screamer {
             return node;
         }
 
+
         double kth_element(OSTNode* node, int k) const {
             int left_size = get_size(node->left);
             if (k < left_size) {

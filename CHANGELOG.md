@@ -5,6 +5,9 @@ All notable changes to this project are documented in this file.
 [Unreleased] - yyyy-mm-dd
 -------------------------
 
+Version v0.1.33 (2024-10-31)
+-------------------------
+
 ### Added
 
 #### Data handeling

@@ -20,6 +20,7 @@ Below is an example of using `RollingQuantile` to calculate the rolling 25th and
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

@@ -12,6 +12,7 @@ Below is an example of using `RollingMin` to calculate the rolling maximum for a
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

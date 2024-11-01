@@ -11,6 +11,7 @@ The `RollingRms` class calculates the root mean square (RMS) of values within a 
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

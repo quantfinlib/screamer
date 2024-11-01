@@ -15,6 +15,7 @@ Below is an example of using `FillNa` to replace `NaN` values with a specified f
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
      import numpy as np
     import plotly.graph_objects as go

@@ -147,7 +147,7 @@ Mini Tutorial
 
 .. toctree::
    :maxdepth: 1
-   :caption: Math
+   :caption: Math Functions
    :hidden:
 
    math/Abs
@@ -187,4 +187,17 @@ Mini Tutorial
    rolling/RollingVar
    rolling/RollingQuantile
    rolling/RollingZscore
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Exponentially Weighted
+   :hidden:
+
+   ew/EwMean
+   ew/EwKurt
+   ew/EwRms
+   ew/EwSkew
+   ew/EwStd
+   ew/EwVar
+   ew/EwZscore
 

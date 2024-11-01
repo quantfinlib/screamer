@@ -25,7 +25,7 @@ release = '0.1.34'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    'sphinx.ext.mathjax',
+    'sphinx.ext.mathjax',  # This enables math rendering in Sphinx
     'sphinx.ext.viewcode',
     'sphinx_autodoc_typehints',  # To capture type hints
     'myst_parser', # markdown    
@@ -36,12 +36,15 @@ extensions = [
     "sphinx_exec_code",  # executing python code snippets in the docs and showing result
 ]
 
+
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# Configure myst-parser to parse math
 myst_enable_extensions = [
     "colon_fence",  # Optional extensions, you can enable more if needed
     "amsmath",      # For parsing LaTeX-style math
+    "dollarmath"  # allows using $...$ for inline math and $$...$$ for display math
 ]
 
 source_suffix = {

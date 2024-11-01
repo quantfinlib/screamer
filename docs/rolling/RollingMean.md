@@ -12,6 +12,7 @@ Below is an example of using `RollingMean` to calculate the rolling mean for a r
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

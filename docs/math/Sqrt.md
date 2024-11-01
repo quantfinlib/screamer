@@ -12,6 +12,7 @@ The `Sqrt` class computes the square root of each element in a data sequence. It
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

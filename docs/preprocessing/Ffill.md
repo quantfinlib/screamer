@@ -16,6 +16,7 @@ Below is an example of using `Ffill` to forward-fill `NaN` values in a data sequ
 .. plotly::
 
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

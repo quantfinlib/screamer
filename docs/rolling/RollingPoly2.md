@@ -21,6 +21,7 @@ This method, which extends the idea of a causal Savitzky-Golay filter, enables m
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

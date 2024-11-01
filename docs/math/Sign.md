@@ -12,6 +12,7 @@ The `Sign` class computes the sign of each element in a data sequence, mapping e
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

@@ -12,6 +12,7 @@ The `Exp` class computes the exponential (e^x) of each element in a data sequenc
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

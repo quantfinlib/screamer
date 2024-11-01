@@ -12,6 +12,7 @@ Below is an example of using `RollingMedian` to calculate the rolling median for
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

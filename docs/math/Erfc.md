@@ -12,6 +12,7 @@ The `Erfc` class computes the complementary error function (1 - erf(x)) for each
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

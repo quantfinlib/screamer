@@ -13,6 +13,7 @@ Below is an example of using `RollingKurt` to calculate the rolling median for a
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

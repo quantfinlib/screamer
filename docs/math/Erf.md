@@ -12,6 +12,7 @@ The `Erf` class computes the error function of each element in a data sequence, 
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

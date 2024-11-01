@@ -12,6 +12,7 @@ The `Log` class computes the natural logarithm (ln) of each element in a data se
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

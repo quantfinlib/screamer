@@ -16,6 +16,7 @@ Below is an example of using `Clip` to constrain data to fall between -1 and 1, 
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

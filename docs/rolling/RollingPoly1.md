@@ -11,6 +11,7 @@ The `RollingPoly1` class fits a straight line (first-degree polynomial) through 
 
 ```{eval-rst}
 .. plotly::
+    :include-source: True
 
     import numpy as np
     import plotly.graph_objects as go

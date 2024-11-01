@@ -10,7 +10,7 @@ endif()
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13") # Set macOS deployment target for compatibility
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Set macOS deployment target for compatibility" FORCE)
 
 
 # Find Python and Development libraries

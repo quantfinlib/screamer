@@ -27,12 +27,11 @@ jobs:
       - name: Build and test wheels
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
-          CIBW_BUILD_VERBOSITY: 1
+          CIBW_BUILD_VERBOSITY: 2
           CIBW_BUILD: cp39-* cp310-* cp311-*
           CIBW_TEST_REQUIRES: pytest numpy pandas scipy
           CIBW_TEST_COMMAND: "pytest {project}/tests"
-          # MACOSX_DEPLOYMENT_TARGET: 10.13
-          # CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=10.13
+          CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=10.13
 
       - name: Upload wheels
         uses: actions/upload-artifact@v3

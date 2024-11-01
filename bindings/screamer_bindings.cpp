@@ -41,6 +41,7 @@
 #include "screamer/rolling_poly2.h"
 
 #include "screamer/rolling_sigma_clip.h"
+#include "screamer/transform_functions.h"
 
 template <typename T> T signum(T val) {
     return (T(0) < val) - (val < T(0));
@@ -90,6 +91,38 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("__call__", &screamer::Transform<(double (*)(double)) signum<double>>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) signum<double>>::reset, "Reset to the initial state.");
 
+
+
+
+     py::class_<screamer::Transform<(double (*)(double)) std::tanh>>(m, "Tanh")
+        .def(py::init<>())
+        .def("__call__", &screamer::Transform<(double (*)(double)) std::tanh>::operator(), py::arg("value"))
+        .def("reset", &screamer::Transform<(double (*)(double)) std::tanh>::reset, "Reset to the initial state.");
+
+     py::class_<screamer::Transform<(double (*)(double)) screamer::relu>>(m, "Relu")
+        .def(py::init<>())
+        .def("__call__", &screamer::Transform<(double (*)(double)) screamer::relu>::operator(), py::arg("value"))
+        .def("reset", &screamer::Transform<(double (*)(double)) screamer::relu>::reset, "Reset to the initial state.");
+
+     py::class_<screamer::Transform<(double (*)(double)) screamer::selu>>(m, "Selu")
+        .def(py::init<>())
+        .def("__call__", &screamer::Transform<(double (*)(double)) screamer::selu>::operator(), py::arg("value"))
+        .def("reset", &screamer::Transform<(double (*)(double)) screamer::selu>::reset, "Reset to the initial state.");
+
+     py::class_<screamer::Transform<(double (*)(double)) screamer::elu>>(m, "Elu")
+        .def(py::init<>())
+        .def("__call__", &screamer::Transform<(double (*)(double)) screamer::elu>::operator(), py::arg("value"))
+        .def("reset", &screamer::Transform<(double (*)(double)) screamer::elu>::reset, "Reset to the initial state.");
+
+     py::class_<screamer::Transform<(double (*)(double)) screamer::softsign>>(m, "Softsign")
+        .def(py::init<>())
+        .def("__call__", &screamer::Transform<(double (*)(double)) screamer::softsign>::operator(), py::arg("value"))
+        .def("reset", &screamer::Transform<(double (*)(double)) screamer::softsign>::reset, "Reset to the initial state.");
+
+     py::class_<screamer::Transform<(double (*)(double)) screamer::sigmoid>>(m, "Sigmoid")
+        .def(py::init<>())
+        .def("__call__", &screamer::Transform<(double (*)(double)) screamer::sigmoid>::operator(), py::arg("value"))
+        .def("reset", &screamer::Transform<(double (*)(double)) screamer::sigmoid>::reset, "Reset to the initial state.");
 
 
 

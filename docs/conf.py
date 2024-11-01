@@ -62,8 +62,10 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 html_theme_options = {
-    'collapse_navigation': False,  # Disable collapsible side navigation
-    'navigation_depth': 1,         # Limit depth to prevent subsection display
+    'collapse_navigation': True,  # Enable collapsible sidebar sections
+    #'collapse_navigation': False,  # Disable collapsible side navigation
+    'navigation_depth': 4,         # Limit depth to prevent subsection display
+    'titles_only': True,          # Shows only the top-level titles in the sidebar    
 }
 
 # -----------------------------------------------------------------------------

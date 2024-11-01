@@ -146,61 +146,14 @@ Mini Tutorial
 
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Math Functions
+   :maxdepth: 2
+   :caption: Functions
    :hidden:
+   :titlesonly:
 
-   math/Abs
-   math/Erf
-   math/Erfc
-   math/Exp
-   math/Log
-   math/Sign
-   math/Sqrt
+   functions_rolling
+   functions_ew
+   functions_math
+   functions_pre
 
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Preprocessing
-   :hidden:
-
-   preprocessing/Clip
-   preprocessing/Ffill
-   preprocessing/FillNa
-   rolling/RollingSigmaClip
-
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Rolling Functions
-   :hidden:
-
-   rolling/RollingMax
-   rolling/RollingMean
-   rolling/RollingMedian
-   rolling/RollingMin
-   rolling/RollingKurt
-   rolling/RollingPoly1
-   rolling/RollingPoly2
-   rolling/RollingRms
-   rolling/RollingSigmaClip
-   rolling/RollingSkew
-   rolling/RollingStd
-   rolling/RollingSum
-   rolling/RollingVar
-   rolling/RollingQuantile
-   rolling/RollingZscore
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Exponentially Weighted
-   :hidden:
-
-   ew/EwMean
-   ew/EwKurt
-   ew/EwRms
-   ew/EwSkew
-   ew/EwStd
-   ew/EwVar
-   ew/EwZscore
 

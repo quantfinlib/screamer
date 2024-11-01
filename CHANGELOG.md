@@ -8,6 +8,12 @@ All notable changes to this project are documented in this file.
 ### Added
 
 * RollingSigmaClip
+* Relu
+* Elu
+* Selu
+* Sigmoid
+* Tanh
+* Softsign
 
 Version v0.1.35 (2024-11-01)
 -------------------------

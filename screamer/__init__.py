@@ -8,6 +8,7 @@ from .screamer_bindings import (
     Butter2,
     Clip,
     Diff,
+    Elu,
     Erf,
     Erfc,
     EwKurt,
@@ -23,6 +24,7 @@ from .screamer_bindings import (
     Lag,
     Log,
     LogReturn,
+    Relu,
     Return,
     RollingKurt,
     RollingMax,
@@ -39,8 +41,12 @@ from .screamer_bindings import (
     RollingSum,
     RollingVar,
     RollingZscore,
+    Selu,
+    Sigmoid,
     Sign,
-    Sqrt             
+    Softsign,
+    Sqrt,
+    Tanh             
 )
 
 
@@ -49,6 +55,7 @@ __all__ = [
     "Butter2",
     "Clip",
     "Diff",
+    "Elu",
     "Erf",
     "Erfc",
     "EwKurt",
@@ -64,6 +71,7 @@ __all__ = [
     "Lag",
     "Log",
     "LogReturn",
+    "Relu",
     "Return",
     "RollingKurt",
     "RollingMax",
@@ -80,6 +88,10 @@ __all__ = [
     "RollingSum",
     "RollingVar",
     "RollingZscore",
+    "Selu",
+    "Sigmoid",
     "Sign",
-    "Sqrt"
+    "Softsign",
+    "Sqrt",
+    "Tanh"
 ]

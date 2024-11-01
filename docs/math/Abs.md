@@ -20,7 +20,7 @@ The `Abs` class computes the absolute value of each element in a data sequence, 
     from screamer import Abs
 
     # Generate example data with negative values
-    data = np.random.normal(size=30) * 10
+    data = np.random.normal(size=100) 
     abs_data = Abs()(data)
 
     fig = make_subplots(
@@ -35,9 +35,9 @@ The `Abs` class computes the absolute value of each element in a data sequence, 
 
     fig.update_layout(
         title="Absolute Value Transformation (Abs)",
+        yaxis=dict(title="Data", range=[-3, 3]),
+        yaxis2=dict(title="Output", range=[-3, 3]),
         xaxis_title="Index",
-        yaxis_title="Original Data",
-        yaxis2_title="Absolute Value",
         margin=dict(l=20, r=20, t=80, b=20),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )

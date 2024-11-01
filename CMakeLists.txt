@@ -10,11 +10,8 @@ endif()
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13") # Set macOS deployment target for compatibility
 
-# Set macOS deployment target for compatibility
-if(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13")
-endif()
 
 # Find Python and Development libraries
 find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)

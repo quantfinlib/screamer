@@ -167,6 +167,8 @@ Mini Tutorial
    preprocessing/Clip
    preprocessing/Ffill
    preprocessing/FillNa
+   rolling/RollingSigmaClip
+
 
 .. toctree::
    :maxdepth: 1
@@ -181,6 +183,7 @@ Mini Tutorial
    rolling/RollingPoly1
    rolling/RollingPoly2
    rolling/RollingRms
+   rolling/RollingSigmaClip
    rolling/RollingSkew
    rolling/RollingStd
    rolling/RollingSum

@@ -43,12 +43,22 @@ public:
         }
         return buffer[actualPos];
     }
+    
+    // write access
+    double& operator[](size_t pos) {
+        size_t actualPos = index + pos;
+        if (actualPos >= N) {
+            actualPos -= N;
+        }
+        return buffer[actualPos];
+    }
 
     // Reset the internal state
     void reset(double defaultValue) 
     {
         std::fill(buffer.begin(), buffer.end(), defaultValue);
         index = 0;
+
     }
 
 private:

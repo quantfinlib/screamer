@@ -40,6 +40,8 @@
 #include "screamer/rolling_poly1.h"
 #include "screamer/rolling_poly2.h"
 
+#include "screamer/rolling_sigma_clip.h"
+
 template <typename T> T signum(T val) {
     return (T(0) < val) - (val < T(0));
 }
@@ -313,6 +315,23 @@ PYBIND11_MODULE(screamer_bindings, m) {
           >(),
           py::arg("lower") = std::nullopt,
           py::arg("upper") = std::nullopt
+        )
+        .def("__call__", &screamer::Clip::operator(), py::arg("value"))
+        .def("reset", &screamer::Clip::reset, "Reset to the initial state.");
+
+
+     py::class_<screamer::RollingSigmaClip>(m, "RollingSigmaClip")
+        .def(
+          py::init<
+            int,
+            std::optional<double>,
+            std::optional<double>,
+            std::optional<int>
+          >(),
+          py::arg("window_size"),
+          py::arg("lower") = std::nullopt,
+          py::arg("upper") = std::nullopt,
+          py::arg("output") = std::nullopt
         )
         .def("__call__", &screamer::Clip::operator(), py::arg("value"))
         .def("reset", &screamer::Clip::reset, "Reset to the initial state.");

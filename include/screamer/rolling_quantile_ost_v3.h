@@ -7,7 +7,7 @@
 #include "screamer/buffer.h"
 #include "screamer/base.h"
 #include "order_statistic_tree_v4.h"
-# include "float_info.h"
+#include "float_info.h"
 
 namespace py = pybind11;
 

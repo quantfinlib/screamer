@@ -6,6 +6,7 @@
 #include <pybind11/numpy.h>
 #include <screamer/buffer.h>
 #include "screamer/base.h"
+#include "screamer/rolling_sum.h"
 
 namespace py = pybind11;
 

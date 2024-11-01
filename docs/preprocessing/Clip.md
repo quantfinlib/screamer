@@ -37,7 +37,9 @@ Below is an example of using `Clip` to constrain data to fall between -1 and 1, 
         title="Data Clipping with Bounds (-1, 1)",
         xaxis_title="Index",
         yaxis_title="Value",
-        yaxis=dict(range=[-2, 2])  # Limit y-axis to show the clipping effect clearly
+        yaxis=dict(range=[-2, 2]),  # Limit y-axis to show the clipping effect clearly
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

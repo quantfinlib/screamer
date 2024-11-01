@@ -34,7 +34,9 @@ The `RollingRms` class calculates the root mean square (RMS) of values within a 
         title="Rolling RMS with Window Size 30",
         xaxis_title="Index",
         yaxis=dict(title="Input Data"),
-        yaxis2=dict(title="Rolling RMS")
+        yaxis2=dict(title="Rolling RMS"),
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

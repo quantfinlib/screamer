@@ -30,8 +30,11 @@ Below is an example of using `RollingMean` to calculate the rolling mean for a r
     fig.add_trace(go.Scatter(y=RollingMean(10)(data), mode='lines', name='Rolling Mean 10', line=dict(color='red')))
     fig.add_trace(go.Scatter(y=RollingMean(60)(data), mode='lines', name='Rolling Mean 60', line=dict(color='green')))
     fig.update_layout(title=f"Rolling mean with Window Size 10 and 60",
-                    xaxis_title="Index",
-                    yaxis_title="Value")
+        xaxis_title="Index",
+        yaxis_title="Value",
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)                    
+    )
     fig.show()
 ```
 

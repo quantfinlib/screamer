@@ -33,7 +33,9 @@ The `RollingZscore` class computes the rolling z-score for each value in a speci
         title="Rolling Z-score with Window Size 30",
         xaxis_title="Index",
         yaxis=dict(title="Input Data"),
-        yaxis2=dict(title="Rolling Z-score")
+        yaxis2=dict(title="Rolling Z-score"),
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

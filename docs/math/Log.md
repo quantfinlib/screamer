@@ -36,7 +36,9 @@ The `Log` class computes the natural logarithm (ln) of each element in a data se
         title="Natural Logarithm Transformation (Log)",
         xaxis_title="Index",
         yaxis_title="Original Data",
-        yaxis2_title="Natural Log"
+        yaxis2_title="Natural Log",
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

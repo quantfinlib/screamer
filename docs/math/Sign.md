@@ -36,7 +36,9 @@ The `Sign` class computes the sign of each element in a data sequence, mapping e
         title="Sign Transformation (Sign)",
         xaxis_title="Index",
         yaxis_title="Original Data",
-        yaxis2_title="Sign"
+        yaxis2_title="Sign",
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

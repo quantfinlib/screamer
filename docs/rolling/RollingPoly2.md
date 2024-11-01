@@ -60,7 +60,9 @@ This method, which extends the idea of a causal Savitzky-Golay filter, enables m
         xaxis_title="Index",
         yaxis=dict(title="Input Data and endpoint"),
         yaxis2=dict(title="RollingPoly2 Slope"),
-        yaxis3=dict(title="RollingPoly2 Curvature")
+        yaxis3=dict(title="RollingPoly2 Curvature"),
+        margin=dict(l=20, r=20, t=120, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

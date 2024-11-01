@@ -31,9 +31,13 @@ Below is an example of using `RollingMax` to calculate the rolling maximum for a
     fig = go.Figure()
     fig.add_trace(go.Scatter(y=data, mode='lines', name='Input Data'))
     fig.add_trace(go.Scatter(y=results, mode='lines', name='Rolling Max', line=dict(color='red')))
-    fig.update_layout(title=f"Rolling Maximum with Window Size = {window_size}",
-                    xaxis_title="Index",
-                    yaxis_title="Value")
+    fig.update_layout(
+        title=f"Rolling Maximum with Window Size = {window_size}",
+        xaxis_title="Index",
+        yaxis_title="Value",
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
+    )
     fig.show()
 ```
 

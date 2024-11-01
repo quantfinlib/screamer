@@ -33,7 +33,9 @@ The `RollingVar` class calculates the variance of data within a moving window. I
         title="Rolling Variance with Window Size 30",
         xaxis_title="Index",
         yaxis=dict(title="Input Data"),
-        yaxis2=dict(title="Rolling Variance")
+        yaxis2=dict(title="Rolling Variance"),
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

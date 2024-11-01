@@ -37,7 +37,9 @@ The `Abs` class computes the absolute value of each element in a data sequence, 
         title="Absolute Value Transformation (Abs)",
         xaxis_title="Index",
         yaxis_title="Original Data",
-        yaxis2_title="Absolute Value"
+        yaxis2_title="Absolute Value",
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

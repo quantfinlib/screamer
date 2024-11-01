@@ -46,7 +46,9 @@ Below is an example of using `FillNa` to replace `NaN` values with a specified f
         title="FillNa(0.0) on Data with NaNs",
         xaxis_title="Index",
         yaxis_title="Original Data",
-        yaxis2_title="Filled Data"
+        yaxis2_title="Filled Data",
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

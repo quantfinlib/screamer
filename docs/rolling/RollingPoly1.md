@@ -43,9 +43,11 @@ The `RollingPoly1` class fits a straight line (first-degree polynomial) through 
     # Update layout with titles and axis labels
     fig.update_layout(
         title="RollingPoly1 with Window Size 30",
-        xaxis_title="Index",
+        xaxis2_title="Index",
         yaxis=dict(title="Input Data"),
-        yaxis2=dict(title="RollingPoly1 Output")
+        yaxis2=dict(title="RollingPoly1 Output"),
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

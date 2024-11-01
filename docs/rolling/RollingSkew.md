@@ -33,7 +33,9 @@ The `RollingSkew` class computes the skewness, or asymmetry, of data within a sp
         title="Rolling Skewness with Window Size 30",
         xaxis_title="Index",
         yaxis=dict(title="Input Data"),
-        yaxis2=dict(title="Rolling Skewness")
+        yaxis2=dict(title="Rolling Skewness"),
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

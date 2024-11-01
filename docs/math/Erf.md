@@ -36,7 +36,9 @@ The `Erf` class computes the error function of each element in a data sequence, 
         title="Error Function Transformation (Erf)",
         xaxis_title="Index",
         yaxis_title="Original Data",
-        yaxis2_title="Error Function"
+        yaxis2_title="Error Function",
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

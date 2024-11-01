@@ -40,7 +40,9 @@ Below is an example of using `RollingKurt` to calculate the rolling median for a
         title=f"Rolling Kurtosis with Window Size 30",
         xaxis_title="Index",
         yaxis=dict(title="Input Data"),
-        yaxis2=dict(title="Rolling Kurtosis", range=[-2, 4])
+        yaxis2=dict(title="Rolling Kurtosis", range=[-2, 4]),
+        margin=dict(l=20, r=20, t=80, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)        
     )
 
     fig.show()

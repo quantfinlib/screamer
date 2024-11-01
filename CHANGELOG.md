@@ -5,6 +5,9 @@ All notable changes to this project are documented in this file.
 [Unreleased] - yyyy-mm-dd
 -------------------------
 
+Version v0.1.35 (2024-11-01)
+-------------------------
+
 * Improved documentation
 
 Version v0.1.34 (2024-10-31)

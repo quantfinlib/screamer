@@ -32,7 +32,7 @@ jobs:
           CIBW_TEST_REQUIRES: pytest numpy pandas scipy
           CIBW_TEST_COMMAND: "pytest {project}/tests"
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=10.13
-          CIBW_ENVIRONMENT_WINDOWS: PIP_ONLY_BINARY=:all:
+          CIBW_ENVIRONMENT_WINDOWS: "PIP_ONLY_BINARY=:all:"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v3

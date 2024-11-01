@@ -11,6 +11,11 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Set macOS deployment target for compatibility
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13")
+endif()
+
 # Find Python and Development libraries
 find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 
@@ -43,10 +48,6 @@ target_compile_options(screamer_bindings PRIVATE
     -march=native      # Enable architecture-specific optimizations
     -flto              # Enable Link Time Optimization
     -ffast-math        # Enable fast math operations (may be unsafe for some code)
-    #-mavx              # Enable AVX
-    #-mavx2             # Enable AVX2
-    #-mno-mmx           # Disable MMX
-    #-mcpu=apple-m1     # Use Apple M1-specific optimizations if on Apple Silicon    
 )
 
 

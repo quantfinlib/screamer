@@ -34,7 +34,7 @@ accuracy, and versatility in handling both NumPy arrays and streaming data.
 Easy to use, and powerfull 
 --------------------------
 
-The example below shows a stream processor that fits a 2nd-degree polynomial, y = ax^2 + bx + c, to a sliding 
+The `3-lines-of-code` example below shows a stream processor that fits a 2nd-degree polynomial, y = ax^2 + bx + c, to a sliding 
 window of the last 50 values. It then returns the slope of this fitted polynomial. This slope is fed into a 
 second stream processor, which outputs the sign of the slope, indicating the trend direction (upward or downward).
 

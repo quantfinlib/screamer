@@ -34,7 +34,7 @@ namespace screamer {
                 py::isinstance<py::tuple>(input)
             ) {
                 py::array_t<double> double_array = py::cast<py::array_t<double>>(input);
-                ssize_t size = double_array.size();
+                size_t size = double_array.size();
 
                 if (size > 1) {
                     return process_python_array(double_array);

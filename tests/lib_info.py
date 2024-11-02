@@ -12,7 +12,8 @@ example_args = {
     'cutoff_freq': 0.1,
     'derivative_order': 0,
     'scale': 1.1,
-    'shift': -0.2
+    'shift': -0.2,
+    'p': 2,
 }
 
 def camel_to_snake(name):

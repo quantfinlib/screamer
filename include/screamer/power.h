@@ -1,6 +1,7 @@
-#ifndef SCREAMER_LINEAR_H
-#define SCREAMER_LINEAR_H
+#ifndef SCREAMER_POWER_H
+#define SCREAMER_POWER_H
 
+#include <cmath>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include "screamer/common/base.h"
@@ -9,17 +10,17 @@ namespace py = pybind11;
 
 namespace screamer {
 
-    class Linear : public ScreamerBase {
+    class Power : public ScreamerBase {
     public:
-        Linear(double scale, double shift) : scale_(scale), shift_(shift) {}
+        Power(double p) : p_(p) {}
 
         double process_scalar(double newValue) override {
-            return scale_ * newValue + shift_;
+            return std::pow(newValue, p_);
         }
         
         void process_array_no_stride(double* y, const double* x, size_t size) override {
             for (size_t i=0; i<size; i++) {
-                y[i] = scale_ * x[i] + shift_;
+                y[i] = std::pow(x[i], p_);
             }                  
         }
         
@@ -29,14 +30,14 @@ namespace screamer {
             size_t xi = 0;
 
             for (size_t i=0; i<size; i++) {
-                y[yi] = scale_ * x[xi] + shift_;
+                y[yi] = std::pow(x[xi], p_);
                 xi += dxi;
                 yi += dyi;
             } 
         }
 
     private:
-        double scale_, shift_;
+        double p_;
 
     }; // end of class
 

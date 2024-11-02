@@ -14,6 +14,7 @@ Basic Math
    math/Exp
    math/Linear
    math/Log
+   math/Power
    math/Relu
    math/Selu
    math/Sigmoid

@@ -12,6 +12,7 @@
 #include "screamer/transform_functions.h"
 
 #include "screamer/linear.h"
+#include "screamer/power.h"
 
 #include "screamer/lag.h"
 #include "screamer/diff.h"
@@ -62,7 +63,6 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("__call__", &screamer::Transform<(double (*)(double)) std::abs>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) std::abs>::reset, "Reset to the initial state.");
 
-
      py::class_<screamer::Transform<(double (*)(double)) std::log>>(m, "Log")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) std::log>::operator(), py::arg("value"))
@@ -92,9 +92,6 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) signum<double>>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) signum<double>>::reset, "Reset to the initial state.");
-
-
-
 
      py::class_<screamer::Transform<(double (*)(double)) std::tanh>>(m, "Tanh")
         .def(py::init<>())
@@ -127,14 +124,22 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("reset", &screamer::Transform<(double (*)(double)) screamer::sigmoid>::reset, "Reset to the initial state.");
 
 
-    py::class_<screamer::ScreamerBase::LazyIterator>(m, "_LazyIterator")
-        .def("__iter__", &screamer::ScreamerBase::LazyIterator::__iter__, py::return_value_policy::reference_internal)
-        .def("__next__", &screamer::ScreamerBase::LazyIterator::__next__);
-
      py::class_<screamer::Linear, screamer::ScreamerBase>(m, "Linear")
         .def(py::init<double, double>(), py::arg("scale"), py::arg("shift"))
         .def("__call__", &screamer::Linear::operator(), py::arg("value"))
         .def("reset", &screamer::Linear::reset, "Reset to the initial state.");
+
+     py::class_<screamer::Power, screamer::ScreamerBase>(m, "Power")
+        .def(py::init<double>(), py::arg("p"))
+        .def("__call__", &screamer::Power::operator(), py::arg("value"))
+        .def("reset", &screamer::Power::reset, "Reset to the initial state.");
+
+
+
+    py::class_<screamer::ScreamerBase::LazyIterator>(m, "_LazyIterator")
+        .def("__iter__", &screamer::ScreamerBase::LazyIterator::__iter__, py::return_value_policy::reference_internal)
+        .def("__next__", &screamer::ScreamerBase::LazyIterator::__next__);
+
 
     py::class_<screamer::RollingMean, screamer::ScreamerBase>(m, "RollingMean")
         .def(py::init<int>(), py::arg("window_size"))

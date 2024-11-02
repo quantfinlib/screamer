@@ -18,6 +18,7 @@ Version v0.1.46 (2024-11-02)
 * Tanh
 * Softsign
 * Linear
+* Power
 
 Version v0.1.35 (2024-11-01)
 -------------------------

@@ -34,16 +34,10 @@ accuracy, and versatility in handling both NumPy arrays and streaming data.
 Easy to use, and powerfull 
 --------------------------
 
-The `3-lines-of-code` example below shows a stream processor that fits a 2nd-degree polynomial, y = ax^2 + bx + c, to a sliding 
-window of the last 50 values. It then returns the slope of this fitted polynomial. This slope is fed into a 
+The `3-lines-of-code` example below shows a stream processor that fits a trendline to a sliding 
+window of the last 50 values. It then returns the slope of this fitted line. This slope is fed into a 
 second stream processor, which outputs the sign of the slope, indicating the trend direction (upward or downward).
 
-
-.. image:: /img/3lines.png
-   :target: /img/3lines.png
-   :alt: Three lines of code by Herminio Vazquez
-   :width: 170px
-   :align: right
 
 .. code-block:: python
    :emphasize-lines: 6

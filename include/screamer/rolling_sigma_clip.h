@@ -8,7 +8,7 @@
 #include "screamer/common/base.h"
 #include "screamer/rolling_sum_nan.h"
 #include "screamer/common/float_info.h"
-#include "screamer/common/screamer_math.h"
+#include "screamer/common/math.h"
 
 namespace py = pybind11;
 
@@ -68,8 +68,8 @@ namespace screamer {
             double observed_std = std::sqrt((window_size_ * sum_xx - sum_x * sum_x) * c0);
 
             // Correct to the mean_ and std_ for truncation bias
-            estimate_true_mean_std_v2(
-             observed_mean, 
+            estimate_true_mean_std(
+                observed_mean, 
                 observed_std, 
                 mu_trunc, 
                 sigma_trunc, 

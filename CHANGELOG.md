@@ -5,6 +5,9 @@ All notable changes to this project are documented in this file.
 [Unreleased] - yyyy-mm-dd
 -------------------------
 
+Version v0.1.46 (2024-11-02)
+-------------------------
+
 ### Added
 
 * RollingSigmaClip

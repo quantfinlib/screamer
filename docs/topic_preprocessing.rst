@@ -7,8 +7,8 @@ Cleaning & Preprocessing
    :hidden:
    :titlesonly:
 
-   preprocessing/Clip
-   preprocessing/Ffill
-   preprocessing/FillNa
-   rolling/RollingSigmaClip
+   functions_preprocessing/Clip
+   functions_preprocessing/Ffill
+   functions_preprocessing/FillNa
+   functions_rolling/RollingSigmaClip
 

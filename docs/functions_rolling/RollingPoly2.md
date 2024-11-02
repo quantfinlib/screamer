@@ -1,7 +1,3 @@
-Here is the documentation for `RollingPoly2`, with plots to illustrate the behavior for each `derivative_order` (0, 1, and 2), showing the endpoint, slope, and curvature of the fitted quadratic function within each window.
-
----
-
 # `RollingPoly2`
 
 ## Description

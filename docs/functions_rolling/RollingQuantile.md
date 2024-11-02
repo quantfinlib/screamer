@@ -1,7 +1,3 @@
-Here is the documentation for `RollingQuantile`, including a detailed explanation of its behavior, usage example, and complexities:
-
----
-
 # `RollingQuantile`
 
 ## Description

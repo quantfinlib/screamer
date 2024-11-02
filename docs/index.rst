@@ -145,9 +145,12 @@ Mini Tutorial
    :hidden:
    :titlesonly:
 
-   functions_math
-   functions_pre
-   functions_rolling
-   functions_ew
+   topic_math
+   topic_preprocessing
+   topic_rolling
+   topic_ew
+   topic_signal
+   topic_fin
+   topic_misc
 
 

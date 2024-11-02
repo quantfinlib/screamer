@@ -27,7 +27,7 @@ $$
     from plotly.subplots import make_subplots
     from screamer import Diff
 
-    data = np.random.normal(size=50)
+    data = np.cumsum(np.random.normal(size=50) + 0.5)
     diff_data = Diff(3)(data)
 
     fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_heights=[1/2, 1/2], vertical_spacing=0.1)

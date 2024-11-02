@@ -27,7 +27,7 @@ $$
     from plotly.subplots import make_subplots
     from screamer import LogReturn
 
-    data = np.random.normal(1, 0.1, size=50)
+    data = np.exp(0.1*np.cumsum(np.random.normal(size=50)))
     log_return_data = LogReturn(3)(data)
 
     fig = make_subplots(rows=2, cols=1, shared_xaxes=True, row_heights=[1/2, 1/2], vertical_spacing=0.1)

@@ -10,7 +10,9 @@ example_args = {
     'quantile': 0.75,
     'alpha': 0.1,
     'cutoff_freq': 0.1,
-    'derivative_order': 0
+    'derivative_order': 0,
+    'scale': 1.1,
+    'shift': -0.2
 }
 
 def camel_to_snake(name):

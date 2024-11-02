@@ -27,7 +27,9 @@ extra_args = {
     'lower': -0.1,
     'upper': 0.5,
     'cutoff_freq': 0.1,
-    'derivative_order': 0
+    'derivative_order': 0,
+    'scale': 1.1,
+    'shift': -0.2    
 }
 
 def main():

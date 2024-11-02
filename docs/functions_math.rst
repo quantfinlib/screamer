@@ -12,6 +12,7 @@ Basic Math
    math/Erf
    math/Erfc
    math/Exp
+   math/Linear
    math/Log
    math/Relu
    math/Selu

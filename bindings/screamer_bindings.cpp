@@ -42,6 +42,7 @@
 
 #include "screamer/rolling_sigma_clip.h"
 #include "screamer/transform_functions.h"
+#include "screamer/linear.h"
 
 template <typename T> T signum(T val) {
     return (T(0) < val) - (val < T(0));
@@ -125,11 +126,14 @@ PYBIND11_MODULE(screamer_bindings, m) {
         .def("reset", &screamer::Transform<(double (*)(double)) screamer::sigmoid>::reset, "Reset to the initial state.");
 
 
-
-
     py::class_<screamer::ScreamerBase::LazyIterator>(m, "_LazyIterator")
         .def("__iter__", &screamer::ScreamerBase::LazyIterator::__iter__, py::return_value_policy::reference_internal)
         .def("__next__", &screamer::ScreamerBase::LazyIterator::__next__);
+
+     py::class_<screamer::Linear, screamer::ScreamerBase>(m, "Linear")
+        .def(py::init<double, double>(), py::arg("scale"), py::arg("shift"))
+        .def("__call__", &screamer::Linear::operator(), py::arg("value"))
+        .def("reset", &screamer::Linear::reset, "Reset to the initial state.");
 
     py::class_<screamer::RollingMean, screamer::ScreamerBase>(m, "RollingMean")
         .def(py::init<int>(), py::arg("window_size"))

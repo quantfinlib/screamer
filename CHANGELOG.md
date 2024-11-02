@@ -14,6 +14,7 @@ All notable changes to this project are documented in this file.
 * Sigmoid
 * Tanh
 * Softsign
+* Linear
 
 Version v0.1.35 (2024-11-01)
 -------------------------

@@ -78,6 +78,7 @@ invoke = "^2.2.0"
 numpy = { version = "^2.0.1", python = ">=3.10"}
 matplotlib = "^3.9.2"
 pandas = "^2.2.3"
+colorama = "^0.4.6"
 
 [tool.poetry.group.testing.dependencies]
 pytest = "^7.0"

@@ -70,7 +70,6 @@ namespace screamer {
         std::array<double, 3> y{};  // Output history
     };
 
-
 } // namespace screamer
 
 #endif

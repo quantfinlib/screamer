@@ -3,7 +3,7 @@
 
 #include <array>
 #include <cmath>
-#include "screamer_math.h"
+#include "screamer/common/screamer_math.h"
 
 namespace screamer {
 

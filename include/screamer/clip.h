@@ -4,7 +4,7 @@
 #include <limits>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include "screamer/base.h"
+#include "screamer/common/base.h"
 #include <algorithm>
 #include <execution>
 #include <cmath>

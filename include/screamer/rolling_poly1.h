@@ -1,8 +1,8 @@
 #ifndef SCREAMER_ROLLING_POLY1_H
 #define SCREAMER_ROLLING_POLY1_H
 
-#include <screamer/buffer.h>
-#include "screamer/base.h"
+#include <screamer/common/buffer.h>
+#include "screamer/common/base.h"
 #include <stdexcept>
 #include <tuple>
 

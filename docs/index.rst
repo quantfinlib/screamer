@@ -151,9 +151,9 @@ Mini Tutorial
    :hidden:
    :titlesonly:
 
-   functions_rolling
-   functions_ew
    functions_math
    functions_pre
+   functions_rolling
+   functions_ew
 
 

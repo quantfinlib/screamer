@@ -2,11 +2,16 @@
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h> // Required for std::optional support
 
-#include "screamer/base.h"
+#include "screamer/common/base.h"
 
 #include "screamer/ffill.h"
 #include "screamer/fillna.h"
 #include "screamer/clip.h"
+
+#include "screamer/common/transform.h"
+#include "screamer/transform_functions.h"
+
+#include "screamer/linear.h"
 
 #include "screamer/lag.h"
 #include "screamer/diff.h"
@@ -23,8 +28,11 @@
 #include "screamer/rolling_min.h"
 #include "screamer/rolling_max.h"
 #include "screamer/rolling_median.h"
-#include "screamer/rolling_quantile_ost_v3.h"
+#include "screamer/rolling_quantile.h"
 #include "screamer/rolling_rms.h"
+#include "screamer/rolling_poly1.h"
+#include "screamer/rolling_poly2.h"
+#include "screamer/rolling_sigma_clip.h"
 
 #include "screamer/ew_mean.h"
 #include "screamer/ew_var.h"
@@ -34,15 +42,8 @@
 #include "screamer/ew_kurt.h"
 #include "screamer/ew_rms.h"
 
-#include "screamer/transform.h"
-
 #include "screamer/butter2.h"
-#include "screamer/rolling_poly1.h"
-#include "screamer/rolling_poly2.h"
 
-#include "screamer/rolling_sigma_clip.h"
-#include "screamer/transform_functions.h"
-#include "screamer/linear.h"
 
 template <typename T> T signum(T val) {
     return (T(0) < val) - (val < T(0));

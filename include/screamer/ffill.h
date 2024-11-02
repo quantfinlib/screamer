@@ -4,8 +4,8 @@
 #include <limits>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include "screamer/base.h"
-#include "float_info.h"
+#include "screamer/common/base.h"
+#include "screamer/common/float_info.h"
 
 namespace py = pybind11;
 

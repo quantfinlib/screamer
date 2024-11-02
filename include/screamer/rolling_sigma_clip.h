@@ -4,11 +4,11 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/buffer.h>
-#include "screamer/base.h"
+#include <screamer/common/buffer.h>
+#include "screamer/common/base.h"
 #include "screamer/rolling_sum_nan.h"
-#include "screamer/float_info.h"
-#include "screamer/screamer_math.h"
+#include "screamer/common/float_info.h"
+#include "screamer/common/screamer_math.h"
 
 namespace py = pybind11;
 

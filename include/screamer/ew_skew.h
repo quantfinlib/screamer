@@ -4,7 +4,7 @@
 #include <optional>
 #include <stdexcept>
 #include <cmath>
-#include "screamer/base.h"
+#include "screamer/common/base.h"
 
 namespace screamer {
 

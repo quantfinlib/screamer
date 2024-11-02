@@ -4,10 +4,10 @@
 #include <deque>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include "screamer/buffer.h"
-#include "screamer/base.h"
-#include "order_statistic_tree_v4.h"
-#include "float_info.h"
+#include "screamer/common/buffer.h"
+#include "screamer/common/base.h"
+#include "common/order_statistic_tree.h"
+#include "screamer/common/float_info.h"
 
 namespace py = pybind11;
 

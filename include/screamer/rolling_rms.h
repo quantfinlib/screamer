@@ -33,10 +33,9 @@ namespace screamer {
     private:
 
         double process_scalar(double newValue) override {
-
-            sum_ -= buffer_.append(newValue * newValue);
-            sum_ += newValue * newValue;
-
+            double x2 = newValue * newValue;
+            sum_ -= buffer_.append(x2);
+            sum_ += x2;
             return std::sqrt(sum_ * one_over_w_);            
         }
 
@@ -77,10 +76,10 @@ namespace screamer {
             }
 
             // all other elements
-            size_t window_size_shift = window_size_ * dyi;
+            size_t window_size_shift = window_size_ * dxi;
             for (size_t i=split; i<size; i++) {
-                double x_prev = x[xi - window_size_];
-                y[i] = y[i - dyi] + (x[xi] * x[xi] - x_prev * x_prev) * one_over_w_;
+                double x_prev = x[xi - window_size_shift];
+                y[yi] = y[yi - dyi] + (x[xi] * x[xi] - x_prev * x_prev) * one_over_w_;
                 xi += dxi;
                 yi += dyi;                
             }

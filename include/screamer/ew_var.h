@@ -99,6 +99,7 @@ namespace screamer {
             sum_w2_ += 1.0;
 
             double n_eff = sum_w_* sum_w_ / sum_w2_; 
+
     
             // Compute the weighted mean
             double mean = sum_x_ / sum_w_;
@@ -106,7 +107,12 @@ namespace screamer {
             // Compute the weighted variance
             double variance = (sum_xx_ / sum_w_) - (mean * mean);
             variance *= n_eff / (n_eff - 1.0);
-            return variance;
+
+            if (n_eff <= 1.0) {
+                return std::numeric_limits<double>::quiet_NaN();
+            } else {
+                return variance;
+            }
         }
 
         void process_array_no_stride(double* y, const double* x, size_t size) override {
@@ -123,6 +129,7 @@ namespace screamer {
                 sum_w_ *= one_minus_alpha_;
                 sum_w2_ *= one_minus_alpha2_;
 
+
                 sum_x_ += x[i];
                 sum_xx_ += x[i] * x[i];
 
@@ -133,7 +140,13 @@ namespace screamer {
                 double mean = sum_x_ / sum_w_;
                 double variance = (sum_xx_ / sum_w_) - (mean * mean);
                 variance *= n_eff / (n_eff - 1.0);
-                y[i] = variance;      
+
+                if (n_eff <= 1.0) {
+                    y[i] = std::numeric_limits<double>::quiet_NaN();
+                } else {       
+                    y[i] = variance;  
+                }
+
             }
         }
 
@@ -165,7 +178,11 @@ namespace screamer {
                 double mean = sum_x_ / sum_w_;
                 double variance = (sum_xx_ / sum_w_) - (mean * mean);
                 variance *= n_eff / (n_eff - 1.0);
-                y[yi] = variance;
+                if (n_eff <= 1.0) {
+                    y[yi] = std::numeric_limits<double>::quiet_NaN();
+                } else {
+                    y[yi] = variance;
+                }
                 xi += dxi;
                 yi += dyi;                
             }

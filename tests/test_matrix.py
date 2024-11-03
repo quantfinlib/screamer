@@ -38,6 +38,15 @@ def test_screamer_matrix(class_name, params, array_type, array_length):
     # Run the matrix version
     screamer_output_2 = screamer_instance_2(input_array)
 
+    if class_name == 'RollingRms':
+        print('------------------------------------------------------------')
+        print('input_array')
+        print(input_array)
+        print('screamer_output_1')
+        print(screamer_output_1)
+        print('screamer_output_2')
+        print(screamer_output_2)                
+        print('------------------------------------------------------------')
     np.testing.assert_allclose(
         screamer_output_1, screamer_output_2, rtol=1e-5, atol=1e-8,
         err_msg=f"Results do not match for {class_name}  with params {params} and array type '{array_type}' of length {array_length}"

@@ -89,8 +89,11 @@ namespace screamer {
             double g2 = m4 / (variance * variance);
             double excess_kurtosis = ((n_eff * (n_eff + 1) * g2 - 3 * (n_eff - 1) * (n_eff - 1)) /
                                       ((n_eff - 1) * (n_eff - 2) * (n_eff - 3)));
-
-            return excess_kurtosis;
+            if (n_eff <= 3.0) {
+                return std::numeric_limits<double>::quiet_NaN();
+            } else {
+                return excess_kurtosis;
+            }
         }
 
     private:

@@ -84,8 +84,11 @@ namespace screamer {
             // Adjust skewness using Pandas-like bias correction
             double g1 = m3 / (std_dev * std_dev * std_dev);
             double skew = (n_eff * g1) / ((n_eff - 1.0) * (n_eff - 2.0));
-
-            return skew;
+            if (n_eff <= 2.0) {
+                return std::numeric_limits<double>::quiet_NaN();
+            } else {
+                return skew;
+            }
         }
 
     private:

@@ -5,8 +5,8 @@ import platform
 
 @task
 def release(c, part):
-    # Refresh Python files in screamer directory
-    c.run("python scripts/autogen_files.py", pty=True)
+    # Refresh Python --init__.py in screamer directory
+    c.run("python devtools/generate_screamer__init__.py")
 
     """Bump version, commit, tag, and push."""
     # Bump the version
@@ -47,7 +47,7 @@ def test(c):
             c.run('cmake --build .')
             c.run('cp screamer_bindings*.so ../screamer/')
 
-    # Refresh Python files in screamer directory
+    # Refresh Python --init__.py in screamer directory
     c.run("python devtools/generate_screamer__init__.py")
         
     c.run('pip install -e .')

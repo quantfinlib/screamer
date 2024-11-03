@@ -48,7 +48,7 @@ def test(c):
             c.run('cp screamer_bindings*.so ../screamer/')
 
     # Refresh Python files in screamer directory
-    c.run("python scripts/autogen_files.py")
+    c.run("python devtools/generate_screamer__init__.py")
         
     c.run('pip install -e .')
     c.run('pytest')

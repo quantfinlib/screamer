@@ -26,7 +26,7 @@ no_arg_classes = [
 
 # ----------------------------------------------------------------------
 # Combination test cases (Cartesian products of parameters)
-# arrays deefault to: "array_length": [100], "array_type": ["default"]
+# input arrays default to: "array_length": [100], "array_type": ["default"]
 # ----------------------------------------------------------------------
 
 test_definitions = [

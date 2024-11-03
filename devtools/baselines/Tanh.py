@@ -9,7 +9,3 @@ class Tanh_numpy:
 class Tanh_pandas:
     def __call__(self, x):
         return pd.Series(x).apply(np.tanh).to_numpy()
-
-class Tanh_scipy:
-    def __call__(self, x):
-        return scipy.tanh(x)

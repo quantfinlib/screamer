@@ -9,7 +9,3 @@ class Log_numpy:
 class Log_pandas:
     def __call__(self, x):
         return pd.Series(x).apply(np.log).to_numpy()
-
-class Log_scipy:
-    def __call__(self, x):
-        return scipy.log(x)

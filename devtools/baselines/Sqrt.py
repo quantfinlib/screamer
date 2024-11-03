@@ -9,7 +9,3 @@ class Sqrt_numpy:
 class Sqrt_pandas:
     def __call__(self, x):
         return pd.Series(x).apply(np.sqrt).to_numpy()
-
-class Sqrt_scipy:
-    def __call__(self, x):
-        return scipy.sqrt(x)

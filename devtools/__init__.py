@@ -17,8 +17,8 @@ def get_module_classes(module):
 def get_baselines(base_name='Linear'):
     implementations = []
     for name, obj in inspect.getmembers(devtools.baselines, inspect.isclass):
-        if name.startswith(base_name):
-            implementations.append((name, obj))
+        if name.startswith(base_name + '_'):
+            implementations.append(name)
     return implementations
 
 def get_constructor_arguments(cls):

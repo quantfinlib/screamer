@@ -12,7 +12,7 @@ screamer_module = load_screamer_module()
     "class_name, params, array_type, array_length",
     yield_test_cases()
 )
-def test_screamer_vs_batch(class_name, params, array_type, array_length):
+def test_screamer_vs_generator(class_name, params, array_type, array_length):
     """Compare the output of screamer class and baseline reference implementation."""
     
     # Get screamer and baseline classes
@@ -30,8 +30,9 @@ def test_screamer_vs_batch(class_name, params, array_type, array_length):
     for i, x in enumerate(input_array):
         screamer_output_1[i] = screamer_instance_1(x)
 
-    # Run the batch version
-    screamer_output_2 = screamer_instance_2(input_array)
+    # Run the generator version
+    screamer_instance_2_gen = screamer_instance_2(iter(input_array))
+    screamer_output_2 = np.array(list(screamer_instance_2_gen))
 
     np.testing.assert_allclose(
         screamer_output_1, screamer_output_2, rtol=1e-5, atol=1e-8,

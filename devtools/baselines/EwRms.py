@@ -9,5 +9,5 @@ class EwRms_pandas:
         self.alpha = alpha
 
     def __call__(self, x):
-        mean_squared = pd.Series(x).ewm(com=self.com, span=self.span, halflife=self.halflife, alpha=self.alpha).mean().pow(2)
+        mean_squared = pd.Series(x**2).ewm(com=self.com, span=self.span, halflife=self.halflife, alpha=self.alpha).mean()
         return mean_squared.pow(0.5).to_numpy()

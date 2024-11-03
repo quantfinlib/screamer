@@ -1,90 +1,49 @@
-import screamer.screamer_bindings
-from lib_info import collect_class_info
-import pytest
-import importlib
 import numpy as np
+from itertools import product
+from .param_cases import yield_test_cases, generate_array
+from devtools import load_screamer_module, baselines
+import pytest
 
+# Load the screamer module
+screamer_module = load_screamer_module()
 
-# Dynamic test collection using the pytest_generate_tests hook
-def pytest_generate_tests(metafunc):
-    if 'ci' in metafunc.fixturenames:
-        # Dynamically create the dictionary with metadata
-        class_meta = collect_class_info(screamer.screamer_bindings)
+# Create a pytest parameterization using the collected test cases
+@pytest.mark.parametrize(
+    "class_name, params, array_type, array_length",
+    yield_test_cases()
+)
+def test_screamer_tensor(class_name, params, array_type, array_length):
+    """Compare the output of screamer class and baseline reference implementation."""
+    
+    # Get screamer and baseline classes
+    screamer_class = getattr(screamer_module, class_name, None)
 
-        # Parametrize the test based on the keys (class names) in the dictionary
-        metafunc.parametrize("ci", class_meta.items())
+    # Instantiate the screamer and baseline objects
+    screamer_instance_1 = screamer_class(**params)
+    screamer_instance_2 = screamer_class(**params)
 
+    # Generate a N x 2 x 3 input matix
+    input_array = np.column_stack((
+        generate_array(array_type, array_length),
+        generate_array(array_type, array_length),
+        generate_array(array_type, array_length),
+        generate_array(array_type, array_length),
+        generate_array(array_type, array_length),
+        generate_array(array_type, array_length)
+    ))
+    input_array = input_array.reshape((-1, 2, 3))
 
-# Test processing a matrix columns wise, vs in one go with .transform()
-def test_matrix(ci):
-    class_name, class_info = ci
-    class_args = class_info.get('args',[])
-    args = {arg['name']: arg.get('example') for arg in class_args if 'example' in arg}
+    # Run the streaming version
+    screamer_output_1 = np.empty_like(input_array)
+    for c1 in range(2):
+        for c2 in range(3):
+            screamer_instance_1.reset()
+            screamer_output_1[:, c1, c2] = screamer_instance_1(input_array[:, c1, c2])
 
-    # Instantiate an indicator class
-    module = importlib.import_module("screamer.screamer_bindings")
-    cls = getattr(module, class_name) 
-      
-    # generate some 4 column matrix input
-    input = 1.1*np.arange(24).reshape(-1, 4)
-
-    # Loop over columns
-    obj1 = cls(**args)
-    output1 = np.zeros_like(input, dtype=float)
-    for col in range(input.shape[1]):
-        if hasattr(obj1, 'transform'):
-            output1[:, col] = obj1.transform(input[:, col].copy())
-        else:
-            output1[:, col] = obj1(input[:, col].copy())
-
-    # Matrix in one go
-    obj2 = cls(**args)
-    if hasattr(obj2, 'transform'):
-        output2 = obj2.transform(input)
-    else:
-        output2 = obj2(input)
-
-    # Should be exactly the same
-    np.testing.assert_allclose(
-        output1, 
-        output2, 
-        rtol=1e-5, atol=1e-8, 
-        err_msg=f"Discrepancy between column-wise vs full matrix processing in {class_name}"
-    )
-
-# Test processing a tensor columns wise, vs in one go with .transform()
-def test_tensor(ci):
-    class_name, class_info = ci
-    class_args = class_info.get('args',[])
-    args = {arg['name']: arg.get('example') for arg in class_args if 'example' in arg}
-
-    # Instantiate an indicator class
-    module = importlib.import_module("screamer.screamer_bindings")
-    cls = getattr(module, class_name) 
-      
-    # generate some 3d tensor input
-    input = np.arange(24).reshape(-1, 2, 3)
-
-    # Loop over columns
-    obj1 = cls(**args)
-    output1 = np.zeros_like(input, dtype=float)
-    for d1 in range(input.shape[1]):
-        for d2 in range(input.shape[2]):
-            if hasattr(obj1, 'transform'):
-                output1[:, d1, d2] = obj1.transform(input[:, d1, d2])
-            else:
-                output1[:, d1, d2] = obj1(input[:, d1, d2])
-
-    # Process tensor in one go
-    obj2 = cls(**args)
-    if hasattr(obj2, 'transform'):
-        output2 = obj2.transform(input)
-    else:
-        output2 = obj2(input)
+    # Run the matrix version
+    screamer_output_2 = screamer_instance_2(input_array)
 
     np.testing.assert_allclose(
-        output1, 
-        output2, 
-        rtol=1e-5, atol=1e-8, 
-        err_msg=f"Discrepancy between column-wise vs full tensor processing in {class_name}"
+        screamer_output_1, screamer_output_2, rtol=1e-5, atol=1e-8,
+        err_msg=f"Results do not match for {class_name}  with params {params} and array type '{array_type}' of length {array_length}"
     )

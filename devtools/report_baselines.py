@@ -17,7 +17,7 @@ def report_screamer_classes():
         references = get_baselines(base_name=class_name)
         
         if references:
-            print(f"{Fore.GREEN}OK {class_name:20s} -> {', '.join([e[0] for e in references])}")
+            print(f"{Fore.GREEN}OK {class_name:20s} -> {', '.join(references)}")
             good_count += 1
         else:
             print(f"{Fore.RED}{Style.BRIGHT}!! {class_name:20s}    Missing Baselines!")

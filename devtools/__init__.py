@@ -25,12 +25,31 @@ def load_screamer_compiled_screamer_bindings():
     spec.loader.exec_module(module)
     return module
 
+
 def load_screamer_module():
     try:
+        # Attempt to load the local compiled binary if available
         return load_screamer_compiled_screamer_bindings()
-    except:
-        import screamer
-        return screamer
+    except FileNotFoundError:
+        # If local binary not found, try to load from installed package only
+        try:
+            # Temporarily remove the local directory from sys.path to prioritize site-packages
+            original_sys_path = sys.path.copy()
+            project_dir = os.path.abspath(os.path.dirname(__file__))
+            if project_dir in sys.path:
+                sys.path.remove(project_dir)
+
+            import screamer
+            return screamer
+
+        except ImportError as e:
+            raise ImportError(
+                "Failed to load the screamer module. Ensure that the library is "
+                "installed as a wheel or that the compiled binaries are built locally."
+            ) from e
+        finally:
+            # Restore sys.path to include the local directory
+            sys.path = original_sys_path
 
 
 def get_module_classes(module):

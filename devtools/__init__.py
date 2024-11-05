@@ -6,7 +6,7 @@ import re
 import os
 import sys
 
-def load_screamer_module():
+def load_screamer_compiled_screamer_bindings():
     # Locate the compiled module (.so, .pyd, or platform-specific extensions)
     possible_extensions = ['*.so', '*.pyd', '*.dll']
     for ext in possible_extensions:
@@ -24,6 +24,13 @@ def load_screamer_module():
     sys.modules[module_name] = module  # Ensure it's available globally
     spec.loader.exec_module(module)
     return module
+
+def load_screamer_module():
+    try:
+        return load_screamer_compiled_screamer_bindings()
+    except:
+        import screamer
+        return screamer
 
 
 def get_module_classes(module):

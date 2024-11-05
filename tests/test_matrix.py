@@ -38,7 +38,7 @@ def test_screamer_matrix(class_name, params, array_type, array_length):
     # Run the matrix version
     screamer_output_2 = screamer_instance_2(input_array)
 
-    if class_name == 'RollingRms':
+    if class_name == 'xyz':
         print('------------------------------------------------------------')
         print('input_array')
         print(input_array)

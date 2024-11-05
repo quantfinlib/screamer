@@ -6,6 +6,11 @@ import re
 import os
 import sys
 import importlib
+import os
+
+# Print the file path for debugging
+print(f"Loading devtools from: {os.path.abspath(__file__)}")
+
 
 def load_screamer_compiled_screamer_bindings():
     # Locate the compiled module (.so, .pyd, or platform-specific extensions)
@@ -29,22 +34,14 @@ def load_screamer_compiled_screamer_bindings():
 
 def load_screamer_module():
     try:
-        # Attempt to load the local compiled binary if available
+        # First, try to load locally compiled binary
         return load_screamer_compiled_screamer_bindings()
     except FileNotFoundError:
-        # If local binary not found, load the installed package from site-packages
+        # Fallback: attempt to load from installed site-packages
         try:
-            # Use importlib.metadata to get the installed path of the package
-            import importlib.metadata
-            package_path = importlib.metadata.distribution('screamer').locate_file('')
-            
-            # Load the screamer module from the installed package location
-            spec = importlib.util.spec_from_file_location("screamer", os.path.join(package_path, "__init__.py"))
-            screamer = importlib.util.module_from_spec(spec)
-            sys.modules["screamer"] = screamer
-            spec.loader.exec_module(screamer)
+            import screamer
             return screamer
-        except Exception as e:
+        except ImportError as e:
             raise ImportError(
                 "Failed to load the screamer module. Ensure that the library is "
                 "installed as a wheel or that the compiled binaries are built locally."

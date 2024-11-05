@@ -5,6 +5,7 @@ import inspect
 import re
 import os
 import sys
+import importlib
 
 def load_screamer_compiled_screamer_bindings():
     # Locate the compiled module (.so, .pyd, or platform-specific extensions)
@@ -31,25 +32,23 @@ def load_screamer_module():
         # Attempt to load the local compiled binary if available
         return load_screamer_compiled_screamer_bindings()
     except FileNotFoundError:
-        # If local binary not found, try to load from installed package only
+        # If local binary not found, load the installed package from site-packages
         try:
-            # Temporarily remove the local directory from sys.path to prioritize site-packages
-            original_sys_path = sys.path.copy()
-            project_dir = os.path.abspath(os.path.dirname(__file__))
-            if project_dir in sys.path:
-                sys.path.remove(project_dir)
-
-            import screamer
+            # Use importlib.metadata to get the installed path of the package
+            import importlib.metadata
+            package_path = importlib.metadata.distribution('screamer').locate_file('')
+            
+            # Load the screamer module from the installed package location
+            spec = importlib.util.spec_from_file_location("screamer", os.path.join(package_path, "__init__.py"))
+            screamer = importlib.util.module_from_spec(spec)
+            sys.modules["screamer"] = screamer
+            spec.loader.exec_module(screamer)
             return screamer
-
-        except ImportError as e:
+        except Exception as e:
             raise ImportError(
                 "Failed to load the screamer module. Ensure that the library is "
                 "installed as a wheel or that the compiled binaries are built locally."
             ) from e
-        finally:
-            # Restore sys.path to include the local directory
-            sys.path = original_sys_path
 
 
 def get_module_classes(module):

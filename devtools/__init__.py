@@ -83,7 +83,7 @@ def find_available_module_paths(module_name):
 def load_module_from_path(module_name, file_path):
     # Adjust the file_path to point to __init__.py for packages
     if os.path.isdir(file_path):
-        file_path = os.path.join(file_path, "__init__.py")
+        file_path = os.path.join(file_path, module_name, "__init__.py")
         
     spec = importlib.util.spec_from_file_location(module_name, file_path)
     if spec and spec.loader:

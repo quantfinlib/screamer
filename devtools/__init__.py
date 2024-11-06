@@ -16,32 +16,32 @@ class ScreamerInstallInfo:
     def __init__(self):
         self.local_project_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.local_screamer_path = os.path.join(self.local_project_path, 'screamer')
-        self.local_bindings_path = self.get_local_bindings_path()
-        self.env_screamer_paths = self.get_env_screamer_paths()
+        self.local_bindings_path = self._get_local_bindings_path()
+        self.env_screamer_paths = self._get_env_screamer_paths()
         self.module = None
 
-    def get_local_bindings_path(self):
+    def _get_local_bindings_path(self):
         possible_extensions = ['*.so', '*.pyd', '*.dll']
         for ext in possible_extensions:
             so_files = glob.glob(os.path.join(self.local_screamer_path, f'screamer_bindings{ext}'))
             if so_files:
-                logger.info(f'get_local_bindings_path: FOUND {so_files[0]}')
+                logger.debug(f'get_local_bindings_path: FOUND {so_files[0]}')
                 return so_files[0]
-        logger.info(f'get_local_bindings_path: NO BINDINGS FOUND')
+        logger.debug(f'get_local_bindings_path: NO BINDINGS FOUND')
         return None
 
-    def get_env_screamer_paths(self):
+    def _get_env_screamer_paths(self):
         screamer_paths = []
         pattern = r".*?site-packages"
         for path in sys.path:
-            logger.info(f'get_env_screamer_paths: EXAMINING {path}')
+            logger.debug(f'get_env_screamer_paths: EXAMINING {path}')
             match = re.search(pattern, path)
             if match:
                 env_path = match.group()
-                logger.info(f'get_env_screamer_paths: MATCHED {env_path}')
+                logger.debug(f'get_env_screamer_paths: MATCHED {env_path}')
                 env_screamer_path = os.path.join(env_path, 'screamer')
                 if os.path.isdir(env_screamer_path):
-                    logger.info(f'get_env_screamer_paths: FOUND {env_screamer_path}')
+                    logger.debug(f'get_env_screamer_paths: FOUND {env_screamer_path}')
                     screamer_paths.append(env_screamer_path)
         return screamer_paths
 
@@ -49,11 +49,11 @@ class ScreamerInstallInfo:
         original_sys_path = sys.path.copy()
         sys.path = [os.path.dirname(os.path.dirname(file_path))]
 
-        logger.info(f'loading... changes sys.path to {sys.path}')
+        logger.debug(f'loading... changes sys.path to {sys.path}')
 
         spec = importlib.util.spec_from_file_location('screamer', file_path)
         
-        logger.info(f'loading... spec = {spec}')
+        logger.debug(f'loading... spec = {spec}')
 
         self.module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.module)

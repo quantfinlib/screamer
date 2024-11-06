@@ -1,14 +1,14 @@
+print("TEST PARAM_CASES")
 from itertools import product
 import numpy as np
-from devtools import load_screamer_module, get_constructor_arguments, get_baselines
+from devtools import get_constructor_arguments, get_baselines
+from . import screamer_module
 import pytest
 
 # ----------------------------------------------------------------------
 # Set of classes in the screamer module
 # ----------------------------------------------------------------------
 
-# Load the screamer module
-screamer_module = load_screamer_module()
 
 # List of all screamer class names
 screamer_classes = [cls for cls in dir(screamer_module) if not cls.startswith('_')]

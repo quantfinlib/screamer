@@ -1,11 +1,10 @@
+print("TEST: test_baselines.py")
 import numpy as np
 from itertools import product
 from .param_cases import yield_test_cases_with_baselines, yield_classes_without_test_cases, generate_array
-from devtools import load_screamer_module, baselines
+from devtools import baselines
+from . import screamer_module
 import pytest
-
-# Load the screamer module
-screamer_module = load_screamer_module()
 
 # Create a pytest parameterization using the collected test cases
 @pytest.mark.parametrize(

@@ -5,7 +5,8 @@ from devtools import load_screamer_module, baselines
 import pytest
 
 # Load the screamer module
-screamer_module = load_screamer_module()
+from . import screamer_module
+
 
 # Create a pytest parameterization using the collected test cases
 @pytest.mark.parametrize(

@@ -11,7 +11,7 @@ import pytest
 
 
 # List of all screamer class names
-screamer_classes = [cls for cls in dir(screamer_module) if not cls.startswith('_')]
+screamer_classes = [cls for cls in dir(screamer_module) if  cls[0].isupper()]
 
 # The Rolling classes, except 'RollingQuantile' which has an extra argument
 rolling_classes = [cls for cls in screamer_classes if cls.startswith('Rolling') and not cls=='RollingQuantile']

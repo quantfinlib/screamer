@@ -25,6 +25,12 @@ logger.info(f'local_project_path: {local_project_path}')
 local_screamer_path = os.path.join(local_project_path, 'screamer')
 logger.info(f'local_screamer_path: {local_screamer_path}')
 
+def log_sys_path():
+    logger.info(f'sys.path:')
+    for p in sys.path:
+        logger.info(f'- {p}')
+
+
 def remove_local_screamer_path():
     while local_screamer_path in sys.path:
         sys.path.remove(local_screamer_path)
@@ -34,6 +40,7 @@ def add_local_screamer_path():
         sys.path.remove(local_screamer_path)
     sys.path.insert(0, local_screamer_path)
 
+    
 def find_local_bindings_path():
     module_name = 'screamer_bindings'
     # Locate the compiled module (.so, .pyd, or platform-specific extensions)
@@ -86,9 +93,14 @@ def load_screamer_module_from_source():
     logger.info(f'done loading local {module_name} from spec {spec}')
     return module
 
+
 def load_screamer_module_from_env():
+    logger.info(f'load_screamer_module_from_env()')
+
     module_name = 'screamer'
     remove_local_screamer_path()
+    log_sys_path()
+
     spec = importlib.util.find_spec(module_name)
     if spec is None:
         logger.info(f'Unable to find {module_name} module in env')

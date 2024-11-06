@@ -18,6 +18,7 @@ import sys
 import importlib
 import os
 import devtools.baselines
+import glob
 
 local_project_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 logger.info(f'local_project_path: {local_project_path}')
@@ -28,6 +29,12 @@ logger.info(f'local_screamer_path: {local_screamer_path}')
 def find_first_site_packages_path():
     for p in sys.path:
         if '/venv/lib/' in p:
+            
+            logger.info(f'found a venv site_packages: {p}')
+            logger.info('packages in venv:')
+            for f in glob.glob(os.path.join(p, '*')):
+                logger.info(f'- {f}')
+
             return p
     return None
 

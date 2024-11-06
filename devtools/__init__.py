@@ -65,6 +65,16 @@ def find_available_module_paths(module_name):
     return found_locations
 
 
+def load_module_from_path(module_name, file_path):
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    if spec and spec.loader:
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    else:
+        raise ImportError(f"Cannot load module {module_name} from {file_path}")
+
+
 def remove_local_screamer_path():
     while local_screamer_path in sys.path:
         sys.path.remove(local_screamer_path)
@@ -135,7 +145,7 @@ def load_screamer_module_from_env():
     remove_local_screamer_path()
     log_sys_path()
     log_pythonpath()
-    screamer_paths = find_available_module_paths()
+    screamer_paths = find_available_module_paths('screamer')
     logging.info('Changing load order')
     if len(screamer_paths) > 0:
         preferred_path = screamer_paths[0]

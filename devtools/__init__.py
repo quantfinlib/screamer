@@ -69,7 +69,7 @@ class ScreamerInstallInfo:
         
         if self.env_screamer_paths:
             logger.info(f'load_module: trying env')
-            file_path = os.path.join(self.env_screamer_paths, "__init__.py")
+            file_path = os.path.join(self.env_screamer_paths[0], "__init__.py")
             return self._load_module_from_file_path(file_path)
         
         logger.info(f'load_module: NOT LOADED, nothing tried')

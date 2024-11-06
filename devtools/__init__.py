@@ -93,6 +93,9 @@ def load_screamer_module_from_env():
     if spec is None:
         logger.info(f'Unable to find {module_name} module in env')
         return None
+    else:
+        logger.info(f'loading {module_name} from spec {spec} in env')
+
     module = importlib.util.module_from_spec(spec)
     sys.modules['screamer'] = module  # Ensure it's available globally
     spec.loader.exec_module(module)

@@ -1,12 +1,11 @@
 from colorama import Fore, Style, init
-from devtools import load_screamer_module, get_module_classes, get_baselines
+from devtools import  get_module_classes, get_baselines, screamer_module
 
-def report_screamer_classes():
+def report_screamer_classes(screamer_module):
     # Initialize colorama
     init(autoreset=True)
     
-    module = load_screamer_module()
-    classes = get_module_classes(module)
+    classes = get_module_classes(screamer_module)
     
     good_count = 0
     bad_count = 0
@@ -32,4 +31,4 @@ def report_screamer_classes():
         print(f"{Fore.GREEN}Total Missing Baselines: {bad_count}")
         
 if __name__ == "__main__":
-    report_screamer_classes()
+    report_screamer_classes(screamer_module)

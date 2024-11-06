@@ -1,6 +1,5 @@
 print("TEST: test_baselines.py")
 import numpy as np
-from itertools import product
 from .param_cases import yield_test_cases_with_baselines, yield_classes_without_test_cases, generate_array, screamer_module
 from devtools import baselines
 import pytest

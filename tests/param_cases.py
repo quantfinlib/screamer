@@ -1,8 +1,7 @@
 print("TEST PARAM_CASES")
 from itertools import product
 import numpy as np
-from devtools import get_constructor_arguments, get_baselines
-from . import screamer_module
+from devtools import get_constructor_arguments, get_baselines, screamer_module
 import pytest
 
 # ----------------------------------------------------------------------
@@ -44,7 +43,8 @@ test_definitions = [
     ( tuple(ew_classes)          , {"halflife": [10]}),
     ( tuple(ew_classes)          , {"com": [10]}),
     ( tuple(no_arg_classes)      , {"array_type": ["positive"]}),
-    ( ('Butter',)                , {"order": [2,3,4,5,6,7,8,9,10], "cutoff_freq": [0.2]})
+    ( ('Butter',)                , {"order": [2,3,4,5,6,7,8,9,10], "cutoff_freq": [0.2]}),
+    ( ('Diff',)                  , {"window_size": [10]})
 ]
 
 # ----------------------------------------------------------------------

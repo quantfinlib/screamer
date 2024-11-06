@@ -1,11 +1,9 @@
 import numpy as np
-from itertools import product
 from .param_cases import yield_test_cases, generate_array
-from devtools import load_screamer_module, baselines
+from devtools import screamer_module
 import pytest
 
-# Load the screamer module
-from . import screamer_module
+
 
 # Create a pytest parameterization using the collected test cases
 @pytest.mark.parametrize(

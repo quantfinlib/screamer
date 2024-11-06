@@ -1,6 +1,6 @@
 import inspect
 import os
-from devtools import load_screamer_module
+from devtools import screamer_module
 
 def generate_init_py(module, output_path='screamer/__init__.py'):
     # Get all classes and functions not starting with an underscore
@@ -33,5 +33,4 @@ __all__ = [
 
 # Load the module and generate __init__.py
 if __name__ == "__main__":
-    screamer_module = load_screamer_module()
     generate_init_py(screamer_module)

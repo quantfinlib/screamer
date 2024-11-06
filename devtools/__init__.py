@@ -46,18 +46,32 @@ def load_local_screamer_bindings():
             break
     else:
         logger.info(f'No local bindings found.')
-        raise FileNotFoundError("Compiled module 'screamer_bindings' not found.")
+        return None
 
     # Load the module
     module_name = 'screamer_bindings'
     spec = importlib.util.spec_from_file_location(module_name, so_file_path)
+    logger.info(f'loading local module from spec: {spec}')
     module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module  # Ensure it's available globally
+    sys.modules['screamer_bindings'] = module  # Ensure it's available globally
+    sys.modules['screamer'] = module  # Ensure it's available globally
     spec.loader.exec_module(module)
-    logger.info(f'done loading {so_file_path}')
+    logger.info(f'done loading {spec}')
     return module
 
 def load_env_screamer_bindings():
+    spec = importlib.util.find_spec("screamer")
+    if spec is None:
+        logger.info(f'Unable to find screamer module in env')
+        return None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules['screamer_bindings'] = module  # Ensure it's available globally
+    sys.modules['screamer'] = module  # Ensure it's available globally
+    spec.loader.exec_module(module)
+    logger.info(f'done loading {spec}')
+    return module
+    
+
     try:
         remove_local_screamer_path()
         import screamer

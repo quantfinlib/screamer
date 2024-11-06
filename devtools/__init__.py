@@ -1,4 +1,13 @@
-print("DEVTOOLS __init__.py")
+import logging
+logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+logger.info(f'entering devtools/__init__.py')
+
+import sys
+
+logger.info(f'sys.path:')
+for p in sys.path:
+    logger.info(f'- {p}')
 
 import glob
 import importlib.util
@@ -9,16 +18,11 @@ import sys
 import importlib
 import os
 import devtools.baselines
-import logging
 
-logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+local_project_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+logger.info(f'local_project_path: {local_project_path}')
 
-def get_local_screamer_path():
-    p = os.path.abspath("screamer")
-    return p
-
-local_screamer_path = get_local_screamer_path()
+local_screamer_path = os.path.join(local_project_path, 'screamer')
 logger.info(f'local_screamer_path: {local_screamer_path}')
 
 def remove_local_screamer_path():

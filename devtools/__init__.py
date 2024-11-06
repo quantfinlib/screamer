@@ -30,6 +30,15 @@ def log_sys_path():
     for p in sys.path:
         logger.info(f'- {p}')
 
+def log_pythonpath():
+    try:
+        python_paths = os.environ['PYTHONPATH'].split(os.pathsep)
+    except KeyError:
+        python_paths = []
+    logger.info(f'pythonpath:')
+    for p in python_paths:
+        logger.info(f'- {p}')
+
 
 def remove_local_screamer_path():
     while local_screamer_path in sys.path:
@@ -100,6 +109,7 @@ def load_screamer_module_from_env():
     module_name = 'screamer'
     remove_local_screamer_path()
     log_sys_path()
+    log_pythonpath()
 
     spec = importlib.util.find_spec(module_name)
     if spec is None:

@@ -25,38 +25,54 @@ class ScreamerInstallInfo:
         for ext in possible_extensions:
             so_files = glob.glob(os.path.join(self.local_screamer_path, f'screamer_bindings{ext}'))
             if so_files:
+                logger.info(f'get_local_bindings_path: FOUND {so_files[0]}')
                 return so_files[0]
+        logger.info(f'get_local_bindings_path: NO BINDINGS FOUND')
         return None
 
     def get_env_screamer_paths(self):
         screamer_paths = []
-        pattern = r"venv/lib/[^/]+/site-packages"
+        pattern = r".*?site-packages"
         for path in sys.path:
+            logger.info(f'get_env_screamer_paths: EXAMINING {path}')
             match = re.search(pattern, path)
             if match:
                 env_path = match.group()
+                logger.info(f'get_env_screamer_paths: MATCHED {env_path}')
                 env_screamer_path = os.path.join(env_path, 'screamer')
                 if os.path.isdir(env_screamer_path):
+                    logger.info(f'get_env_screamer_paths: FOUND {env_screamer_path}')
                     screamer_paths.append(env_screamer_path)
         return screamer_paths
 
     def _load_module_from_file_path(self, file_path):
         original_sys_path = sys.path.copy()
         sys.path = [os.path.dirname(os.path.dirname(file_path))]
+
+        logger.info(f'loading... changes sys.path to {sys.path}')
+
         spec = importlib.util.spec_from_file_location('screamer', file_path)
+        
+        logger.info(f'loading... spec = {spec}')
+
         self.module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.module)
         sys.path = original_sys_path
         return self.module
        
     def load_module(self):
+        logger.info(f'load_module:')
         if self.local_bindings_path:
+            logger.info(f'load_module: trying local')
             file_path = os.path.join(self.local_screamer_path, "__init__.py")
             return self._load_module_from_file_path(file_path)
         
         if self.env_screamer_paths:
+            logger.info(f'load_module: trying env')
             file_path = os.path.join(self.env_screamer_paths, "__init__.py")
             return self._load_module_from_file_path(file_path)
+        
+        logger.info(f'load_module: NOT LOADED, nothing tried')
 
 sii = ScreamerInstallInfo()
 screamer_module = sii.load_module()

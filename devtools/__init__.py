@@ -25,6 +25,7 @@ logger.info(f'local_project_path: {local_project_path}')
 local_screamer_path = os.path.join(local_project_path, 'screamer')
 logger.info(f'local_screamer_path: {local_screamer_path}')
 
+
 def log_sys_path():
     logger.info(f'sys.path:')
     for p in sys.path:
@@ -38,6 +39,30 @@ def log_pythonpath():
     logger.info(f'pythonpath:')
     for p in python_paths:
         logger.info(f'- {p}')
+
+
+import pkgutil
+import sys
+
+module_name = 'screamer'
+found_locations = []
+
+def find_available_module_paths(module_name):
+    found_locations = []
+    # Iterate through each location in sys.path
+    for finder, name, ispkg in pkgutil.iter_modules(path=sys.path):
+        if name == module_name:
+            # Find the module's path location
+            found_locations.append(finder.path)
+
+    # Display all found locations
+    if found_locations:
+        logger.info(f"Module '{module_name}' found in the following locations:")
+        for location in found_locations:
+            logger.info(f'- {location}')
+    else:
+        logger.info(f"Module '{module_name}' not found in any location.")
+    return found_locations
 
 
 def remove_local_screamer_path():
@@ -110,6 +135,13 @@ def load_screamer_module_from_env():
     remove_local_screamer_path()
     log_sys_path()
     log_pythonpath()
+    screamer_paths = find_available_module_paths()
+    logging.info('Changing load order')
+    if len(screamer_paths) > 0:
+        preferred_path = screamer_paths[0]
+        sys.path.insert(0, preferred_path)
+    log_sys_path()
+
 
     spec = importlib.util.find_spec(module_name)
     if spec is None:

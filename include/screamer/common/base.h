@@ -92,9 +92,6 @@ namespace screamer {
         private:
             py::iterator iterator_;
             ScreamerBase& processor_;
-
-            // Make LazyIterator friend, for potential access
-            friend class LazyIterator;            
         };
 
         // Pure virtual function to process a single scalar

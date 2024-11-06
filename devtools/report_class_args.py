@@ -1,17 +1,16 @@
 import inspect
 import re
 import sys
-from devtools import load_screamer_module, get_constructor_arguments
+from devtools import load_screamer_module, get_constructor_arguments, screamer_module
 
 # Replace this with your project module name if needed.
 MODULE_PATH = 'screamer'
 
 
-def report_class_args(class_name_filter=None):
+def report_class_args(screamer_module, class_name_filter=None):
     """Print constructor arguments and types for each class in the module."""
-    module = load_screamer_module()
 
-    classes = [cls for cls_name, cls in inspect.getmembers(module, inspect.isclass)]
+    classes = [cls for cls_name, cls in inspect.getmembers(screamer_module, inspect.isclass)]
 
     for cls in classes:
         if class_name_filter and cls.__name__ != class_name_filter:
@@ -28,6 +27,6 @@ def report_class_args(class_name_filter=None):
 if __name__ == "__main__":
     # Check if a class name is provided as a command-line argument
     if len(sys.argv) > 1:
-        report_class_args(sys.argv[1])
+        report_class_args(screamer_module, sys.argv[1])
     else:
-        report_class_args()
+        report_class_args(screamer_module)

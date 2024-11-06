@@ -51,7 +51,8 @@ def test(c):
     c.run("python devtools/generate_screamer__init__.py")
         
     c.run('pip install -e .')
-    c.run('pytest')
+    c.run('pytest', pty=True)
+    c.run('python devtools/report_baselines.py', pty=True)
 
 
 @task

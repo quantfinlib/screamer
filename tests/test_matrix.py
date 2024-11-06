@@ -1,11 +1,8 @@
 import numpy as np
-from itertools import product
 from .param_cases import yield_test_cases, generate_array
-from devtools import load_screamer_module, baselines
+from devtools import screamer_module
 import pytest
 
-# Load the screamer module
-screamer_module = load_screamer_module()
 
 # Create a pytest parameterization using the collected test cases
 @pytest.mark.parametrize(
@@ -38,7 +35,7 @@ def test_screamer_matrix(class_name, params, array_type, array_length):
     # Run the matrix version
     screamer_output_2 = screamer_instance_2(input_array)
 
-    if class_name == 'RollingRms':
+    if class_name == 'xyz':
         print('------------------------------------------------------------')
         print('input_array')
         print(input_array)

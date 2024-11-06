@@ -29,7 +29,7 @@ logger.info(f'local_screamer_path: {local_screamer_path}')
 def find_first_site_packages_path():
     for p in sys.path:
         if '/venv/lib/' in p:
-            
+
             logger.info(f'found a venv site_packages: {p}')
             logger.info('packages in venv:')
             for f in glob.glob(os.path.join(p, '*')):
@@ -81,6 +81,10 @@ def find_available_module_paths(module_name):
 
 
 def load_module_from_path(module_name, file_path):
+    # Adjust the file_path to point to __init__.py for packages
+    if os.path.isdir(file_path):
+        file_path = os.path.join(file_path, "__init__.py")
+        
     spec = importlib.util.spec_from_file_location(module_name, file_path)
     if spec and spec.loader:
         module = importlib.util.module_from_spec(spec)

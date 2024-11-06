@@ -67,17 +67,28 @@ found_locations = []
 
 
 def load_module_from_path(module_name, file_path):
-    # Adjust the file_path to point to __init__.py for packages
+    # Ensure file_path points to __init__.py if it's a directory
     if os.path.isdir(file_path):
         file_path = os.path.join(file_path, module_name, "__init__.py")
         
-    spec = importlib.util.spec_from_file_location(module_name, file_path)
-    if spec and spec.loader:
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        return module
-    else:
-        raise ImportError(f"Cannot load module {module_name} from {file_path}")
+    # Add the venv's site-packages directory temporarily to sys.path
+    original_sys_path = sys.path.copy()
+    sys.path.insert(0, os.path.dirname(os.path.dirname(file_path)))  # Add the venv root
+    
+    try:
+        # Load the module as before
+        spec = importlib.util.spec_from_file_location(module_name, file_path)
+        logging.info('spec', spec)
+        if spec and spec.loader:
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            return module
+        else:
+            raise ImportError(f"Cannot load module {module_name} from {file_path}")
+    finally:
+        # Restore the original sys.path
+        sys.path = original_sys_path
+
 
 
 def remove_local_screamer_path():

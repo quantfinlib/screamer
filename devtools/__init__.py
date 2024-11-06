@@ -34,6 +34,10 @@ def find_first_site_packages_path():
             logger.info('packages in venv:')
             for f in glob.glob(os.path.join(p, '*')):
                 logger.info(f'- {f}')
+            logger.info('files in screamer package in venv:')
+            for f in glob.glob(os.path.join(p, 'screamer/*')):
+                logger.info(f'- {f}')        
+            logger.info('done.')
 
             return p
     return None
@@ -60,24 +64,6 @@ import sys
 
 module_name = 'screamer'
 found_locations = []
-
-def find_available_module_paths(module_name):
-    found_locations = []
-    # Iterate through each location in sys.path
-    for finder, name, ispkg in pkgutil.iter_modules(path=sys.path):
-        logger.info(f'finder = {finder}, name = {name}, ispkg = {ispkg}')
-        if name == module_name:
-            # Find the module's path location
-            found_locations.append(finder.path)
-
-    # Display all found locations
-    if found_locations:
-        logger.info(f"Module '{module_name}' found in the following locations:")
-        for location in found_locations:
-            logger.info(f'- {location}')
-    else:
-        logger.info(f"Module '{module_name}' not found in any location.")
-    return found_locations
 
 
 def load_module_from_path(module_name, file_path):

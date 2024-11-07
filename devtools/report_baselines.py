@@ -1,5 +1,8 @@
 from colorama import Fore, Style, init
-from devtools import  get_module_classes, get_baselines, screamer_module
+from devtools import  get_module_classes, get_baselines, sii
+
+screamer_module = sii.load_screamer_module()
+
 
 def report_screamer_classes(screamer_module):
     # Initialize colorama

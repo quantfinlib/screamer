@@ -1,8 +1,10 @@
 print("TEST PARAM_CASES")
 from itertools import product
 import numpy as np
-from devtools import get_constructor_arguments, get_baselines, screamer_module
+from devtools import get_constructor_arguments, get_baselines, sii
 import pytest
+
+screamer_module = sii.load_screamer_module()
 
 # ----------------------------------------------------------------------
 # Set of classes in the screamer module

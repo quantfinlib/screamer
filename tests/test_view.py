@@ -1,8 +1,9 @@
 import numpy as np
 from .param_cases import yield_test_cases, generate_array
-from devtools import screamer_module
+from devtools import sii
 import pytest
 
+screamer_module = sii.load_screamer_module()
 
 # Create a pytest parameterization using the collected test cases
 @pytest.mark.parametrize(

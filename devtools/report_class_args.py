@@ -1,7 +1,9 @@
 import inspect
 import re
 import sys
-from devtools import load_screamer_module, get_constructor_arguments, screamer_module
+from devtools import get_constructor_arguments, sii
+
+screamer_module = sii.load_screamer_module()
 
 # Replace this with your project module name if needed.
 MODULE_PATH = 'screamer'

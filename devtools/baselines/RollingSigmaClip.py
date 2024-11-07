@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-class RollingSigmaClip:
+class RollingSigmaClip_python:
     def __init__(self, window_size, lower=None, upper=None, output=0):
         if window_size <= 0:
             raise ValueError("Window size must be positive.")

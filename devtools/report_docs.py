@@ -2,8 +2,11 @@ import os
 import glob
 import inspect
 import importlib.util
-from devtools import get_module_classes, screamer_module
+from devtools import get_module_classes, sii
 from colorama import Fore, Style, init
+
+screamer_module = sii.load_screamer_module()
+
 
 # Replace this with your project module name or dynamically load like before if needed.
 MODULE_PATH = 'screamer'

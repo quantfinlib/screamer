@@ -6,7 +6,7 @@
 #include "screamer/common/base.h"
 #include "screamer/common/math.h"
 #include "screamer/signal/signal.h"
-#include "screamer/signal/buttern.h"
+#include "screamer/signal/butter.h"
 
 namespace screamer {
 

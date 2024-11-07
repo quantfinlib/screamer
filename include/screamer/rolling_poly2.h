@@ -70,43 +70,6 @@ namespace screamer {
             double endpoint = a * (N - 1) * (N - 1) + b * (N - 1) + c;
             double slope = 2 * a * (N - 1) + b;
             double curvature = 2 * a;
-
-            /*
-            std::cout << "RollingPoly2::process_scalar(" << y << ")" << std::endl;
-
-            std::cout 
-                << "Sx=" << Sx << ", " 
-                << "Sxx=" << Sxx << ", " 
-                << "Sxxx=" << Sxxx << ", " 
-                << "Sxxxx=" << Sxxxx  << std::endl;
-
-            std::cout 
-                << "Sx=" << Sx << ", " 
-                << "Sxx=" << Sxx << ", " 
-                << "Sxxx=" << Sxxx << ", " 
-                << "Sxxxx=" << Sxxxx  << std::endl;
-
-            std::cout 
-                << "Sy=" << Sy << ", " 
-                << "Sxy=" << Sxy << ", " 
-                << "Sxxy=" << Sxxy  << std::endl;
-
-            std::cout 
-                << "Zxx=" << Zxx << ", " 
-                << "Zxy=" << Zxy << ", " 
-                << "Zxx2=" << Zxx2 << ", " 
-                << "Zx2y=" << Zx2y << ", " 
-                << "Zx2x2=" << Zx2x2 << ", " 
-                << "d=" << d << std::endl;
-
-            std::cout 
-                << "a=" << a << ", " 
-                << "b=" << b << ", " 
-                << "c=" << c << ", " 
-                << "endpoint=" << endpoint << ", " 
-                << "slope=" << slope << ", " 
-                << "curvature=" << curvature << std::endl;
-            */
            
             // Return based on derivative_order_
             return derivative_order_ == 0 ? endpoint : (derivative_order_ == 1 ? slope : curvature);

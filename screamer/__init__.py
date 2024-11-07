@@ -4,9 +4,9 @@
 __version__ = "Unreleased"
 
 from .screamer_bindings import (
-    Abs, Butter, Clip, Diff, Elu, Erf, Erfc, EwKurt, EwMean, EwRms, EwSkew, EwStd, EwVar, EwZscore, Exp, Ffill, FillNa, Lag, Linear, Log, LogReturn, Power, Relu, Return, RollingKurt, RollingMax, RollingMean, RollingMedian, RollingMin, RollingPoly1, RollingPoly2, RollingQuantile, RollingRms, RollingSigmaClip, RollingSkew, RollingStd, RollingSum, RollingVar, RollingZscore, Selu, Sigmoid, Sign, Softsign, Sqrt, Tanh
+    Abs, Butter, Clip, Diff, Elu, Erf, Erfc, EwKurt, EwMean, EwRms, EwSkew, EwStd, EwVar, EwZscore, Exp, Ffill, FillNa, Lag, Linear, Log, LogReturn, Power, Relu, Return, RollingKurt, RollingMax, RollingMean, RollingMedian, RollingMin, RollingOU, RollingPoly1, RollingPoly2, RollingQuantile, RollingRms, RollingSigmaClip, RollingSkew, RollingStd, RollingSum, RollingVar, RollingZscore, Selu, Sigmoid, Sign, Softsign, Sqrt, Tanh
 )
 
 __all__ = [
-    "Abs", "Butter", "Clip", "Diff", "Elu", "Erf", "Erfc", "EwKurt", "EwMean", "EwRms", "EwSkew", "EwStd", "EwVar", "EwZscore", "Exp", "Ffill", "FillNa", "Lag", "Linear", "Log", "LogReturn", "Power", "Relu", "Return", "RollingKurt", "RollingMax", "RollingMean", "RollingMedian", "RollingMin", "RollingPoly1", "RollingPoly2", "RollingQuantile", "RollingRms", "RollingSigmaClip", "RollingSkew", "RollingStd", "RollingSum", "RollingVar", "RollingZscore", "Selu", "Sigmoid", "Sign", "Softsign", "Sqrt", "Tanh"
+    "Abs", "Butter", "Clip", "Diff", "Elu", "Erf", "Erfc", "EwKurt", "EwMean", "EwRms", "EwSkew", "EwStd", "EwVar", "EwZscore", "Exp", "Ffill", "FillNa", "Lag", "Linear", "Log", "LogReturn", "Power", "Relu", "Return", "RollingKurt", "RollingMax", "RollingMean", "RollingMedian", "RollingMin", "RollingOU", "RollingPoly1", "RollingPoly2", "RollingQuantile", "RollingRms", "RollingSigmaClip", "RollingSkew", "RollingStd", "RollingSum", "RollingVar", "RollingZscore", "Selu", "Sigmoid", "Sign", "Softsign", "Sqrt", "Tanh"
 ]

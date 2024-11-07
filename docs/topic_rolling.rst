@@ -12,6 +12,7 @@ Rolling Window Functions
    functions_rolling/RollingMedian
    functions_rolling/RollingMin
    functions_rolling/RollingKurt
+   functions_rolling/RollingOU
    functions_rolling/RollingPoly1
    functions_rolling/RollingPoly2
    functions_rolling/RollingRms

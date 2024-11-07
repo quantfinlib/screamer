@@ -1,12 +1,14 @@
 import inspect
 import os
-from devtools import screamer_module
+from devtools import sii
+
+screamer_bindings_module = sii.load_local_screamer_binding()
 
 def generate_init_py(module, output_path='screamer/__init__.py'):
     # Get all classes and functions not starting with an underscore
     public_members = [
         name for name, obj in inspect.getmembers(module)
-        if not name.startswith('_') and (inspect.isclass(obj) or inspect.isfunction(obj))
+        if name[0].isupper() and (inspect.isclass(obj) or inspect.isfunction(obj))
     ]
 
     # Prepare the content for __init__.py
@@ -33,4 +35,4 @@ __all__ = [
 
 # Load the module and generate __init__.py
 if __name__ == "__main__":
-    generate_init_py(screamer_module)
+    generate_init_py(screamer_bindings_module)

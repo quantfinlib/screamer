@@ -5,6 +5,15 @@ All notable changes to this project are documented in this file.
 [Unreleased] - yyyy-mm-dd
 -------------------------
 
+### Added
+
+* generical order Butterworth filter
+* RollingOU
+  
+### Changes
+
+* refactored devtools
+
 Version v0.1.46 (2024-11-02)
 -------------------------
 

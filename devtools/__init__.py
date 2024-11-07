@@ -16,22 +16,26 @@ class ScreamerInstallInfo:
     def __init__(self):
         self.local_project_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.local_screamer_path = os.path.join(self.local_project_path, 'screamer')
-        self.local_bindings_path = self._get_local_bindings_path()
-        self.env_screamer_paths = self._get_env_screamer_paths()
+        self.local_bindings_file_path = None
+        self.env_screamer_paths = None
         self.module = None
+        self._set_local_bindings_file_path()
+        self._set_env_screamer_paths()
 
-    def _get_local_bindings_path(self):
+    def _set_local_bindings_file_path(self):
+        self.local_bindings_path = None
         possible_extensions = ['*.so', '*.pyd', '*.dll']
         for ext in possible_extensions:
             so_files = glob.glob(os.path.join(self.local_screamer_path, f'screamer_bindings{ext}'))
             if so_files:
                 logger.debug(f'get_local_bindings_path: FOUND {so_files[0]}')
-                return so_files[0]
+                self.local_bindings_file_path = so_files[0]
+                return
         logger.debug(f'get_local_bindings_path: NO BINDINGS FOUND')
         return None
 
-    def _get_env_screamer_paths(self):
-        screamer_paths = []
+    def _set_env_screamer_paths(self):
+        self.env_screamer_paths = []
         pattern = r".*?site-packages"
         for path in sys.path:
             logger.debug(f'get_env_screamer_paths: EXAMINING {path}')
@@ -42,40 +46,43 @@ class ScreamerInstallInfo:
                 env_screamer_path = os.path.join(env_path, 'screamer')
                 if os.path.isdir(env_screamer_path):
                     logger.debug(f'get_env_screamer_paths: FOUND {env_screamer_path}')
-                    screamer_paths.append(env_screamer_path)
-        return screamer_paths
+                    self.env_screamer_paths.append(env_screamer_path)
 
-    def _load_module_from_file_path(self, file_path):
+    def _load_module_from_file_path(self, module_name, file_path):
         original_sys_path = sys.path.copy()
         sys.path = [os.path.dirname(os.path.dirname(file_path))]
-
-        logger.debug(f'loading... changes sys.path to {sys.path}')
-
-        spec = importlib.util.spec_from_file_location('screamer', file_path)
-        
+        logger.debug(f'loading {module_name}, changed sys.path to {sys.path}')
+        spec = importlib.util.spec_from_file_location(module_name, file_path)
         logger.debug(f'loading... spec = {spec}')
-
         self.module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.module)
         sys.path = original_sys_path
         return self.module
        
-    def load_module(self):
+    def load_local_screamer_binding(self):
+        return self._load_module_from_file_path('screamer_bindings', self.local_bindings_file_path)
+    
+    def load_local_screamer(self):
+        file_path = os.path.join(self.local_screamer_path, "__init__.py")
+        return self._load_module_from_file_path('screamer', file_path)
+    
+    def load_env_screamer(self):
+        file_path = os.path.join(self.env_screamer_paths[0], "__init__.py")
+        return self._load_module_from_file_path('screamer', file_path)
+
+
+    def load_screamer_module(self):
         logger.info(f'load_module:')
-        if self.local_bindings_path:
-            logger.info(f'load_module: trying local')
-            file_path = os.path.join(self.local_screamer_path, "__init__.py")
-            return self._load_module_from_file_path(file_path)
+        if self.local_bindings_file_path:
+            return self.load_local_screamer()
         
         if self.env_screamer_paths:
             logger.info(f'load_module: trying env')
-            file_path = os.path.join(self.env_screamer_paths[0], "__init__.py")
-            return self._load_module_from_file_path(file_path)
-        
+            return self.load_env_screamer()
+
         logger.info(f'load_module: NOT LOADED, nothing tried')
 
 sii = ScreamerInstallInfo()
-screamer_module = sii.load_module()
 
 def get_module_classes(screamer_module):
     class_names = [name for name, obj in inspect.getmembers(screamer_module, inspect.isclass)]

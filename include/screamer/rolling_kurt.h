@@ -1,79 +1,93 @@
+
 #ifndef SCREAMER_ROLLING_KURT_H
 #define SCREAMER_ROLLING_KURT_H
 
-#include <limits>
-#include <cmath>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/transforms.h>
-#include <screamer/buffer.h>
+#include <screamer/common/buffer.h>
+#include "screamer/common/base.h"
 
-namespace py = pybind11; // Alias for pybind11 namespace
+namespace py = pybind11;
 
 namespace screamer {
 
-class RollingKurt {
-public:
+    class RollingKurt : public ScreamerBase {
+    public:
 
-    RollingKurt(int N) : 
-        N(N), 
-        kurt(std::numeric_limits<double>::quiet_NaN()),
-        sum_x_buffer(N, std::numeric_limits<double>::quiet_NaN()),
-        sum_xx_buffer(N, std::numeric_limits<double>::quiet_NaN()),
-        sum_xxx_buffer(N, std::numeric_limits<double>::quiet_NaN()),
-        sum_xxxx_buffer(N, std::numeric_limits<double>::quiet_NaN())
-    {}
-    
-    double operator()(const double newValue) 
-    {
-        if (!std::isnan(newValue)) {
-            // Update the rolling sums
-            double sum_x = sum_x_buffer.append(newValue);
-            double sum_xx = sum_xx_buffer.append(newValue * newValue);
-            double sum_xxx = sum_xxx_buffer.append(newValue * newValue * newValue);
-            double sum_xxxx = sum_xxxx_buffer.append(newValue * newValue * newValue * newValue);
-
-            // Calculate the rolling mean and variance
-            double mean = sum_x / N;
-            double variance = (sum_xx - sum_x * mean) / (N - 1);
-            double std_dev = std::sqrt(variance);
-
-            if (std_dev > 0) {
-                // Calculate the rolling kurtosis (excess kurtosis)
-                kurt = (N * (sum_xxxx - 4 * mean * sum_xxx + 6 * mean * mean * sum_xx 
-                        - 4 * mean * mean * mean * sum_x + N * mean * mean * mean * mean)) 
-                        / ((N - 1) * (N - 2) * (N - 3) * std_dev * std_dev * std_dev * std_dev) - 3;
-            } else {
-                kurt = std::numeric_limits<double>::quiet_NaN(); // Undefined kurtosis when std dev is 0
+        RollingKurt(int window_size) : 
+            window_size_(window_size), 
+            sum_x_buffer(window_size),
+            sum_xx_buffer(window_size),
+            sum_xxx_buffer(window_size),
+            sum_xxxx_buffer(window_size)
+        {
+            if (window_size <= 0) {
+                throw std::invalid_argument("Window size must be positive.");
             }
+            double N = window_size;
+            c0 = N * (N + 1);
+            c1 = (N - 1) * (N - 2) * (N - 3);
+            c2 = (3 * (N - 1) * (N - 1)) / ((N - 2) * (N - 3));
         }
 
-        return kurt;
-    }
+        void reset() override {
+            sum_x_buffer.reset();
+            sum_xx_buffer.reset();
+            sum_xxx_buffer.reset();
+            sum_xxxx_buffer.reset();    
+        }
+        
+    private:
 
-    void reset() 
-    {
-        sum_x_buffer.reset(std::numeric_limits<double>::quiet_NaN());
-        sum_xx_buffer.reset(std::numeric_limits<double>::quiet_NaN());
-        sum_xxx_buffer.reset(std::numeric_limits<double>::quiet_NaN());
-        sum_xxxx_buffer.reset(std::numeric_limits<double>::quiet_NaN());
-        kurt = std::numeric_limits<double>::quiet_NaN();
-    }
+        double process_scalar(double newValue) override {
+            double N = window_size_;
 
-    py::array_t<double> transform(const py::array_t<const double> input_array) 
-    {
-        return transform_1(*this, input_array);
-    }
+            // Update the rolling sums
+            double newValue2 = newValue*newValue;
+            double sum_x = sum_x_buffer.process_scalar(newValue);
+            double sum_xx = sum_xx_buffer.process_scalar(newValue2);
+            double sum_xxx = sum_xxx_buffer.process_scalar(newValue2 * newValue);
+            double sum_xxxx = sum_xxxx_buffer.process_scalar(newValue2 * newValue2);
 
-private:
-    FixedSizeBuffer sum_x_buffer;
-    FixedSizeBuffer sum_xx_buffer;
-    FixedSizeBuffer sum_xxx_buffer;
-    FixedSizeBuffer sum_xxxx_buffer;
-    double kurt;
-    const int N;
-};
+            // Calculate the mean
+            double mean = sum_x / N;
+            double mean2 = mean * mean;
 
-} // namespace screamer
+            // Calculate the sample variance (unbiased)
+            double variance = (sum_xx - N * mean2) / (N - 1);
+            double std_dev = std::sqrt(variance);
 
-#endif // SCREAMER_ROLLING_KURT_H
+            if (std_dev > 0 && N > 3) {
+                // Calculate m4 (fourth central moment)
+                double m4 = sum_xxxx - 4 * mean * sum_xxx + 6 * mean2 * sum_xx - 3 * N * mean2 * mean2;
+
+                // Calculate numerator and denominator for kurtosis
+                double numerator = c0 * m4;
+                double denominator = c1 * variance * variance;
+
+                // Calculate kurtosis
+                double excess_kurtosis = (numerator / denominator) - c2;
+                return excess_kurtosis;
+
+            } else {
+                return std::numeric_limits<double>::quiet_NaN();  // Undefined kurtosis
+            }
+
+        }
+
+    private:
+        RollingSum sum_x_buffer;
+        RollingSum sum_xx_buffer;
+        RollingSum sum_xxx_buffer;
+        RollingSum sum_xxxx_buffer;
+        const int window_size_;
+
+        double c0;
+        double c1;
+        double c2;
+
+    }; // end of class
+
+} // end of namespace
+
+#endif // end of include guards

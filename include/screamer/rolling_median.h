@@ -1,124 +1,122 @@
 #ifndef SCREAMER_ROLLING_MEDIAN_H
 #define SCREAMER_ROLLING_MEDIAN_H
 
-#include <set>
 #include <deque>
-#include <stdexcept>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/transforms.h>
-#include <screamer/buffer.h>
+#include <screamer/common/buffer.h>
+#include "screamer/common/base.h"
+#include "screamer/common/float_info.h"
 
 namespace py = pybind11;
 
 namespace screamer {
 
-class RollingMedian {
-public:
-    RollingMedian(int window_size) : window_size(window_size)
-    {
-        if (window_size <= 0) {
-            throw std::invalid_argument("Window size must be positive.");
-        }
-    }
+    class RollingMedian : public ScreamerBase {
+    public:
 
-    double operator()(const double newValue)
-    {
-        // Remove the oldest value if the window is full
-        if (values.size() == window_size) {
-            double old_value = values.front();
-            values.pop_front();
-            removeValue(old_value);
-        }
-
-        insertValue(newValue);
-        values.push_back(newValue);
-
-        // Return the current median
-        return getMedian();
-    }
-
-    void reset()
-    {
-        lower.clear();
-        upper.clear();
-        values.clear();
-    }
-
-    py::array_t<double> transform(const py::array_t<const double> input_array)
-    {
-        return transform_1(*this, input_array);
-    }
-
-private:
-    const int window_size;
-    std::deque<double> values; // To keep track of the order of elements
-    std::multiset<double> lower; // Max-heap behavior (lower half)
-    std::multiset<double> upper; // Min-heap behavior (upper half)
-
-    void insertValue(double value)
-    {
-        if (lower.empty() || value <= *lower.rbegin()) {
-            lower.insert(value);
-        } else {
-            upper.insert(value);
-        }
-
-        // Rebalance the multisets
-        rebalance();
-    }
-
-    void removeValue(double value)
-    {
-        auto it_lower = lower.find(value);
-        if (it_lower != lower.end()) {
-            lower.erase(it_lower);
-        } else {
-            auto it_upper = upper.find(value);
-            if (it_upper != upper.end()) {
-                upper.erase(it_upper);
-            } else {
-                // Value not found in either multiset
-                throw std::runtime_error("Value not found in multiset during removal.");
+        RollingMedian(int window_size) : 
+            window_size(window_size), 
+            buffer(window_size, std::numeric_limits<double>::quiet_NaN()) 
+        {
+            if (window_size <= 0) {
+                throw std::invalid_argument("Window size must be positive.");
             }
         }
 
-        // Rebalance the multisets
-        rebalance();
-    }
-
-    void rebalance()
-    {
-        // Ensure sizes of lower and upper are balanced
-        if (lower.size() > upper.size() + 1) {
-            // Move one element from lower to upper
-            upper.insert(*lower.rbegin());
-            auto it = lower.end();
-            --it;
-            lower.erase(it);
-        } else if (upper.size() > lower.size()) {
-            // Move one element from upper to lower
-            lower.insert(*upper.begin());
-            upper.erase(upper.begin());
+        void reset() override
+        {
+            buffer.reset(std::numeric_limits<double>::quiet_NaN());
+            low.clear();
+            high.clear();
         }
-    }
+        
+    private:
 
-    double getMedian() const
-    {
-        if (lower.empty() && upper.empty()) {
-            throw std::runtime_error("Window is empty, cannot compute median.");
+        double process_scalar(double newValue) override 
+        {
+            double oldValue = buffer.append(newValue);
+
+            if (!isnan2(oldValue)) {
+                remove(oldValue);
+            }
+
+            if (!isnan2(newValue)) {
+                add(newValue);
+            }
+
+            if (low.empty() && high.empty()) {
+                return std::numeric_limits<double>::quiet_NaN();
+            } else {
+                return getMedian();
+            }
         }
 
-        if ((lower.size() + upper.size()) % 2 == 1) {
-            // Odd number of elements, median is the largest of lower
-            return *lower.rbegin();
-        } else {
-            // Even number of elements, median is the average of max of lower and min of upper
-            return (*lower.rbegin() + *upper.begin()) / 2.0;
+    private:
+        int window_size;
+        FixedSizeBuffer buffer;
+        std::multiset<double> low;  // Max heap (lower half)
+        std::multiset<double> high; // Min heap (upper half)
+
+        void add(double x)
+        {
+            // Insert into appropriate half
+            if (low.empty() || x <= *low.rbegin()) {
+                low.insert(x);
+            } else {
+                high.insert(x);
+            }
+
+            // Rebalance the two halves
+            rebalance();
         }
-    }
-};
 
-} // namespace screamer
+        void remove(double x)
+        {
+            // Remove from the appropriate half
+            auto it = low.find(x);
+            if (it != low.end()) {
+                low.erase(it);
+            } else {
+                it = high.find(x);
+                if (it != high.end()) {
+                    high.erase(it);
+                }
+            }
 
-#endif // SCREAMER_ROLLING_MEDIAN_H
+            // Rebalance after removal
+            rebalance();
+        }
+
+        void rebalance()
+        {
+            // Ensure size properties: low.size() >= high.size()
+            if (low.size() > high.size() + 1) {
+                high.insert(*low.rbegin());
+                low.erase(--low.end());
+            } else if (high.size() > low.size()) {
+                low.insert(*high.begin());
+                high.erase(high.begin());
+            }
+        }
+
+        double getMedian()
+        {
+            if (low.empty()) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+
+            if (low.size() == high.size()) {
+                // Median is the average of max of low and min of high
+                return (*low.rbegin() + *high.begin()) / 2.0;
+            } else {
+                // Median is max of low
+                return *low.rbegin();
+            }
+        }
+    
+    }; // end of class
+
+} // end of namespace
+
+#endif // end of include guards

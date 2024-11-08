@@ -1,0 +1,164 @@
+I need reference implementations for a C++ functor using Python, with a strong preference for leveraging native and optimized functions from libraries like NumPy, Pandas, or SciPy. When implementing:
+
+* Focus on using built-in or highly-optimized library functions that align with the core mathematical or statistical functionality of the C++ code.
+* Avoid direct, line-by-line translations of C++ code. Instead, determine the underlying mathematical or signal processing operation and use the best available library function to achieve this efficiently.
+* Implement multiple versions if possible, exploring how different native functions might achieve the goal.
+* Ensure the functors have a __call__ operator that accepts a NumPy array and returns a NumPy array. Pass class arguments through the constructor.
+
+If necessary, inspect the C++ code to understand its core purpose before choosing an equivalent built-in function. Prioritize concise implementations using built-in functionality over detailed, manual reproductions of the algorithm.
+
+Next I'll give you a couple of examples of baselines of famous functions.
+
+-----------
+import numpy as np
+import pandas as pd
+
+class EwMean_pandas:
+    def __init__(self, com=None, span=None, halflife=None, alpha=None):
+        self.com = com
+        self.span = span
+        self.halflife = halflife
+        self.alpha = alpha
+
+    def __call__(self, x):
+        return pd.Series(x).ewm(com=self.com, span=self.span, halflife=self.halflife, alpha=self.alpha).mean().to_numpy()
+-----------
+class Linear_numpy_v1:
+    def __init__(self, scale, shift):
+        self.scale = scale
+        self.shift = shift
+
+    def __call__(self, x):
+        import numpy as np
+        return self.scale * np.array(x) + self.shift
+
+class Linear_numpy_v2:
+    def __init__(self, scale, shift):
+        self.scale = scale
+        self.shift = shift
+
+    def __call__(self, x):
+        import numpy as np
+        return np.multiply(self.scale, x) + self.shift
+
+class Linear_pandas:
+    def __init__(self, scale, shift):
+        self.scale = scale
+        self.shift = shift
+
+    def __call__(self, x):
+        import pandas as pd
+        return (self.scale * pd.Series(x) + self.shift).to_numpy()
+-----------
+import pandas as pd
+import numpy as np
+
+class RollingStd_pandas:
+    def __init__(self, window_size):
+        self.window_size = window_size
+
+    def __call__(self, array):
+        return pd.Series(array).rolling(window=self.window_size).std().to_numpy()
+
+class RollingStd_numpy:
+    def __init__(self, window_size):
+        self.window_size = window_size
+
+    def __call__(self, array):
+        windowed_array = np.lib.stride_tricks.sliding_window_view(array, self.window_size)
+        ans = np.std(windowed_array, axis=-1, ddof=1)
+        return np.concatenate((np.full(self.window_size - 1, np.nan), ans))
+-----------
+import numpy as np
+import pandas as pd
+
+class Sigmoid_numpy:
+    def __call__(self, x):
+        return 1 / (1 + np.exp(-x))
+
+class Sigmoid_pandas:
+    def __call__(self, x):
+        return pd.Series(x).apply(lambda v: 1 / (1 + np.exp(-v))).to_numpy()
+-----------
+
+Below if the C++ function that you need to inspect and understand, and for which you need
+to write multiple Python functor reference implementations, is possible.
+-----------
+#ifndef SCREAMER_ROLLING_POLY1_H
+#define SCREAMER_ROLLING_POLY1_H
+
+#include <screamer/common/buffer.h>
+#include "screamer/common/base.h"
+#include <stdexcept>
+#include <tuple>
+
+namespace screamer {
+
+    class RollingPoly1 : public ScreamerBase {
+    public:
+        RollingPoly1(int window_size, int derivative_order = 0) : 
+            window_size_(window_size),
+            derivative_order_(derivative_order),
+            sum_y_buffer(window_size)
+        {
+            if (window_size <= 0) {
+                throw std::invalid_argument("Window size must be positive.");
+            }
+            if (derivative_order != 0 && derivative_order != 1) {
+                throw std::invalid_argument("Derivative order must be 0 (endpoint) or 1 (slope).");
+            }
+
+            double N = window_size;
+            // the sum of x-values [0, 1, 2, ..., window_size - 1]
+            sum_x = (N - 1.0) * N / 2.0;
+
+            // the population variance of x-values multiplied by n (window_size).
+            n_var_x = (N - 1.0) * N * (N + 1.0) / 12.0;
+
+            // reset the dynamic variables
+            reset();
+        }
+
+        void reset() override {
+            sum_y_buffer.reset();
+            sum_y = 0.0;
+            sum_xy = 0.0;
+        }
+
+        double process_scalar(double y) override {
+            sum_y = sum_y_buffer.process_scalar(y);
+            sum_xy += y * window_size_ - sum_y;
+            double n_covar_xy = sum_xy - sum_x * sum_y / window_size_;
+
+            double slope = n_covar_xy / n_var_x;
+            double intercept = (sum_y - slope * sum_x) / window_size_;
+            double endpoint = intercept + slope * (window_size_ - 1.0);
+            // Return based on mode: endpoint if mode == 0, or slope if mode == 1
+            /*
+            std::cout << "RollingPoly1::process_scalar(" << y << ")" << std::endl;
+            std::cout 
+                << "sum_x=" << sum_x << ", " 
+                << "sum_y=" << sum_y << ", " 
+                << "sum_xy=" << sum_xy << ", " 
+                << "n_var_x=" << n_var_x << ", " 
+                << "n_covar_xy=" << n_covar_xy << std::endl;
+            std::cout
+                << "slope=" << slope << ", " 
+                << "intercept=" << intercept << ", " 
+                << "endpoint=" << endpoint << std::endl;
+            */
+            return derivative_order_ == 0 ? endpoint : slope;
+        }
+
+    private:
+        const size_t window_size_;
+        double sum_x, sum_y, sum_xy, n_var_x;
+        RollingSum sum_y_buffer;
+
+        const int derivative_order_;
+
+    };
+
+} // end namespace screamer
+
+#endif // SCREAMER_ROLLING_POLY1_H

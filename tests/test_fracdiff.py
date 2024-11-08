@@ -1,5 +1,4 @@
-from screamer import FracDiff, frac_diff_generator
-
+from screamer import RollingFracDiff
 import numpy as np
 import pytest
 
@@ -11,27 +10,21 @@ def prices():
 
 
 def test_frac_diff_generic(prices):
-    fracdiff = FracDiff(window_size=10, frac_order=0, threshold=1e-6)
+    fracdiff = RollingFracDiff(frac_order=0, window_size=10, threshold=1e-6)
     fs = np.array([fracdiff(p) for p in prices])
-    fs2 = fracdiff.transform(prices)
+    fs2 = fracdiff(prices)
     assert np.allclose(fs[np.isfinite(fs2)], fs2[np.isfinite(fs2)])
 
 
 def test_frac_diff_identity(prices):
-    fracdiff = FracDiff(window_size=10, frac_order=0, threshold=1e-6)
+    fracdiff = RollingFracDiff(frac_order=0, window_size=10, threshold=1e-6)
     fs = np.array([fracdiff(p) for p in prices])
     assert np.allclose(fs, prices)
 
 
-def test_frac_diff_generator_identity(prices):
-    gen = frac_diff_generator(prices, window_size=10, frac_order=0)
-    fs = np.array(list(gen))
-    assert np.allclose(fs, prices)
-
-
 def test_frac_diff_d_equal_one(prices):
-    fracdiff = FracDiff(window_size=100, frac_order=1.0, threshold=0)
-    fs = fracdiff.transform(prices)
+    fracdiff = RollingFracDiff(frac_order=1.0, window_size=10, threshold=1e-6)
+    fs = fracdiff(prices)
     assert np.allclose(
         fs[1:], np.diff(prices)
     ), "when d=1, the output should be the same as the diff of the input."
@@ -39,8 +32,8 @@ def test_frac_diff_d_equal_one(prices):
 
 
 def test_frac_diff_d_equal_two(prices):
-    fracdiff = FracDiff(window_size=100, frac_order=2.0, threshold=0)
-    fs = fracdiff.transform(prices)
+    fracdiff = RollingFracDiff(frac_order=2.0, window_size=10, threshold=1e-6)
+    fs = fracdiff(prices)
     expected = prices[2:] - 2 * prices[1:-1] + prices[:-2]
     assert np.allclose(
         fs[2:], expected
@@ -48,23 +41,3 @@ def test_frac_diff_d_equal_two(prices):
     expected_first = prices[1] - 2 * prices[0]
     assert fs[1] == expected_first, "Second value should be the same as p1 - 2p0."
     assert fs[0] == prices[0], "First value should be the same as the input."
-
-
-def test_frac_diff_multi_dimensional(prices):
-    p2 = np.column_stack([prices, prices * 2])
-    fracdiff = FracDiff(window_size=100, frac_order=0.1, threshold=1e-6)
-    fs2 = fracdiff.transform(p2)
-    fs20 = np.array(
-        list(
-            frac_diff_generator(prices, frac_order=0.1, window_size=100, threshold=1e-6)
-        )
-    )
-    fs21 = np.array(
-        list(
-            frac_diff_generator(
-                prices * 2, frac_order=0.1, window_size=100, threshold=1e-6
-            )
-        )
-    )
-    assert np.allclose(fs2[:, 0], fs20)
-    assert np.allclose(fs2[:, 1], fs21)

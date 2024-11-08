@@ -5,8 +5,8 @@ import platform
 
 @task
 def release(c, part):
-    # Refresh Python files in screamer directory
-    c.run("python scripts/autogen_files.py", pty=True)
+    # Refresh Python --init__.py in screamer directory
+    c.run("python devtools/generate_screamer__init__.py")
 
     """Bump version, commit, tag, and push."""
     # Bump the version
@@ -47,8 +47,8 @@ def test(c):
             c.run('cmake --build .')
             c.run('cp screamer_bindings*.so ../screamer/')
 
-    # Refresh Python files in screamer directory
-    c.run("python scripts/autogen_files.py")
+    # Refresh Python --init__.py in screamer directory
+    c.run("python devtools/generate_screamer__init__.py")
         
     c.run('pip install -e .')
     c.run('pytest')
@@ -60,7 +60,12 @@ def docs(c):
         c.run('make clean')
         c.run('make html')        
 
-@task
-def benchmark(c):
-    c.run('python benchmarks/benchmark_rolling.py', pty=True)
-    c.run('python benchmarks/make_plots.py', pty=True)
+@task(optional=['func', 'lib', 'repeat'])
+def benchmark(c, func=None, lib=None, repeat=None):
+    func_arg = f' --func {func}' if func else ''
+    lib_arg = f' --lib {lib}' if lib else ''
+    repeat_arg = f' --repeat {repeat}' if repeat else ''
+
+    c.run(f'python benchmarks/run_benchmarks.py {func_arg}{lib_arg}{repeat_arg}', pty=True)
+    c.run(f'python benchmarks/make_plots.py {func_arg}', pty=True)
+    c.run(f'python benchmarks/make_rank_plot.py', pty=True)

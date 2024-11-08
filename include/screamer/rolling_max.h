@@ -1,67 +1,62 @@
 #ifndef SCREAMER_ROLLING_MAX_H
 #define SCREAMER_ROLLING_MAX_H
 
-#include <limits>
 #include <deque>
-#include <vector>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/transforms.h>
-#include <screamer/buffer.h>
+#include <screamer/common/buffer.h>
+#include "screamer/common/base.h"
 
 namespace py = pybind11;
 
 namespace screamer {
 
-// The descending maxima algorithm, similar to the ascending minima algorithm
-class RollingMax {
-public:
+    class RollingMax : public ScreamerBase {
+    public:
 
-    RollingMax(int window_size) : window_size(window_size) 
-    {
-        if (window_size <= 0) {
-            throw std::invalid_argument("N must be positive.");
-        }
-    }
-    
-    double operator()(const double newValue) 
-    {
-        // Add the new value to the list
-        values.push_back(newValue);
-
-        // Remove elements from the back of the deque that are smaller than the new value
-        while (!deque.empty() && values[deque.back()] <= newValue) {
-            deque.pop_back();
+        RollingMax(int window_size) : 
+            window_size_(window_size), 
+            index(0)
+        {
+            if (window_size <= 0) {
+                throw std::invalid_argument("Window size must be positive.");
+            }
         }
 
-        // Add the index of the new value to the deque
-        deque.push_back(values.size() - 1);
+        void reset() override {
+            max_deque.clear();
+            index = 0;    
+        }
+        
+    private:
 
-        // Remove the front element if it's out of the window
-        if (deque.front() <= static_cast<int>(values.size()) - window_size - 1) {
-            deque.pop_front();
+        double process_scalar(double newValue) override {
+            // Remove elements from the back that are smaller than the new value
+            while (!max_deque.empty() && max_deque.back().first <= newValue) {
+                max_deque.pop_back();
+            }
+
+            // Add the new value and its index to the deque
+            max_deque.emplace_back(newValue, index);
+
+            // Remove the front element if it's outside the window
+            if (max_deque.front().second <= index - window_size_) {
+                max_deque.pop_front();
+            }
+
+            index++;
+
+            // The front of the deque contains the maximum value in the window
+            return max_deque.front().first;
         }
 
-        return values[deque.front()];
-    }
+    private:
+    const int window_size_;
+    int index; // Current index
+    std::deque<std::pair<double, int>> max_deque; // Stores pairs of (value, index)
 
-    void reset() 
-    {
-        deque.clear();
-        values.clear();
-    }
+    }; // end of class
 
-    py::array_t<double> transform(const py::array_t<const double> input_array) 
-    {
-        return transform_1(*this, input_array);
-    }
+} // end of namespace
 
-private:
-    const int window_size;
-    std::deque<double> deque;
-    std::vector<double> values;
-};
-
-} // namespace screamer
-
-#endif // SCREAMER_ROLLING_MAX_H
+#endif // end of include guards

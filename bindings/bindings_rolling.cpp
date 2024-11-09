@@ -23,7 +23,7 @@ namespace py = pybind11;
 void init_bindings_rolling(py::module& m) {
 
     py::class_<screamer::RollingMean, screamer::ScreamerBase>(m, "RollingMean")
-        .def(py::init<int>(), py::arg("window_size"))
+        .def(py::init<int, const std::string&>(), py::arg("window_size"), py::arg("start_policy") = "strict")
         .def("__call__", &screamer::RollingMean::operator(), py::arg("value"))
         .def("reset", &screamer::RollingMean::reset, "Reset to the initial state.");
 
@@ -33,7 +33,7 @@ void init_bindings_rolling(py::module& m) {
         .def("reset", &screamer::RollingRms::reset, "Reset to the initial state.");
 
     py::class_<screamer::RollingSum, screamer::ScreamerBase>(m, "RollingSum")
-        .def(py::init<int>(), py::arg("window_size"))
+        .def(py::init<int, const std::string&>(), py::arg("window_size"), py::arg("start_policy") = "strict")
         .def("__call__", &screamer::RollingSum::operator(), py::arg("value"))
         .def("reset", &screamer::RollingSum::reset, "Reset to the initial state.");
 
@@ -83,11 +83,10 @@ void init_bindings_rolling(py::module& m) {
         .def("reset", &screamer::RollingZscore::reset, "Reset to the initial state.");
 
     py::class_<screamer::RollingPoly1>(m, "RollingPoly1")
-        .def(
-            py::init<int, int>(),
-            py::arg("window_size"),
-            py::arg("derivative_order") = 0
-        )
+        .def(py::init<int, int, const std::string&>(), 
+            py::arg("window_size"), 
+            py::arg("derivative_order") = 0, 
+            py::arg("start_policy") = "strict")
         .def("__call__", &screamer::RollingPoly1::operator(), py::arg("value"))
         .def("reset", &screamer::RollingPoly1::reset, "Reset to the initial state.");
 

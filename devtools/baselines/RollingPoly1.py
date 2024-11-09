@@ -13,7 +13,7 @@ class RollingPoly1_numpy:
     def __call__(self, array):
         if len(array) < self.window_size:
             raise ValueError("Input array length must be at least the window size")
-
+        array = np.concatenate((np.zeros(self.window_size -1), array))
         # Stride over the array to create rolling windows
         windows = np.lib.stride_tricks.sliding_window_view(array, self.window_size)
         sum_y = np.sum(windows, axis=-1)

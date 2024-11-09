@@ -4,7 +4,7 @@
 #include <limits>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/common/buffer.h>
+#include <screamer/detail/delay_buffer.h>
 #include "screamer/common/base.h"
 
 namespace py = pybind11;
@@ -14,77 +14,49 @@ namespace screamer {
     class Diff : public ScreamerBase {
     public:
 
-        Diff(int window_size) : 
-            window_size_(window_size), 
-             buffer_(window_size, 0.0) 
+        Diff(int window_size, const std::string& start_policy = "strict") : 
+            delay_buffer_(window_size, start_policy)
         {
-            if (window_size <= 0) {
-                throw std::invalid_argument("Window size must be positive.");
-            }
         }
 
         void reset() override {
-            buffer_.reset(0.0);
-        }    
-
+            delay_buffer_.reset();
+        }
+        
         double process_scalar(double newValue) override {
-            double oldValue = buffer_.append(newValue);
-            return newValue - oldValue;     
+
+            return newValue - delay_buffer_.append(newValue);         
         }
 
         void process_array_no_stride(double* y,  const double* x, size_t size) override {
-            if (size > window_size_) {
-                // Copy the first `window_size_` elements directly
-                std::memcpy(y, x, window_size_ * sizeof(double));
+            size_t window_size_ = delay_buffer_.capacity();
+            size_t split = std::min<size_t>(window_size_, size);
 
-                // Process elements in chunks of 4, starting from `window_size_`
-                size_t i = window_size_;
-                for (; i + 4 <= size; i += 4) {
-                    y[i]     = x[i]     - x[i - window_size_];
-                    y[i + 1] = x[i + 1] - x[i + 1 - window_size_];
-                    y[i + 2] = x[i + 2] - x[i + 2 - window_size_];
-                    y[i + 3] = x[i + 3] - x[i + 3 - window_size_];
-                }
+            for (int i=0; i < split; ++i) {
+                y[i] = x[i] - delay_buffer_.append(x[i]);
+            }
 
-                // Process any remaining elements one by one
-                for (; i < size; i++) {
-                    y[i] = x[i] - x[i - window_size_];
-                }
-
-            } else {
-                // If `size` is smaller than `window_size_`, copy everything directly
-                std::memcpy(y, x, size * sizeof(double));
+            for (int i=split; i < size; ++i) {
+                y[i] = x[i] - x[i - window_size_];
             }
         }       
 
         void process_array_stride(double* y, size_t dyi, const double* x, size_t dxi, size_t size) override {
+            size_t window_size_ = delay_buffer_.capacity();
+            size_t split = std::min<size_t>(window_size_, size);
 
-
-            // the elements < window_size don't have a x[i - window_size], we set them to zero
-            size_t split = std::min(size, window_size_);
-
-            size_t yi = 0;
-            size_t xi = 0;
-
-            for (size_t i=0; i<split; i++) { 
-                y[yi] = x[xi];
-                xi += dxi;
-                yi += dyi;
+            for (size_t i = 0, xi = 0, yi = 0; i < split; ++i, xi += dxi, yi += dyi) {
+                y[yi] = x[xi] - delay_buffer_.append(x[xi]);
             }
 
-            // all other elements
-            size_t shift = window_size_ * dxi;
-            for (size_t i=split; i<size; i++) {
-                y[yi] =  x[xi] - x[xi - shift];
-                xi += dxi;
-                yi += dyi;                
-            }
-           
+            size_t shift_x_forward_ = window_size_ * dxi;
+            for (size_t i = split, xi = 0, yi = window_size_ * dyi; i < size; ++i, xi += dxi, yi += dyi) {
+                y[yi] = x[xi + shift_x_forward_] - x[xi];
+            }           
         }
 
     private:
-        FixedSizeBuffer buffer_;
-        const size_t window_size_;
+        screamer::detail::DelayBuffer delay_buffer_;
 
     }; // end of class
 

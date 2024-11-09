@@ -19,6 +19,9 @@ find_package(Python3 COMPONENTS Interpreter Development.Module REQUIRED)
 # Include FetchContent module
 include(FetchContent)
 
+# Define a directory for dependencies to avoid redundant downloads
+set(FETCHCONTENT_BASE_DIR ${CMAKE_BINARY_DIR}/_deps)
+
 # Fetch pybind11
 FetchContent_Declare(
   pybind11
@@ -28,6 +31,9 @@ FetchContent_Declare(
 
 # Make pybind11 available
 FetchContent_MakeAvailable(pybind11)
+if(NOT pybind11_FOUND)
+    message(FATAL_ERROR "pybind11 could not be fetched or located!")
+endif()
 
 # ---------------------------------------------------------
 # Create the Python module

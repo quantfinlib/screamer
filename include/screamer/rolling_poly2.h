@@ -5,15 +5,19 @@
 #include "screamer/common/base.h"
 #include <stdexcept>
 #include <tuple>
+#include "screamer/detail/delay_buffer.h"
+
 
 namespace screamer {
 
     class RollingPoly2 : public ScreamerBase {
     public:
-        RollingPoly2(int window_size, int derivative_order = 0) : 
+        RollingPoly2(int window_size, int derivative_order = 0, const std::string& start_policy = "strict") : 
             window_size_(window_size),
             derivative_order_(derivative_order),
-            sum_y_buffer(window_size)
+            start_policy_(detail::parse_start_policy(start_policy)),
+            n_(0),
+            delay_buffer_(window_size, "zero")
         {
             if (window_size <= 0) {
                 throw std::invalid_argument("Window size must be positive.");
@@ -22,18 +26,11 @@ namespace screamer {
                 throw std::invalid_argument("Derivative order must be 0 (endpoint), 1 (slope), or 2 (curvature).");
             }
 
-            double N = window_size;
 
-            // Precompute sums and moments for x-values [0, 1, 2, ..., window_size - 1]
-            Sx = (N - 1) * N / 2;
-            Sxx = (N - 1) * N * (2 * N - 1) / 6;
-            Sxxx = N * N * (N - 1) * (N - 1) / 4;
-            Sxxxx = (N - 1) * N * (2*N - 1) * (3*N*N - 3*N - 1) / 30;
-         
             // derived stats without y
-            Zxx = Sxx - Sx * Sx / N;
-            Zxx2 = Sxxx - Sxx * Sx / N;
-            Zx2x2 = Sxxxx - Sxx * Sxx / N;
+            Zxx = sum_xx - sum_x * sum_x / n_;
+            Zxx2 = sum_xxx - sum_xx * sum_x / n_;
+            Zx2x2 = sum_xxxx - sum_xx * sum_xx / n_;
             d = Zxx * Zx2x2 - Zxx2 * Zxx2;
 
             // reset the dynamic variables
@@ -41,34 +38,78 @@ namespace screamer {
         }
 
         void reset() override {
-            sum_y_buffer.reset();
-            Sy = 0.0;
-            Sxy = 0.0;
-            Sxxy = 0.0;
+            delay_buffer_.reset();
+            sum_y = 0.0;
+            sum_xy = 0.0;
+            sum_xxy = 0.0;
+
+            if (start_policy_ == screamer::detail::StartPolicy::Expanding) {
+                n_ = 0;
+                sum_x = 0.0;
+                sum_xx = 0.0;
+                sum_xxx = 0.0;
+                sum_xxxx = 0.0;
+            } else {
+                n_ = window_size_;
+                sum_x = (n_ - 1.0) * n_ / 2.0;
+                sum_xx = (n_ - 1.0) * n_ * (2*n_ - 1.0) / 6.0;
+                sum_xxx = n_ * n_ * (n_ - 1) * (n_ - 1) / 4;
+                sum_xxxx = (n_ - 1) * n_ * (2*n_ - 1) * (3*n_*n_ - 3*n_ - 1) / 30;                      
+            }    
+
+            // derived statistics that have no y term
+            Zxx = sum_xx - sum_x * sum_x / n_;
+            Zxx2 = sum_xxx - sum_xx * sum_x / n_;
+            Zx2x2 = sum_xxxx - sum_xx * sum_xx / n_;
+            d = Zxx * Zx2x2 - Zxx2 * Zxx2;
+
         }
 
-        double process_scalar(double y) override {
-            double N = window_size_;
+        double process_scalar(double yn) override {
 
+            if (n_ < window_size_) {
+                if (start_policy_ == detail::StartPolicy::Expanding) {
+                    sum_x += n_;
+                    sum_xx += n_ * n_;
+                    sum_xxx += n_ * n_ * n_;
+                    sum_xxxx += n_ * n_ * n_ * n_;
+
+                    // derived statistics that have no y term
+                    Zxx = sum_xx - sum_x * sum_x / n_;
+                    Zxx2 = sum_xxx - sum_xx * sum_x / n_;
+                    Zx2x2 = sum_xxxx - sum_xx * sum_xx / n_;
+                    d = Zxx * Zx2x2 - Zxx2 * Zxx2;
+
+                    n_++;
+                } // else we have set things to n=window_size in the reset()
+            }
+
+            double y0 = delay_buffer_.append(yn);
+            sum_y += yn - y0;
 
             // update the sums with "y" terms
             // the order of 3 eqs is important!
-            Sy = sum_y_buffer.process_scalar(y);
-            Sxxy += N * (N - 2) * y + Sy - 2 * Sxy;
-            Sxy += N * y - Sy;
+            sum_xxy += n_ * (n_ - 2) * yn + sum_y - 2 * sum_xy;
+            sum_xy += n_ * yn - sum_y;
+
+            if (n_ < window_size_) {
+                if (start_policy_ == detail::StartPolicy::Strict) {
+                    return std::numeric_limits<double>::quiet_NaN();
+                }
+            }
 
             // compute derived stats with y terms
-            double Zxy = Sxy - Sx * Sy / N;
-            double Zx2y = Sxxy - Sxx * Sy / N;
+            double Zxy = sum_xy - sum_x * sum_y / n_;
+            double Zx2y = sum_xxy - sum_xx * sum_y / n_;
 
             // Compute a,b,c
             double a = (Zx2y * Zxx - Zxy * Zxx2) / d;
             double b = (Zxy * Zx2x2 - Zx2y * Zxx2) / d;
-            double c = Sy / N - b * Sx / N - a * Sxx / N;
+            double c = sum_y / n_ - b * sum_x / n_ - a * sum_xx / n_;
             
             // Calculating endpoint, slope, and curvature based on derivative_order_
-            double endpoint = a * (N - 1) * (N - 1) + b * (N - 1) + c;
-            double slope = 2 * a * (N - 1) + b;
+            double endpoint = a * (n_ - 1) * (n_ - 1) + b * (n_ - 1) + c;
+            double slope = 2 * a * (n_ - 1) + b;
             double curvature = 2 * a;
            
             // Return based on derivative_order_
@@ -77,12 +118,14 @@ namespace screamer {
 
     private:
         const size_t window_size_;
-        double Sx, Sxx, Sxxx, Sxxxx;
-        double Sy, Sxy, Sxxy;
-        double Zxx, Zxy, Zxx2, Zx2y, Zx2x2, d;
-        RollingSum sum_y_buffer;
-
         const int derivative_order_;
+        const detail::StartPolicy start_policy_;
+        detail::DelayBuffer delay_buffer_;
+        size_t n_;
+        double sum_x, sum_xx, sum_xxx, sum_xxxx;
+        double sum_y, sum_xy, sum_xxy;
+        double Zxx, Zxy, Zxx2, Zx2y, Zx2x2, d;
+
     };
 
 } // end namespace screamer

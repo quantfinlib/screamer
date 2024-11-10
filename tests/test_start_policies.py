@@ -19,7 +19,10 @@ factories = {
     'rolling_mean': screamer_module.RollingMean,
     'rolling_sum': screamer_module.RollingSum,
     'rolling_poly1': screamer_module.RollingPoly1,
-    'rolling_poly2': screamer_module.RollingPoly2
+    'rolling_poly2': screamer_module.RollingPoly2,
+    'rolling_var': screamer_module.RollingVar,
+    'rolling_std': screamer_module.RollingStd,
+    'rolling_rms': screamer_module.RollingRms,
 }
 
 

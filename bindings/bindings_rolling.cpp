@@ -17,6 +17,7 @@
 #include "screamer/rolling_poly2.h"
 #include "screamer/rolling_sigma_clip.h"
 #include "screamer/rolling_ou.h"
+#include "screamer/rolling_rsi.h"
 
 namespace py = pybind11;
 
@@ -28,7 +29,9 @@ void init_bindings_rolling(py::module& m) {
         .def("reset", &screamer::RollingMean::reset, "Reset to the initial state.");
 
     py::class_<screamer::RollingRms, screamer::ScreamerBase>(m, "RollingRms")
-        .def(py::init<int>(), py::arg("window_size"))
+        .def(py::init<int, const std::string&>(),
+            py::arg("window_size"),
+            py::arg("start_policy") = "strict")
         .def("__call__", &screamer::RollingRms::operator(), py::arg("value"))
         .def("reset", &screamer::RollingRms::reset, "Reset to the initial state.");
 
@@ -131,6 +134,13 @@ void init_bindings_rolling(py::module& m) {
         )
         .def("__call__", &screamer::RollingOU::operator(), py::arg("value"))
         .def("reset", &screamer::RollingOU::reset, "Reset to the initial state.");
+
+    py::class_<screamer::RollingRSI, screamer::ScreamerBase>(m, "RollingRSI")
+        .def(py::init<int, const std::string&>(),
+            py::arg("window_size"),
+            py::arg("start_policy") = "strict")
+        .def("__call__", &screamer::RollingRSI::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingRSI::reset, "Reset to the initial state.");
 
 
 }

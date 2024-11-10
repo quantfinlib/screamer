@@ -51,7 +51,10 @@ class RollingPoly1_scipy:
             endpoints.append(endpoint)
             slopes.append(slope)
 
-        return np.array(endpoints) if self.derivative_order == 0 else np.array(slopes)
+        endpoints = np.concatenate((np.full(self.window_size - 1, np.nan), endpoints))
+        slopes = np.concatenate((np.full(self.window_size - 1, np.nan), slopes))
+
+        return endpoints if self.derivative_order == 0 else slopes
 
 class RollingPoly1_pandas:
     def __init__(self, window_size, derivative_order=0):

@@ -38,12 +38,16 @@ void init_bindings_rolling(py::module& m) {
         .def("reset", &screamer::RollingSum::reset, "Reset to the initial state.");
 
     py::class_<screamer::RollingStd, screamer::ScreamerBase>(m, "RollingStd")
-        .def(py::init<int>(), py::arg("window_size"))
+        .def(py::init<int, const std::string&>(),
+            py::arg("window_size"),
+            py::arg("start_policy") = "strict")
         .def("__call__", &screamer::RollingStd::operator(), py::arg("value"))
         .def("reset", &screamer::RollingStd::reset, "Reset to the initial state.");
 
     py::class_<screamer::RollingVar, screamer::ScreamerBase>(m, "RollingVar")
-        .def(py::init<int>(), py::arg("window_size"))
+        .def(py::init<int, const std::string&>(),
+            py::arg("window_size"),
+            py::arg("start_policy") = "strict")
         .def("__call__", &screamer::RollingVar::operator(), py::arg("value"))
         .def("reset", &screamer::RollingVar::reset, "Reset to the initial state.");
 

@@ -83,29 +83,30 @@ namespace screamer {
 
         double process_scalar(double yn) override {
 
-            if (n_ < window_size_) {
-                delay_buffer_.append(yn); // we need to fill the buffer for later
-                sum_y += yn;
+            double y0 = delay_buffer_.append(yn);
+            sum_y += yn - y0;
 
-                // update sum_x and sum_xx if the windows is expanding
-                if (start_policy_ != detail::StartPolicy::Zero) { // expanding (and strict uses n_ from this)
-                    sum_x += n_;
-                    sum_xx += n_ * n_;
-                    sum_xy += n_ * yn; // expanding uses a regular sum
-                    n_++;
-                } else {
-                    sum_xy += window_size_ * yn - sum_y; // the zero policy assumes zero padding and full window size        
-                }
-                
+            if ((n_ < window_size_) && (start_policy_ != detail::StartPolicy::Zero) ) {
+                sum_x += n_;
+                sum_xx += n_ * n_;
+
+                sum_xy += n_ * yn;
+
+                n_++;
             } else {
-                double y0 = delay_buffer_.append(yn);
-                sum_y += yn - y0;
                 sum_xy += window_size_ * yn - sum_y;
+            }
+
+            if (1==2) { // debug
+                std::cout << " n=" << n_; 
+                std::cout << " yn=" << yn << " y0=" << y0; 
+                std::cout << " Sx=" << sum_x << " Sx2=" << sum_xx;
+                std::cout << " Sxy=" << sum_xy << std::endl; 
             }
 
             if (n_ < window_size_) {
                 if (start_policy_ == detail::StartPolicy::Strict) return std::numeric_limits<double>::quiet_NaN();
-                if (n_ < 2) return std::numeric_limits<double>::quiet_NaN();
+                if (n_ < 2)  return std::numeric_limits<double>::quiet_NaN();
             }
             
             double slope = (n_ * sum_xy - sum_x * sum_y) / (n_ * sum_xx - sum_x * sum_x);

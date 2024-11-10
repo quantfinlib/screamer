@@ -83,20 +83,19 @@ void init_bindings_rolling(py::module& m) {
         .def("reset", &screamer::RollingZscore::reset, "Reset to the initial state.");
 
     py::class_<screamer::RollingPoly1>(m, "RollingPoly1")
-        .def(py::init<int, int, const std::string&>(), 
-            py::arg("window_size"), 
-            py::arg("derivative_order") = 0, 
+        .def(py::init<int, int, const std::string&>(),
+            py::arg("window_size"),
+            py::arg("derivative_order") = 0,
             py::arg("start_policy") = "strict")
         .def("__call__", &screamer::RollingPoly1::operator(), py::arg("value"))
         .def("reset", &screamer::RollingPoly1::reset, "Reset to the initial state.");
 
 
     py::class_<screamer::RollingPoly2>(m, "RollingPoly2")
-        .def(
-            py::init<int, int>(),
+        .def(py::init<int, int, const std::string&>(),
             py::arg("window_size"),
-            py::arg("derivative_order") = 0
-        )
+            py::arg("derivative_order") = 0,
+            py::arg("start_policy") = "strict")
         .def("__call__", &screamer::RollingPoly2::operator(), py::arg("value"))
         .def("reset", &screamer::RollingPoly2::reset, "Reset to the initial state.");
 

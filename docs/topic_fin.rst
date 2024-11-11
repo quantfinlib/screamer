@@ -9,3 +9,4 @@ Finance
 
    functions_fin/Return
    functions_fin/LogReturn
+   functions_fin/RollingFracDiff

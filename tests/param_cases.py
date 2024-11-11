@@ -15,7 +15,7 @@ screamer_module = sii.load_screamer_module()
 screamer_classes = [cls for cls in dir(screamer_module) if  cls[0].isupper()]
 
 # The Rolling classes, except 'RollingQuantile' which has an extra argument
-rolling_classes = [cls for cls in screamer_classes if cls.startswith('Rolling') and not cls=='RollingQuantile']
+rolling_classes = [cls for cls in screamer_classes if cls.startswith('Rolling') and not cls=='RollingQuantile' and not cls=='RollingFracDiff']
 
 # The Ew classes, except: todo baselines for 'EwSkew', 'EwKurt'
 ew_classes = [cls for cls in screamer_classes if cls.startswith('Ew') and not cls in['EwSkew', 'EwKurt']]
@@ -39,7 +39,8 @@ test_definitions = [
     ( tuple(rolling_classes)     , {"window_size": [20]} ),
     ( ('RollingQuantile',)       , {"window_size": [20], "quantile": [0, 0.01, 0.4, 1]} ),
     ( ('RollingPoly1',)          , {"window_size": [20], "derivative_order": [0, 1] }),
-    ( ('RollingPoly2',)          , {"window_size": [20], "derivative_order": [0, 1, 2] }),       
+    ( ('RollingPoly2',)          , {"window_size": [20], "derivative_order": [0, 1, 2] }),
+    ( ('RollingFracDiff',)       , {"window_size": [20], "frac_order": [0.25, 0.5, 0.75, 1.0] }),
     ( tuple(ew_classes)          , {"span": [5]}),
     ( tuple(ew_classes)          , {"alpha": [0.2]}),
     ( tuple(ew_classes)          , {"halflife": [10]}),
@@ -48,6 +49,7 @@ test_definitions = [
     ( ('Butter',)                , {"order": [2,3,4,5,6,7,8,9,10], "cutoff_freq": [0.2]}),
     ( ('Diff','Lag')             , {"window_size": [10]})
 ]
+
 
 # ----------------------------------------------------------------------
 # Define functions for generating special input arrays

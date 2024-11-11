@@ -2,8 +2,11 @@ import os
 import glob
 import inspect
 import importlib.util
-from devtools import load_screamer_module, get_module_classes
+from devtools import get_module_classes, sii
 from colorama import Fore, Style, init
+
+screamer_module = sii.load_screamer_module()
+
 
 # Replace this with your project module name or dynamically load like before if needed.
 MODULE_PATH = 'screamer'
@@ -30,13 +33,12 @@ def get_all_classes_in_module(module_path=MODULE_PATH):
     return classes
 
 
-def report_class_documentation():
+def report_class_documentation(screamer_module):
 
     # Initialize colorama
     init(autoreset=True)
     
-    module = load_screamer_module()
-    classes = get_module_classes(module)
+    classes = get_module_classes(screamer_module)
     md_files = get_all_md_files()
 
     good_count = 0
@@ -61,4 +63,4 @@ def report_class_documentation():
 
 if __name__ == "__main__":
     
-    report_class_documentation()
+    report_class_documentation(screamer_module)

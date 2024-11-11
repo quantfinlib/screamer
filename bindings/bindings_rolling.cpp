@@ -16,6 +16,7 @@
 #include "screamer/rolling_poly1.h"
 #include "screamer/rolling_poly2.h"
 #include "screamer/rolling_sigma_clip.h"
+#include "screamer/rolling_ou.h"
 
 namespace py = pybind11;
 
@@ -116,6 +117,16 @@ void init_bindings_rolling(py::module& m) {
         )
         .def("__call__", &screamer::RollingSigmaClip::operator(), py::arg("value"))
         .def("reset", &screamer::RollingSigmaClip::reset, "Reset to the initial state.");
+
+
+     py::class_<screamer::RollingOU>(m, "RollingOU")
+        .def(
+          py::init<int, std::optional<int>>(),
+          py::arg("window_size"),
+          py::arg("output") = std::nullopt
+        )
+        .def("__call__", &screamer::RollingOU::operator(), py::arg("value"))
+        .def("reset", &screamer::RollingOU::reset, "Reset to the initial state.");
 
 
 }

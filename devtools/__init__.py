@@ -1,33 +1,92 @@
-import devtools.baselines
+import logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+
+import sys
 import glob
 import importlib.util
 import inspect
 import re
 import os
-import sys
-
-def load_screamer_module():
-    # Locate the compiled module (.so, .pyd, or platform-specific extensions)
-    possible_extensions = ['*.so', '*.pyd', '*.dll']
-    for ext in possible_extensions:
-        so_files = glob.glob(os.path.join('screamer', f'screamer_bindings{ext}'))
-        if so_files:
-            so_file_path = so_files[0]
-            break
-    else:
-        raise FileNotFoundError("Compiled module 'screamer_bindings' not found.")
-
-    # Load the module
-    module_name = 'screamer_bindings'
-    spec = importlib.util.spec_from_file_location(module_name, so_file_path)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module  # Ensure it's available globally
-    spec.loader.exec_module(module)
-    return module
+import importlib
+import devtools.baselines
 
 
-def get_module_classes(module):
-    return [name for name, obj in inspect.getmembers(module, inspect.isclass)]
+class ScreamerInstallInfo:
+    def __init__(self):
+        self.local_project_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.local_screamer_path = os.path.join(self.local_project_path, 'screamer')
+        self.local_bindings_file_path = None
+        self.env_screamer_paths = None
+        self.module = None
+        self._set_local_bindings_file_path()
+        self._set_env_screamer_paths()
+
+    def _set_local_bindings_file_path(self):
+        self.local_bindings_path = None
+        possible_extensions = ['*.so', '*.pyd', '*.dll']
+        for ext in possible_extensions:
+            so_files = glob.glob(os.path.join(self.local_screamer_path, f'screamer_bindings{ext}'))
+            if so_files:
+                logger.debug(f'get_local_bindings_path: FOUND {so_files[0]}')
+                self.local_bindings_file_path = so_files[0]
+                return
+        logger.debug(f'get_local_bindings_path: NO BINDINGS FOUND')
+        return None
+
+    def _set_env_screamer_paths(self):
+        self.env_screamer_paths = []
+        pattern = r".*?site-packages"
+        for path in sys.path:
+            logger.debug(f'get_env_screamer_paths: EXAMINING {path}')
+            match = re.search(pattern, path)
+            if match:
+                env_path = match.group()
+                logger.debug(f'get_env_screamer_paths: MATCHED {env_path}')
+                env_screamer_path = os.path.join(env_path, 'screamer')
+                if os.path.isdir(env_screamer_path):
+                    logger.debug(f'get_env_screamer_paths: FOUND {env_screamer_path}')
+                    self.env_screamer_paths.append(env_screamer_path)
+
+    def _load_module_from_file_path(self, module_name, file_path):
+        original_sys_path = sys.path.copy()
+        sys.path = [os.path.dirname(os.path.dirname(file_path))]
+        logger.debug(f'loading {module_name}, changed sys.path to {sys.path}')
+        spec = importlib.util.spec_from_file_location(module_name, file_path)
+        logger.debug(f'loading... spec = {spec}')
+        self.module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.module)
+        sys.path = original_sys_path
+        return self.module
+       
+    def load_local_screamer_binding(self):
+        return self._load_module_from_file_path('screamer_bindings', self.local_bindings_file_path)
+    
+    def load_local_screamer(self):
+        file_path = os.path.join(self.local_screamer_path, "__init__.py")
+        return self._load_module_from_file_path('screamer', file_path)
+    
+    def load_env_screamer(self):
+        file_path = os.path.join(self.env_screamer_paths[0], "__init__.py")
+        return self._load_module_from_file_path('screamer', file_path)
+
+
+    def load_screamer_module(self):
+        logger.info(f'load_module:')
+        if self.local_bindings_file_path:
+            return self.load_local_screamer()
+        
+        if self.env_screamer_paths:
+            logger.info(f'load_module: trying env')
+            return self.load_env_screamer()
+
+        logger.info(f'load_module: NOT LOADED, nothing tried')
+
+sii = ScreamerInstallInfo()
+
+def get_module_classes(screamer_module):
+    class_names = [name for name, obj in inspect.getmembers(screamer_module, inspect.isclass)]
+    return class_names
 
 def get_baselines(base_name='Linear'):
     implementations = []

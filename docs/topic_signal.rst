@@ -7,4 +7,4 @@ Signal Processing
    :hidden:
    :titlesonly:
 
-   functions_signal/Butter2
+   functions_signal/Butter

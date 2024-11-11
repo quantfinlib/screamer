@@ -1,59 +1,43 @@
 import numpy as np
 import pandas as pd
+from scipy.special import binom
 
 
 def compute_weights(frac_order, window_size, threshold):
-    weights = [1.0]
-    for k in range(1, window_size):
-        for k in range(1, window_size):
-            weight = -weights[-1] * (frac_order - k + 1) / k
-            if abs(weight) < threshold:
-                break
-            weights.append(weight)
-        return np.array(weights)
+    weights = (-1) ** np.arange(window_size) * binom(frac_order, np.arange(window_size))
+    weights = weights[abs(weights) >= threshold]
+    return weights
 
-class FracDiffNumpy:
+
+class RollingFracDiff_numpy:
     def __init__(self, frac_order, window_size, threshold=1e-5):
         self.frac_order = frac_order
         self.window_size = window_size
         self.threshold = threshold
         self.weights = compute_weights(frac_order, window_size, threshold)
-
-    def compute_weights(self):
-        weights = [1.0]
-        for k in range(1, self.window_size):
-            weight = -weights[-1] * (self.frac_order - k + 1) / k
-            if abs(weight) < self.threshold:
-                break
-            weights.append(weight)
-        return np.array(weights)
 
     def __call__(self, x):
         if len(x) < len(self.weights):
             raise ValueError("Input array length must be at least as large as the weights length.")
-        return np.convolve(x, self.weights[::-1], mode="valid")
+        return np.convolve(x, self.weights, mode="full")[:len(x)]
 
 
-
-
-class FracDiffPandas:
+class RollingFracDiff_pandas:
     def __init__(self, frac_order, window_size, threshold=1e-5):
         self.frac_order = frac_order
         self.window_size = window_size
         self.threshold = threshold
         self.weights = compute_weights(frac_order, window_size, threshold)
-
-    def compute_weights(self):
-        weights = [1.0]
-        for k in range(1, self.window_size):
-            weight = -weights[-1] * (self.frac_order - k + 1) / k
-            if abs(weight) < self.threshold:
-                break
-            weights.append(weight)
-        return np.array(weights)
-
-    def __call__(self, x):
-        series = pd.Series(x)
-        return series.rolling(window=self.window_size).apply(
-            lambda window: np.dot(window[::-1], self.weights[:len(window)]), raw=True
-        ).to_numpy()
+    
+    def __call__(self, array):
+        if len(array) < len(self.weights):
+            raise ValueError("Input Series length must be at least as large as the weights length.")
+        
+        def apply_weights(values):
+            if len(values) < len(self.weights):
+                return np.nan
+            return np.dot(values[-len(self.weights):], self.weights[::-1])
+        
+        return pd.Series(array).rolling(
+            window=len(self.weights), min_periods=len(self.weights)
+        ).apply(apply_weights, raw=True).to_numpy()

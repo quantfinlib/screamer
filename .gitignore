@@ -160,4 +160,9 @@ _skbuild/
 .vscode
 
 benchmarks/experiments/
+
 thijs*.*
+
+build_thijs
+build_thijs*.*
+experiments/

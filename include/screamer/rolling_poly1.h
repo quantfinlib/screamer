@@ -16,7 +16,7 @@ Sy = y0 + y1 + ... + y(n-1)
 Sxy = x0*y0 + x1*y1 + ... + x(n-1)*y(n-1)
 Sxx = x0*x0 + x1*x1 + ... + x(n-1)*x(n-1)
 
-The slope and intercept of OLS fit of y = a * x + b is:
+The slope and intercept of OLS fit of y = a * x + b are then:
 
 a = [n * Sxy - Sx * Sy] / [n * Sxx - Sx * Sx]
 b = [Sy - a * Sx] / n

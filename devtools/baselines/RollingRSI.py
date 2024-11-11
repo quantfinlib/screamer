@@ -1,5 +1,22 @@
 import numpy as np
 
+class RollingRSI:
+    def __init__(self, window_size=14):
+        self.window_size = window_size
+
+    def __call__(self, x):
+        # Ensure input is a numpy array for easier element-wise operations
+        x = np.asarray(x, dtype=float)
+        windowed_array = np.lib.stride_tricks.sliding_window_view(x, self.window_size)
+        dx = np.diff(windowed_array, axis=1) 
+        gains = np.sum(dx * (dx > 0), axis=1)
+        losses = np.sum(-dx * (dx < 0), axis=1)
+        ans = 100 * gains / (gains + losses)
+        return np.concatenate((np.full(self.window_size - 1, np.nan), ans))
+
+
+
+"""
 class EwRSI_numpy:
     def __init__(self, window_size=14):
         self.window_size = window_size
@@ -38,3 +55,4 @@ class EwRSI_numpy:
         rsi[:self.window_size] = np.nan
 
         return rsi
+"""

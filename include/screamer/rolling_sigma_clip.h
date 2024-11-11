@@ -56,11 +56,7 @@ namespace screamer {
             sum_xx_buffer.reset();       
             mean_ = std::numeric_limits<double>::quiet_NaN();
             std_ = std::numeric_limits<double>::quiet_NaN(); 
-            if (start_policy_ != detail::StartPolicy::Zero)  {
-                n_ = 0;
-            } else {
-                n_ = window_size_;        
-            }            
+            n_ = (start_policy_ != detail::StartPolicy::Zero) ? 0 : window_size_;         
         }
         
         void _update_mean_std(double newValue,size_t n_) {

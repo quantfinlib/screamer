@@ -32,11 +32,7 @@ namespace screamer {
 
         void reset() override {
             sum_y2_buffer.reset();    
-            if (start_policy_ != detail::StartPolicy::Zero)  {
-                n_ = 0;
-            } else {
-                n_ = window_size_;        
-            }
+            n_ = (start_policy_ != detail::StartPolicy::Zero) ? 0 : window_size_;
         }
         
         double process_scalar(double newValue) override {

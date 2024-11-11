@@ -6,7 +6,7 @@
 #include <pybind11/numpy.h>
 #include <screamer/detail/rolling_sum.h>
 #include "screamer/common/base.h"
-
+#include "screamer/common/math.h"
 /*
 todo: this implementation might  suffer from numerical instability
       https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_online_algorithm
@@ -33,21 +33,20 @@ namespace screamer {
 
         void reset() override {
             sum_y_buffer.reset();
-            sum_y2_buffer.reset();    
-            if (start_policy_ != detail::StartPolicy::Zero)  {
-                n_ = 0;
-            } else {
-                n_ = window_size_;        
-            }
+            sum_y2_buffer.reset();   
+            n_ = (start_policy_ != detail::StartPolicy::Zero) ? 0 : window_size_;
         }
         
         double process_scalar(double newValue) override {
             if ((n_ < window_size_) && (start_policy_ != detail::StartPolicy::Zero) ) {
                 n_++;
             } 
+
             double sum_y = sum_y_buffer.append(newValue);
             double sum_y2 = sum_y2_buffer.append(newValue * newValue);
-            double var = (sum_y2 - sum_y * sum_y / n_) / (n_ - 1);
+
+            double var;
+            var_from_stats(sum_y, sum_y2, n_, var);
             return std::sqrt(var);
         }
 

@@ -31,12 +31,8 @@ namespace screamer {
         void reset() override {
             rolling_gain_sum.reset();
             rolling_loss_sum.reset();    
-            prev_x = std::numeric_limits<double>::quiet_NaN();
-            if (start_policy_ != detail::StartPolicy::Zero)  {
-                n_ = 0;
-            } else {
-                n_ = window_size_;        
-            }
+            prev_x = (start_policy_ == detail::StartPolicy::Zero) ? 0 : std::numeric_limits<double>::quiet_NaN();
+            n_ = (start_policy_ != detail::StartPolicy::Zero) ? 0 : window_size_;
         }
 
         double process_scalar(double x) override {
@@ -53,9 +49,11 @@ namespace screamer {
 
             double gain_sum = rolling_gain_sum.append(dx > 0.0 ? dx : 0.0);
             double loss_sum = rolling_loss_sum.append(dx < 0.0 ? -dx : 0.0);
-            if (start_policy_ == detail::StartPolicy::Strict) {
-                return std::numeric_limits<double>::quiet_NaN();
+            /*
+            if ((gain_sum == 0) && (loss_sum == 0)) {
+                return 50.0;
             }
+            */
             double rsi = 100.0 * gain_sum / (gain_sum + loss_sum);
             return rsi;
         }

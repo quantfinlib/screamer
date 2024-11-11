@@ -4,8 +4,15 @@
 
 The `RollingPoly1` class fits a straight line (first-degree polynomial) through data within a specified moving window. It returns either the endpoint of this line or the slope, depending on the `derivative_order` argument. This approach, also known as a **causal Savitzky-Golay filter**, provides a way to smooth data or obtain the rate of change across each window. With `derivative_order=0`, the function returns the y-value at the end of the fitted line, which smooths the data over the window. When `derivative_order=1`, it outputs the slope, capturing the rate of change within each window.
 
-*Initial values*: The constructor requires a positive integer `window_size` to define the rolling window and an integer `derivative_order` (0 or 1) to specify the type of output.  
-*NaN handling*: NaN values are not handled natively and should be preprocessed if necessary.
+*Parameters*: 
+- **`window_size`**: Specifies the size of the rolling window.
+- **`derivative_order`**: 
+  - `0`: The y-value at the endpoint of the fitted quadratic curve, offering a smooth continuation of the data.
+  - `1`: The slope, representing the rate of change.
+- **`start_policy`**: Defines how the function handles the initial phase when fewer than `window_size` data points are available. This parameter accepts one of the following three values:
+  - `"strict"`: Returns `NaN` for all calculations until `window_size` elements have been processed.
+  - `"expanding"`: Adapts the computation by dynamically reducing the window size to include all available data, starting from a single point and growing until `window_size` is reached.
+  - `"zero"`: Simulates a full initial window of zeros, effectively pre-filling the data stream with `window_size` zeros before processing the actual input.
 
 ## Usage Example and Plot
 

@@ -5,24 +5,23 @@
 The `RollingSigmaClip` class performs rolling statistical clipping on a data sequence. It computes the rolling mean and standard deviation within a specified window and clips data points that fall outside dynamically calculated bounds based on z-scores. Specifically, it replaces values that exceed the bounds with the boundary values and excludes these clipped values from subsequent mean and standard deviation calculations. This method is useful for smoothing data, removing outliers, and preparing data for further analysis, especially when dealing with censored data from a truncated normal distribution.
 
 *Parameters*:
-
 - **`window_size`**: *(int)*  
   The size of the moving window over which the rolling statistics are computed. Must be a positive integer.
-
 - **`lower`**: *(optional, float)*  
   The lower z-score threshold for clipping. Data points with z-scores below this threshold are set to the lower bound. If unspecified, there is no lower clipping based on z-score.
-
 - **`upper`**: *(optional, float)*  
   The upper z-score threshold for clipping. Data points with z-scores above this threshold are set to the upper bound. If unspecified, there is no upper clipping based on z-score.
-
 - **`output`**: *(optional, int)*  
   Determines the type of output returned by the function:
   - `0`: Returns the clipped data sequence.
   - `1`: Returns the rolling mean.
   - `2`: Returns the rolling standard deviation.
   - `3`: Returns the original data with outliers (beyond the bounds) replaced by `NaN`.
+- **`start_policy`**: Defines how the function handles the initial phase when fewer than `window_size` data points are available. This parameter accepts one of the following three values:
+  - `"strict"`: Returns `NaN` for all calculations until `window_size` elements have been processed.
+  - `"expanding"`: Adapts the computation by dynamically reducing the window size to include all available data, starting from a single point and growing until `window_size` is reached.
+  - `"zero"`: Simulates a full initial window of zeros, effectively pre-filling the data stream with `window_size` zeros before processing the actual input.
 
-*NaN handling*: NaN values are propagated through the calculations. If NaN values are present in the input data, they will result in NaN outputs for the corresponding positions.
 
 ## Usage Example and Plot
 

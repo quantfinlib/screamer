@@ -33,13 +33,15 @@ namespace screamer {
                 py::isinstance<py::list>(input) ||
                 py::isinstance<py::tuple>(input)
             ) {
-                py::array_t<double> double_array = py::cast<py::array_t<double>>(input);
-                size_t size = double_array.size();
+                py::array_t<double> double_array_t = py::cast<py::array_t<double>>(input);
+                int size = double_array_t.size();
 
                 if (size > 1) {
-                    return process_python_array(double_array);
+                    return process_python_array(double_array_t);
                 } else {
-                    double value = py::cast<double>(double_array[0]);
+                    py::buffer_info buf_info = double_array_t.request();
+                    double* input_data_ptr = static_cast<double*>(buf_info.ptr);
+                    double value = input_data_ptr[0];
                     return py::float_(process_scalar(value));
                 }
             }

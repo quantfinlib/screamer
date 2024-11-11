@@ -1,76 +1,128 @@
 #ifndef SCREAMER_ROLLING_POLY1_H
 #define SCREAMER_ROLLING_POLY1_H
 
-#include <screamer/common/buffer.h>
 #include "screamer/common/base.h"
+#include "screamer/common/float_info.h"
 #include <stdexcept>
 #include <tuple>
+#include "screamer/detail/delay_buffer.h"
 
+/*
+## OLS Fit
+
+Define the following summations:
+Sx = x0 + x1 + ... + x(n-1)
+Sy = y0 + y1 + ... + y(n-1)
+Sxy = x0*y0 + x1*y1 + ... + x(n-1)*y(n-1)
+Sxx = x0*x0 + x1*x1 + ... + x(n-1)*x(n-1)
+
+The slope and intercept of OLS fit of y = a * x + b are then:
+
+a = [n * Sxy - Sx * Sy] / [n * Sxx - Sx * Sx]
+b = [Sy - a * Sx] / n
+
+## Sliding the window forward one step
+We one slide y forward, we keep x = [0, 1, ..., n-1]
+then 
+Sx = n (n - 1) / 2
+Sxx = (n - 1) n (2*n - 1) / 6
+
+### Sliding Sy
+The new value we recieve is yn
+
+Sy` <- Sy + yn - y0
+    = y1 + y2 + ... + y(n-1) + yn
+
+### Sliding Sxy
+before sliding we have: 
+Sxy  = 0*y0 + 1*y1 + 2*y2 + ... + (n-1)*y(n-1)
+after slidng we need
+Sxy` =        0*y1 + 1*y2 + ... + (n-2)*y(n-1) + (n-1)*yn
+thus
+Sxy` = Sxy - [y1 + y2 + ... + y(n-1)     ] + (n-1)*yn
+     = Sxy - [y1 + y2 + ... + y(n-1) + yn] + n*yn
+     = Sxy - Sy` + n*yn
+
+*/
 namespace screamer {
 
     class RollingPoly1 : public ScreamerBase {
     public:
-        RollingPoly1(int window_size, int derivative_order = 0) : 
+        RollingPoly1(int window_size, int derivative_order = 0, const std::string& start_policy = "strict") : 
             window_size_(window_size),
             derivative_order_(derivative_order),
-            sum_y_buffer(window_size)
+            start_policy_(detail::parse_start_policy(start_policy)),
+            n_(0),
+            delay_buffer_(window_size, "zero")
         {
-            if (window_size <= 0) {
-                throw std::invalid_argument("Window size must be positive.");
+            if (window_size < 2) {
+                throw std::invalid_argument("Window size must be 2 or more.");
             }
             if (derivative_order != 0 && derivative_order != 1) {
                 throw std::invalid_argument("Derivative order must be 0 (endpoint) or 1 (slope).");
             }
 
-            double N = window_size;
-            // the sum of x-values [0, 1, 2, ..., window_size - 1]
-            sum_x = (N - 1.0) * N / 2.0;
-
-            // the population variance of x-values multiplied by n (window_size).
-            n_var_x = (N - 1.0) * N * (N + 1.0) / 12.0;
-
-            // reset the dynamic variables
             reset();
         }
 
         void reset() override {
-            sum_y_buffer.reset();
+            delay_buffer_.reset();
             sum_y = 0.0;
-            sum_xy = 0.0;
+            sum_xy = 0.0;    
+
+            if (start_policy_ != detail::StartPolicy::Zero)  {
+                n_ = 0;
+                sum_x = 0.0;
+                sum_xx = 0.0;
+            } else {
+                n_ = window_size_;
+                sum_x = (n_ - 1.0) * n_ / 2.0;
+                sum_xx = (n_ - 1.0) * n_ * (2*n_ - 1.0) / 6.0;            
+            }
         }
 
-        double process_scalar(double y) override {
-            sum_y = sum_y_buffer.process_scalar(y);
-            sum_xy += y * window_size_ - sum_y;
-            double n_covar_xy = sum_xy - sum_x * sum_y / window_size_;
+        double process_scalar(double yn) override {
 
-            double slope = n_covar_xy / n_var_x;
-            double intercept = (sum_y - slope * sum_x) / window_size_;
-            double endpoint = intercept + slope * (window_size_ - 1.0);
-            // Return based on mode: endpoint if mode == 0, or slope if mode == 1
-            /*
-            std::cout << "RollingPoly1::process_scalar(" << y << ")" << std::endl;
-            std::cout 
-                << "sum_x=" << sum_x << ", " 
-                << "sum_y=" << sum_y << ", " 
-                << "sum_xy=" << sum_xy << ", " 
-                << "n_var_x=" << n_var_x << ", " 
-                << "n_covar_xy=" << n_covar_xy << std::endl;
-            std::cout
-                << "slope=" << slope << ", " 
-                << "intercept=" << intercept << ", " 
-                << "endpoint=" << endpoint << std::endl;
-            */
+            double y0 = delay_buffer_.append(yn);
+            sum_y += yn - y0;
+
+            if ((n_ < window_size_) && (start_policy_ != detail::StartPolicy::Zero) ) {
+                sum_x += n_;
+                sum_xx += n_ * n_;
+
+                sum_xy += n_ * yn;
+
+                n_++;
+            } else {
+                sum_xy += window_size_ * yn - sum_y;
+            }
+
+            if (1==2) { // debug
+                std::cout << " n=" << n_; 
+                std::cout << " yn=" << yn << " y0=" << y0; 
+                std::cout << " Sx=" << sum_x << " Sx2=" << sum_xx;
+                std::cout << " Sxy=" << sum_xy << std::endl; 
+            }
+
+            if (n_ < window_size_) {
+                if (start_policy_ == detail::StartPolicy::Strict) return std::numeric_limits<double>::quiet_NaN();
+                if (n_ < 2)  return std::numeric_limits<double>::quiet_NaN();
+            }
+            
+            double slope = (n_ * sum_xy - sum_x * sum_y) / (n_ * sum_xx - sum_x * sum_x);
+            double intercept = (sum_y - slope * sum_x) / n_;
+            double endpoint = intercept + (n_ - 1) * slope;
+
             return derivative_order_ == 0 ? endpoint : slope;
         }
 
     private:
         const size_t window_size_;
-        double sum_x, sum_y, sum_xy, n_var_x;
-        RollingSum sum_y_buffer;
-
         const int derivative_order_;
-
+        const detail::StartPolicy start_policy_;
+        size_t n_;
+        detail::DelayBuffer delay_buffer_;
+        double sum_x, sum_xx, sum_y, sum_xy;
     };
 
 } // end namespace screamer

@@ -37,5 +37,56 @@ namespace screamer {
         double& mu_true, double& sigma_true
     );
 
+    inline void var_from_stats(double sum_x, double sum_xx, int n, double& var) {
+        var = (sum_xx - (sum_x * sum_x) / n) / (n - 1);
+    }
+
+    inline void skew_n_const(int n_, double& c0) {
+        double n = n_;
+        c0 = n / ((n - 1) * (n - 2));
+    }
+
+    inline void skew_from_stats(double sum_x, double sum_xx, double sum_xxx, double c0, int n, double& skew) {
+        double mean = sum_x / n;
+
+        double var;
+        var_from_stats(sum_x, sum_xx, n, var);
+        double std_dev = std::sqrt(var);
+
+        double m3 = sum_xxx - 3 * mean * sum_xx + 2 * n * mean * mean * mean;
+        double g1 = m3 / (var * std_dev);
+        skew = g1 * c0;     
+    }
+
+    inline void kurt_n_const(int n_, double& c0, double& c1, double& c2) {
+        double n = n_; // cast to double
+        c0 = n * (n + 1);
+        c1 = (n - 1) * (n - 2) * (n - 3);
+        c2 = (3 * (n - 1) * (n - 1)) / ((n - 2) * (n - 3));
+    }
+
+    inline void kurt_from_stats(
+        double sum_x, double sum_xx, double sum_xxx, double sum_xxxx, 
+        double c0, double c1, double c2,
+        int n, 
+        double& kurt) {
+
+        double mean = sum_x / n;
+
+        double var;
+        var_from_stats(sum_x, sum_xx, n, var);
+
+        double std_dev = std::sqrt(var);
+
+        double mean2 = mean * mean;
+        double m4 = sum_xxxx - 4 * mean * sum_xxx + 6 * mean2 * sum_xx - 3 * n * mean2 * mean2;
+
+        double numerator = c0 * m4;
+        double denominator = c1 * var * var;
+
+        kurt = (numerator / denominator) - c2;
+    }
+    
+
 } // namespace
 #endif

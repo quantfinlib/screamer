@@ -1,12 +1,10 @@
-
 #ifndef SCREAMER_ROLLING_SIGMA_CLIP_H
 #define SCREAMER_ROLLING_SIGMA_CLIP_H
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/common/buffer.h>
 #include "screamer/common/base.h"
-#include "screamer/rolling_sum_nan.h"
+#include "screamer/detail/rolling_sum.h"
 #include "screamer/common/float_info.h"
 #include "screamer/common/math.h"
 
@@ -21,15 +19,16 @@ namespace screamer {
             int window_size,
             std::optional<double> lower = std::nullopt, 
             std::optional<double> upper = std::nullopt,
-            std::optional<int> output = std::nullopt
+            std::optional<int> output = std::nullopt,
+            const std::string& start_policy = "strict"
         ) : 
-            sum_x_buffer(window_size),
-            sum_xx_buffer(window_size),
+            window_size_(window_size), 
             lower_bound_(lower.value_or(std::numeric_limits<double>::lowest())),
             upper_bound_(upper.value_or(std::numeric_limits<double>::max())),
-            c0(1.0 / (window_size * (window_size - 1))),
-            window_size_(window_size), 
-            output_(output.value_or(0))
+            output_(output.value_or(0)),
+            start_policy_(detail::parse_start_policy(start_policy)),
+            sum_x_buffer(window_size, start_policy),
+            sum_xx_buffer(window_size, start_policy)           
         {
             if (window_size_ <= 0) {
                 throw std::invalid_argument("Window size must be positive.");
@@ -57,15 +56,16 @@ namespace screamer {
             sum_xx_buffer.reset();       
             mean_ = std::numeric_limits<double>::quiet_NaN();
             std_ = std::numeric_limits<double>::quiet_NaN(); 
+            n_ = (start_policy_ != detail::StartPolicy::Zero) ? 0 : window_size_;         
         }
         
-        void _update_mean_std(double newValue) {
-            double sum_x = sum_x_buffer.process_scalar(newValue);
-            double sum_xx = sum_xx_buffer.process_scalar(newValue * newValue);
+        void _update_mean_std(double newValue,size_t n_) {
+            double sum_x = sum_x_buffer.append(newValue);
+            double sum_xx = sum_xx_buffer.append(newValue * newValue);
 
             // Compute the raw mean and std
-            double observed_mean = sum_x / window_size_;
-            double observed_std = std::sqrt((window_size_ * sum_xx - sum_x * sum_x) * c0);
+            double observed_mean = sum_x / n_;
+            double observed_std = std::sqrt((sum_xx - sum_x * sum_x / n_) / (n_ - 1));
 
             // Correct to the mean_ and std_ for truncation bias
             estimate_true_mean_std(
@@ -82,13 +82,6 @@ namespace screamer {
 
             double zscore, clippedValue;
 
-            // If newValue is NaN then there will be no clipping and/or updating
-            if (isnan2(newValue)) {
-                if (output_ == 1) return mean_;
-                if (output_ == 2) return std_;
-                return std::numeric_limits<double>::quiet_NaN();
-            }
-
             // if we have a mean and std then we can do clipping
             clippedValue = newValue;
             if ( (!isnan2(mean_)) && (!isnan2(std_))) {
@@ -101,18 +94,33 @@ namespace screamer {
                 }
             }
 
-            // did we clip?
+            // did we clip? If so we don't update stats, we return
             if (clippedValue != newValue) {
+                if (n_ < window_size_) {
+                    if (start_policy_ == detail::StartPolicy::Strict) {
+                        return std::numeric_limits<double>::quiet_NaN();
+                    }
+                    if (n_ < 2) return std::numeric_limits<double>::quiet_NaN();
+                }
                 if (output_ == 0) return clippedValue;
                 if (output_ == 1) return mean_;
                 if (output_ == 2) return std_;
-                return std::numeric_limits<double>::quiet_NaN()  ;              
+                return std::numeric_limits<double>::quiet_NaN();
             }
 
             // we didn't clip: update 
-            _update_mean_std(newValue);
+            if (n_ < window_size_) {
+                n_++;
+            } 
+            _update_mean_std(newValue, n_);
 
             // return the final result
+            if (n_ < window_size_) {
+                if (start_policy_ == detail::StartPolicy::Strict) {
+                    return std::numeric_limits<double>::quiet_NaN();
+                }
+                if (n_ < 2) return std::numeric_limits<double>::quiet_NaN();
+            }        
             if (output_ == 1) return mean_;
             if (output_ == 2) return std_;
             return newValue;
@@ -120,14 +128,15 @@ namespace screamer {
 
 
     private:
-        RollingSumNan sum_x_buffer;
-        RollingSumNan sum_xx_buffer;
+        detail::RollingSum sum_x_buffer;
+        detail::RollingSum sum_xx_buffer;
+        const detail::StartPolicy start_policy_;
 
-        const double c0;
         const double lower_bound_;
         const double upper_bound_;
         const int window_size_;
         const int output_;
+        int n_;
         double mu_trunc;
         double sigma_trunc;
 

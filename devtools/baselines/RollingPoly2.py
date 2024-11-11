@@ -65,6 +65,8 @@ class RollingPoly2_scipy:
             results['endpoint'].append(endpoint)
             results['slope'].append(slope)
             results['curvature'].append(curvature)
+        for k in results.keys():
+            results[k] = np.concatenate((np.full(self.window_size - 1, np.nan), results[k] ))
 
         return (
             np.array(results['endpoint']) if self.derivative_order == 0 else

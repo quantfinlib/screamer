@@ -1,15 +1,3 @@
-To document `RollingOU`, we'll first examine the behavior and interpretation of the mean reversion rate (mrr) parameter in a discrete-time Ornstein-Uhlenbeck (OU) process. This parameter controls the extent to which the model's values revert toward the mean. A high mrr value close to 1 indicates strong mean reversion, with values quickly adjusting back to the mean. When mrr is greater than 1, the model can display oscillatory or unstable behavior. If mrr is less than zero, the process instead diverges from the mean, a phenomenon referred to as "mean repulsion."
-
-A refined interpretation of mrr is as follows:
-
-- **Positive mrr (0 < mrr < 1)**: Indicates mean reversion, where values tend to return toward the mean at a rate governed by mrr. The closer mrr is to 1, the faster the reversion to the mean.
-- **Negative mrr (mrr < 0)**: Represents mean repulsion, where values tend to move away from the mean rather than reverting to it.
-- **High mrr (mrr > 1)**: Indicates oscillatory or unstable behavior, as the process diverges around the mean, leading to amplified oscillations or instability.
-
-With this understanding, we can move to the documentation.
-
----
-
 # `RollingOU`
 
 ## Description
@@ -38,7 +26,10 @@ where $ x[i] $ is the current value, $ x[i-1] $ is the previous value, $ \mu $ i
 - **2**: Returns the relative mean ($\mu^\prime = \mu - x[i]$), the mean relative to the last value.
 - **3**: Returns the estimated standard deviation of the noise ($\sigma$).
 
-*NaN handling*: NaN values are ignored within the window for estimation.
+- **`start_policy`**: Defines how the function handles the initial phase when fewer than `window_size` data points are available. This parameter accepts one of the following three values:
+  - `"strict"`: Returns `NaN` for all calculations until `window_size` elements have been processed.
+  - `"expanding"`: Adapts the computation by dynamically reducing the window size to include all available data, starting from a single point and growing until `window_size` is reached.
+  - `"zero"`: Simulates a full initial window of zeros, effectively pre-filling the data stream with `window_size` zeros before processing the actual input.
 
 ## Usage Example and Plot
 

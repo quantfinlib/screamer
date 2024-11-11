@@ -10,8 +10,16 @@ The `RollingPoly2` class fits a quadratic polynomial (second-degree equation) to
 
 This method, which extends the idea of a causal Savitzky-Golay filter, enables more nuanced data analysis by capturing both linear and quadratic trends within each window.
 
-*Initial values*: The constructor requires a positive integer `window_size` to define the rolling window and an integer `derivative_order` (0, 1, or 2) to specify the type of output.  
-*NaN handling*: NaN values are not handled natively and should be preprocessed if necessary.
+*Parameters*: 
+- **`window_size`**: Specifies the size of the rolling window.
+- **`derivative_order`**: 
+  - `0`: The y-value at the endpoint of the fitted quadratic curve, offering a smooth continuation of the data.
+  - `1`: The slope (first derivative) at the endpoint, representing the rate of change.
+  - `2`: The curvature (second derivative) at the endpoint, which captures the concavity of the data.
+- **`start_policy`**: Defines how the function handles the initial phase when fewer than `window_size` data points are available. This parameter accepts one of the following three values:
+  - `"strict"`: Returns `NaN` for all calculations until `window_size` elements have been processed.
+  - `"expanding"`: Adapts the computation by dynamically reducing the window size to include all available data, starting from a single point and growing until `window_size` is reached.
+  - `"zero"`: Simulates a full initial window of zeros, effectively pre-filling the data stream with `window_size` zeros before processing the actual input.
 
 ## Usage Example and Plot
 

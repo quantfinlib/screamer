@@ -4,8 +4,12 @@
 
 The `RollingSkew` class computes the skewness, or asymmetry, of data within a specified moving window. This calculation captures the extent and direction of asymmetry in the data distribution over the window, with a bias correction applied for small sample sizes.
 
-*Initial values*: The constructor requires a positive integer `window_size` parameter to define the rolling window.  
-*NaN handling*: NaN values are not handled natively and should be preprocessed if necessary.
+*Parameters*: 
+- **`window_size`**: Specifies the size of the rolling window.
+- **`start_policy`**: Defines how the function handles the initial phase when fewer than `window_size` data points are available. This parameter accepts one of the following three values:
+  - `"strict"`: Returns `NaN` for all calculations until `window_size` elements have been processed.
+  - `"expanding"`: Adapts the computation by dynamically reducing the window size to include all available data, starting from a single point and growing until `window_size` is reached.
+  - `"zero"`: Simulates a full initial window of zeros, effectively pre-filling the data stream with `window_size` zeros before processing the actual input.
 
 ## Usage Example and Plot
 

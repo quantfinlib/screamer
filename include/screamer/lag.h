@@ -4,7 +4,7 @@
 #include <limits>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <screamer/common/buffer.h>
+#include <screamer/detail/delay_buffer.h>
 #include "screamer/common/base.h"
 
 namespace py = pybind11;
@@ -14,66 +14,48 @@ namespace screamer {
     class Lag : public ScreamerBase {
     public:
 
-        Lag(int window_size) : 
-            window_size_(window_size), 
-             buffer_(window_size, 0.0) 
+        Lag(int window_size, const std::string& start_policy = "strict") : 
+            delay_buffer_(window_size, start_policy)
         {
-            if (window_size <= 0) {
-                throw std::invalid_argument("Window size must be positive.");
-            }
         }
 
         void reset() override {
-            buffer_.reset(0.0);
+            delay_buffer_.reset();
         }
         
-    private:
-
         double process_scalar(double newValue) override {
 
-            return buffer_.append(newValue);         
+            return delay_buffer_.append(newValue);         
         }
 
         void process_array_no_stride(double* y,  const double* x, size_t size) override {
-            if (size > window_size_) {
-                // Use memset for zero-initialization (often faster than std::fill_n for large blocks)
-                std::memset(y, 0, window_size_ * sizeof(double));
+            size_t window_size_ = delay_buffer_.capacity();
+            size_t split = std::min<size_t>(window_size_, size);
 
-                // Copy remaining elements from x to y, starting after the zeros
+            for (int i=0; i < split; ++i) {
+                y[i] = delay_buffer_.append(x[i]);
+            }
+
+            if (size > window_size_) {
                 std::memcpy(y + window_size_, x, (size - window_size_) * sizeof(double));
-            } else {
-                // If size <= window_size_, only fill with zeros up to `size`
-                std::memset(y, 0, size * sizeof(double));
             }
         }       
 
         void process_array_stride(double* y, size_t dyi, const double* x, size_t dxi, size_t size) override {
+            size_t window_size_ = delay_buffer_.capacity();
+            size_t split = std::min<size_t>(window_size_, size);
 
-
-            // the elements < window_size don't have a x[i - window_size], we set them to zero
-            size_t split = std::min(size, window_size_);
-
-            size_t xi = 0;
-            size_t yi = 0;
-
-            for (size_t i=0; i<split; i++) { // start at 1
-                y[yi] = 0.0;
-                yi += dyi;
+            for (size_t i = 0, xi = 0, yi = 0; i < split; ++i, xi += dxi, yi += dyi) {
+                y[yi] = delay_buffer_.append(x[xi]);
             }
 
-            // all other elements
-            for (size_t i=split; i<size; i++) {
-                y[yi] =  x[xi];
-                xi += dxi;
-                yi += dyi;                
-            }
-           
+            for (size_t i = split, xi = 0, yi = window_size_ * dyi; i < size; ++i, xi += dxi, yi += dyi) {
+                y[yi] = x[xi];
+            }           
         }
 
     private:
-        FixedSizeBuffer buffer_;
-        const size_t window_size_;
-
+        screamer::detail::DelayBuffer delay_buffer_;
 
     }; // end of class
 

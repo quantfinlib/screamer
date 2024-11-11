@@ -34,6 +34,8 @@ def test_screamer_vs_baseline(class_name, baseline_name, params, array_type, arr
     screamer_output = screamer_instance(input_array)
     baseline_output = baseline_instance(input_array)
 
+    assert input_array.shape == baseline_output.shape, "Baseline output is not the same shape as its input."
+
     # compare outputs
     # todo: for now we only compare the last 10 elements because we have no clear
     # policy about what to do with the first window_size - 1 elements.

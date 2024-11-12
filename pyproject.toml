@@ -79,6 +79,7 @@ numpy = { version = "^2.0.1", python = ">=3.10"}
 matplotlib = "^3.9.2"
 pandas = "^2.2.3"
 colorama = "^0.4.6"
+ipykernel = "^6.29.5"
 
 [tool.poetry.group.testing.dependencies]
 pytest = "^7.0"

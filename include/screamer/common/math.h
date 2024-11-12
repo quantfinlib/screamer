@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <Eigen/Dense>
 
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
@@ -86,7 +87,24 @@ namespace screamer {
 
         kurt = (numerator / denominator) - c2;
     }
-    
+
+    void linear_least_squares_with_t_stat(
+        const Eigen::MatrixXd& X,   // Design matrix (n x p)
+        const Eigen::VectorXd& y,   // Output (n x 1)
+        Eigen::VectorXd& beta,      // Coefficients (p x 1)
+        Eigen::VectorXd& t_stats    // t-statistics (p x 1)
+    ) {
+        int n = X.rows();
+        int p = X.cols();
+
+        Eigen::VectorXd beta_hat = (X.transpose() * X).ldlt().solve(X.transpose() * y);
+        Eigen::VectorXd residuals = y - X * beta_hat;
+        Eigen::MatrixXd cov_matrix = (residuals.transpose() * residuals) / (n - p) * (X.transpose() * X).ldlt().solve(Eigen::MatrixXd::Identity(p, p));
+        Eigen::VectorXd standard_errors = cov_matrix.diagonal().array().sqrt();
+
+        t_stats = beta_hat.array() / standard_errors.array();
+        beta = beta_hat;
+    }
 
 } // namespace
 #endif

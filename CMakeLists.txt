@@ -35,6 +35,19 @@ if(NOT pybind11_FOUND)
     message(FATAL_ERROR "pybind11 could not be fetched or located!")
 endif()
 
+# Fetch Eigen
+FetchContent_Declare(
+  eigen
+  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+  GIT_TAG        3.4.0  # Use the desired version here
+)
+
+# Make Eigen available
+FetchContent_MakeAvailable(eigen)
+if(NOT TARGET Eigen3::Eigen)
+    message(FATAL_ERROR "Eigen could not be fetched or located!")
+endif()
+
 # ---------------------------------------------------------
 # Create the Python module
 # ---------------------------------------------------------
@@ -45,9 +58,14 @@ file(GLOB_RECURSE BINDING_SOURCES "bindings/*.cpp")
 # Collect all source files in the src directory
 file(GLOB_RECURSE SCREAMER_SOURCES "src/screamer/*.cpp")
 
-
+# Create the Python extension module
 pybind11_add_module(screamer_bindings MODULE ${BINDING_SOURCES} ${SCREAMER_SOURCES})
-target_link_libraries(screamer_bindings PRIVATE pybind11::module)
+
+# Link pybind11 and Eigen libraries
+target_link_libraries(screamer_bindings PRIVATE pybind11::module Eigen3::Eigen)
+
+
+# Set include directories
 target_include_directories(
     screamer_bindings PUBLIC
     "${CMAKE_SOURCE_DIR}/include"

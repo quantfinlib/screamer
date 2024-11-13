@@ -88,7 +88,7 @@ namespace screamer {
         kurt = (numerator / denominator) - c2;
     }
 
-    void linear_least_squares_with_t_stat(
+    inline void linear_least_squares_with_t_stat(
         const Eigen::MatrixXd& X,   // Design matrix (n x p)
         const Eigen::VectorXd& y,   // Output (n x 1)
         Eigen::VectorXd& beta,      // Coefficients (p x 1)

@@ -13,7 +13,7 @@ namespace py = pybind11;
 
 void init_bindings_ew(py::module& m) {
 
-     py::class_<screamer::EwMean>(m, "EwMean")
+     py::class_<screamer::EwMean, screamer::ScreamerBase>(m, "EwMean")
         .def(
           py::init<
                std::optional<double>,
@@ -29,7 +29,7 @@ void init_bindings_ew(py::module& m) {
         .def("__call__", &screamer::EwMean::operator(), py::arg("value"))
         .def("reset", &screamer::EwMean::reset, "Reset to the initial state.");
 
-     py::class_<screamer::EwVar>(m, "EwVar")
+     py::class_<screamer::EwVar, screamer::ScreamerBase>(m, "EwVar")
         .def(
           py::init<
                std::optional<double>,
@@ -46,7 +46,7 @@ void init_bindings_ew(py::module& m) {
         .def("reset", &screamer::EwVar::reset, "Reset to the initial state.");
 
      
-     py::class_<screamer::EwStd>(m, "EwStd")
+     py::class_<screamer::EwStd, screamer::ScreamerBase>(m, "EwStd")
         .def(
           py::init<
                std::optional<double>,
@@ -63,7 +63,7 @@ void init_bindings_ew(py::module& m) {
         .def("reset", &screamer::EwStd::reset, "Reset to the initial state.");
 
      
-     py::class_<screamer::EwZscore>(m, "EwZscore")
+     py::class_<screamer::EwZscore, screamer::ScreamerBase>(m, "EwZscore")
         .def(
           py::init<
                std::optional<double>,
@@ -80,7 +80,7 @@ void init_bindings_ew(py::module& m) {
         .def("reset", &screamer::EwZscore::reset, "Reset to the initial state.");
 
 
-     py::class_<screamer::EwSkew>(m, "EwSkew")
+     py::class_<screamer::EwSkew, screamer::ScreamerBase>(m, "EwSkew")
         .def(
           py::init<
                std::optional<double>,
@@ -97,7 +97,7 @@ void init_bindings_ew(py::module& m) {
         .def("reset", &screamer::EwSkew::reset, "Reset to the initial state.");
 
 
-     py::class_<screamer::EwKurt>(m, "EwKurt")
+     py::class_<screamer::EwKurt, screamer::ScreamerBase>(m, "EwKurt")
         .def(
           py::init<
                std::optional<double>,
@@ -114,7 +114,7 @@ void init_bindings_ew(py::module& m) {
         .def("reset", &screamer::EwKurt::reset, "Reset to the initial state.");
 
 
-     py::class_<screamer::EwRms>(m, "EwRms")
+     py::class_<screamer::EwRms, screamer::ScreamerBase>(m, "EwRms")
         .def(
           py::init<
                std::optional<double>,

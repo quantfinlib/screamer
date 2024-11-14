@@ -9,67 +9,67 @@ namespace py = pybind11;
 
 void init_bindings_math(py::module& m) {
 
-     py::class_<screamer::Transform<(double (*)(double)) std::abs>>(m, "Abs")
+     py::class_<screamer::Transform<(double (*)(double)) std::abs>, screamer::ScreamerBase>(m, "Abs")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) std::abs>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) std::abs>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double)) std::log>>(m, "Log")
+     py::class_<screamer::Transform<(double (*)(double)) std::log>, screamer::ScreamerBase>(m, "Log")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) std::log>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) std::log>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double)) std::exp>>(m, "Exp")
+     py::class_<screamer::Transform<(double (*)(double)) std::exp>, screamer::ScreamerBase>(m, "Exp")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) std::exp>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) std::exp>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double)) std::sqrt>>(m, "Sqrt")
+     py::class_<screamer::Transform<(double (*)(double)) std::sqrt>, screamer::ScreamerBase>(m, "Sqrt")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) std::sqrt>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) std::sqrt>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double)) std::erf>>(m, "Erf")
+     py::class_<screamer::Transform<(double (*)(double)) std::erf>, screamer::ScreamerBase>(m, "Erf")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) std::erf>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) std::erf>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double)) std::erfc>>(m, "Erfc")
+     py::class_<screamer::Transform<(double (*)(double)) std::erfc>, screamer::ScreamerBase>(m, "Erfc")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) std::erfc>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) std::erfc>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double))screamer::signum<double> >>(m, "Sign")
+     py::class_<screamer::Transform<(double (*)(double))screamer::signum<double> >, screamer::ScreamerBase>(m, "Sign")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) screamer::signum<double>>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) screamer::signum<double>>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double)) std::tanh>>(m, "Tanh")
+     py::class_<screamer::Transform<(double (*)(double)) std::tanh>, screamer::ScreamerBase>(m, "Tanh")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) std::tanh>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) std::tanh>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double)) screamer::relu>>(m, "Relu")
+     py::class_<screamer::Transform<(double (*)(double)) screamer::relu>, screamer::ScreamerBase>(m, "Relu")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) screamer::relu>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) screamer::relu>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double)) screamer::selu>>(m, "Selu")
+     py::class_<screamer::Transform<(double (*)(double)) screamer::selu>, screamer::ScreamerBase>(m, "Selu")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) screamer::selu>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) screamer::selu>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double)) screamer::elu>>(m, "Elu")
+     py::class_<screamer::Transform<(double (*)(double)) screamer::elu>, screamer::ScreamerBase>(m, "Elu")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) screamer::elu>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) screamer::elu>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double)) screamer::softsign>>(m, "Softsign")
+     py::class_<screamer::Transform<(double (*)(double)) screamer::softsign>, screamer::ScreamerBase>(m, "Softsign")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) screamer::softsign>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) screamer::softsign>::reset, "Reset to the initial state.");
 
-     py::class_<screamer::Transform<(double (*)(double)) screamer::sigmoid>>(m, "Sigmoid")
+     py::class_<screamer::Transform<(double (*)(double)) screamer::sigmoid>, screamer::ScreamerBase>(m, "Sigmoid")
         .def(py::init<>())
         .def("__call__", &screamer::Transform<(double (*)(double)) screamer::sigmoid>::operator(), py::arg("value"))
         .def("reset", &screamer::Transform<(double (*)(double)) screamer::sigmoid>::reset, "Reset to the initial state.");

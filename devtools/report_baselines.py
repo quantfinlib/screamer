@@ -1,5 +1,5 @@
 from colorama import Fore, Style, init
-from devtools import  get_module_classes, get_baselines, sii
+from devtools import  get_module_public_classes, get_baselines, sii
 
 screamer_module = sii.load_screamer_module()
 
@@ -8,14 +8,13 @@ def report_screamer_classes(screamer_module):
     # Initialize colorama
     init(autoreset=True)
     
-    classes = get_module_classes(screamer_module)
+    classes = get_module_public_classes(screamer_module)
     
     good_count = 0
     bad_count = 0
 
     for class_name in classes:
-        if class_name.startswith('_'):
-            continue
+
         references = get_baselines(base_name=class_name)
         
         if references:

@@ -1,6 +1,6 @@
-#include <pybind11/pybind11.h>
+// #define PYBIND11_DETAILED_ERROR_MESSAGES
 
-//#define PYBIND11_DETAILED_ERROR_MESSAGES
+#include <pybind11/pybind11.h>
 
 namespace py = pybind11;
 

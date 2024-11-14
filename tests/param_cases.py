@@ -1,7 +1,7 @@
 print("TEST PARAM_CASES")
 from itertools import product
 import numpy as np
-from devtools import get_constructor_arguments, get_baselines, sii
+from devtools import get_constructor_arguments, get_baselines, sii, get_module_public_classes
 import pytest
 
 screamer_module = sii.load_screamer_module()
@@ -10,9 +10,9 @@ screamer_module = sii.load_screamer_module()
 # Set of classes in the screamer module
 # ----------------------------------------------------------------------
 
-
 # List of all screamer class names
-screamer_classes = [cls for cls in dir(screamer_module) if  cls[0].isupper()]
+# screamer_classes = [cls for cls in dir(screamer_module) if cls[0].isupper() and cls not in helperClasses]
+screamer_classes = get_module_public_classes(screamer_module)
 
 # The Rolling classes, except 'RollingQuantile' which has an extra argument
 rolling_classes = [cls for cls in screamer_classes if cls.startswith('Rolling') and not cls=='RollingQuantile' and not cls=='RollingFracDiff']

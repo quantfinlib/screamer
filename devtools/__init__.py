@@ -88,6 +88,12 @@ def get_module_classes(screamer_module):
     class_names = [name for name, obj in inspect.getmembers(screamer_module, inspect.isclass)]
     return class_names
 
+def get_module_public_classes(screamer_module):
+    return [
+        cls for cls in get_module_classes(screamer_module) 
+        if cls not in ["ScreamerBase", "AnextAwaitable", "LazyAsyncIterator", "LazyIterator"]
+    ]
+
 def get_baselines(base_name='Linear'):
     implementations = []
     for name, obj in inspect.getmembers(devtools.baselines, inspect.isclass):

@@ -22,18 +22,31 @@ include(FetchContent)
 # Define a directory for dependencies to avoid redundant downloads
 set(FETCHCONTENT_BASE_DIR ${CMAKE_BINARY_DIR}/_deps)
 
-# Fetch pybind11
-FetchContent_Declare(
-  pybind11
-  GIT_REPOSITORY https://github.com/pybind/pybind11.git
-  GIT_TAG        v2.13.6
-)
+# Path to locally cached dependencies (must be populated manually or during an online run)
+set(LOCAL_CACHE_DIR ${CMAKE_SOURCE_DIR}/_local_deps)
 
-# Make pybind11 available
-FetchContent_MakeAvailable(pybind11)
-if(NOT pybind11_FOUND)
-    message(FATAL_ERROR "pybind11 could not be fetched or located!")
+# Fetch pybind11
+#FetchContent_Declare(
+#  pybind11
+#  GIT_REPOSITORY https://github.com/pybind/pybind11.git
+#  GIT_TAG        v2.13.6
+#)
+
+# Check for pybind11 in the local cache first
+if(EXISTS "${LOCAL_CACHE_DIR}/pybind11")
+    message(STATUS "Using locally cached pybind11 at ${LOCAL_CACHE_DIR}/pybind11")
+    set(pybind11_SOURCE_DIR "${LOCAL_CACHE_DIR}/pybind11")
+    add_subdirectory("${pybind11_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/pybind11")
+else()
+    message(STATUS "Downloading pybind11 from GitHub")
+    FetchContent_Declare(
+        pybind11
+        GIT_REPOSITORY https://github.com/pybind/pybind11.git
+        GIT_TAG        v2.13.6
+    )
+    FetchContent_MakeAvailable(pybind11)
 endif()
+
 
 # ---------------------------------------------------------
 # Create the Python module

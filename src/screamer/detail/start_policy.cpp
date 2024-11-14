@@ -11,7 +11,7 @@ StartPolicy parse_start_policy(const std::string& policy) {
     if (policy == "strict") return StartPolicy::Strict;
     if (policy == "expanding") return StartPolicy::Expanding;
     if (policy == "zero") return StartPolicy::Zero;
-    throw std::invalid_argument("Unknown start policy: " + policy);
+    throw std::invalid_argument("Unknown start policy: [" + policy + "], valid values are: [strict, expanding, zero]");
 }
 
 } // namespace detail

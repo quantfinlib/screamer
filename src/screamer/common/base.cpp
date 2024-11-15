@@ -29,7 +29,8 @@ py::object ScreamerBase::operator()(py::object obj) {
     }
 
     if (is_async_generator(obj)) {
-        std::cout << "we have an async_generator" << std::endl;
+        // std::cout << "we have an async_generator" << std::endl;
+        return py::cast(LazyAsyncIterator(obj, *this));
     }
 
     auto type_str = std::string(py::str(py::type::of(obj)));

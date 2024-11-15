@@ -13,6 +13,20 @@ class ScreamerBase;
 // Function to check if an object is an async generator
 bool is_async_generator(const py::object& obj);
 
+
+/*
+class Awaiter {
+public:
+    Awaiter(py::object future, ScreamerBase& processor);
+    Awaiter& __iter__();
+    py::object __next__();
+private:
+    py::object future_;
+    ScreamerBase& processor_;
+    int state_;
+};
+*/
+
 // Class representing the awaitable returned by __anext__
 class AnextAwaitable {
 public:

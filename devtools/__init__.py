@@ -91,7 +91,7 @@ def get_module_classes(screamer_module):
 def get_module_public_classes(screamer_module):
     return [
         cls for cls in get_module_classes(screamer_module) 
-        if cls not in ["ScreamerBase", "AnextAwaitable", "LazyAsyncIterator", "LazyIterator"]
+        if cls not in ["ScreamerBase", "AnextAwaitable", "LazyAsyncIterator", "LazyIterator", "Awaiter"]
     ]
 
 def get_baselines(base_name='Linear'):

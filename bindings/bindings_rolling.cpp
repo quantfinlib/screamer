@@ -19,9 +19,6 @@
 #include "screamer/rolling_ou.h"
 #include "screamer/rolling_rsi.h"
 
-#include "screamer/common/base_n.h"
-#include "screamer/rolling_ofi.h"
-
 namespace py = pybind11;
 
 void init_bindings_rolling(py::module& m) {
@@ -146,22 +143,5 @@ void init_bindings_rolling(py::module& m) {
         .def("__call__", &screamer::RollingRSI::operator(), py::arg("value"))
         .def("reset", &screamer::RollingRSI::reset, "Reset to the initial state.");
 
-
-    py::class_<screamer::ScreamerBaseN<screamer::RollingOFI, 4>>(m, "_ScreamerBaseN_RollingOFI");
-    py::class_<screamer::RollingOFI, screamer::ScreamerBaseN<screamer::RollingOFI, 4> >(m, "RollingOFI")
-        .def(py::init<int, const std::string&>(), 
-            py::arg("window_size"), 
-            py::arg("start_policy") = "strict")
-        .def(
-            "__call__",
-            [](screamer::RollingOFI& self, py::object bid_price, py::object bid_volume, py::object ask_price, py::object ask_volume) {
-                return self(bid_price, bid_volume, ask_price, ask_volume);
-            },
-            py::arg("bid_price"),
-            py::arg("bid_volume"),
-            py::arg("ask_price"),
-            py::arg("ask_volume")
-        )
-        .def("reset", &screamer::RollingOFI::reset, "Reset to the initial state.");
 
 }

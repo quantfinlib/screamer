@@ -22,11 +22,18 @@ void init_bindings_myfunctors(py::module& m) {
         .def("__call__", [](MyFunctor& self, const MyFunctor::InputTuple& inputs) {
             return self(inputs);
         })
-        .def("__call__", [](MyFunctor& self, py::object iterable) {
-            return FunctorIterator<MyFunctor>(self, iterable);
-        }, py::keep_alive<0, 1>());
+        .def("__call__", [](MyFunctor& self, py::object obj) -> py::object {
+            // Check if the object is an iterator
+            if (py::hasattr(obj, "__next__")) {
+                // Return a FunctorIterator for iterators
+                return py::cast(FunctorIterator<MyFunctor>(self, obj), py::return_value_policy::reference_internal);
+            }
+            // Otherwise, treat it as a Python iterable (e.g., list of tuples)
+            return self(obj.cast<py::iterable>());
+        });
 
     bind_functor_iterator<MyFunctor>(m, "MyFunctorIterator");
+
 
     // My2ndFunctor bindings
     py::class_<My2ndFunctor> my_2nd_functor(m, "My2ndFunctor");
@@ -38,11 +45,18 @@ void init_bindings_myfunctors(py::module& m) {
         .def("__call__", [](My2ndFunctor& self, const My2ndFunctor::InputTuple& inputs) {
             return self(inputs);
         })
-        .def("__call__", [](My2ndFunctor& self, py::object iterable) {
-            return FunctorIterator<My2ndFunctor>(self, iterable);
-        }, py::keep_alive<0, 1>());
+        .def("__call__", [](My2ndFunctor& self, py::object obj) -> py::object {
+            // Check if the object is an iterator
+            if (py::hasattr(obj, "__next__")) {
+                // Return a FunctorIterator for iterators
+                return py::cast(FunctorIterator<My2ndFunctor>(self, obj), py::return_value_policy::reference_internal);
+            }
+            // Otherwise, treat it as a Python iterable (e.g., list of tuples)
+            return self(obj.cast<py::iterable>());
+        });
 
     bind_functor_iterator<My2ndFunctor>(m, "My2ndFunctorIterator");
+
 
     // My3rdFunctor bindings
     py::class_<My3rdFunctor> my_3rd_functor(m, "My3rdFunctor");
@@ -54,9 +68,15 @@ void init_bindings_myfunctors(py::module& m) {
         .def("__call__", [](My3rdFunctor& self, const My3rdFunctor::InputTuple& inputs) {
             return self(inputs);
         })
-        .def("__call__", [](My3rdFunctor& self, py::object iterable) {
-            return FunctorIterator<My3rdFunctor>(self, iterable);
-        }, py::keep_alive<0, 1>());
+        .def("__call__", [](My3rdFunctor& self, py::object obj) -> py::object {
+            // Check if the object is an iterator
+            if (py::hasattr(obj, "__next__")) {
+                // Return a FunctorIterator for iterators
+                return py::cast(FunctorIterator<My3rdFunctor>(self, obj), py::return_value_policy::reference_internal);
+            }
+            // Otherwise, treat it as a Python iterable (e.g., list of tuples)
+            return self(obj.cast<py::iterable>());
+        });
 
     bind_functor_iterator<My3rdFunctor>(m, "My3rdFunctorIterator");
     

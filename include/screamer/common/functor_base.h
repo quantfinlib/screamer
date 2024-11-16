@@ -15,7 +15,7 @@ public:
 
     virtual ~FunctorBase() = default;
 
-    // Unpacked arguments - calls the renamed `call` method
+    // Unpacked arguments - `call` method
     virtual ResultType call(InputTypes... args) = 0;
 
     // Tuple-based operator() forwards to `call`
@@ -26,6 +26,19 @@ public:
     // Unpacked operator() also forwards to `call`
     ResultType operator()(InputTypes... args) {
         return call(args...);
+    }
+
+    // Handle an iterable of tuples
+    py::list operator()(py::iterable iterable) {
+        py::list results;
+
+        for (auto item : iterable) {
+            // Attempt to cast each element to the expected tuple type
+            auto tuple = item.cast<InputTuple>();
+            results.append((*this)(tuple));
+        }
+
+        return results;
     }
 };
 

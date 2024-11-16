@@ -68,4 +68,11 @@ def gen3():
 
 list(obj3(gen3()))
 
+
+from screamer import MyFunctor
+obj1 = MyFunctor()
+x = [(1,2,3)]*5
+obj1(x)
+<screamer.screamer_bindings.MyFunctorIterator object at 0x102ea99f0>
+
 */

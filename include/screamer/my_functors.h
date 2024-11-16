@@ -6,31 +6,26 @@
 
 namespace screamer {
 
-class MyFunctor : public FunctorBase<double, double, double, double> {
-private:
-    double state = 0.0;  // Example internal state
-
+class MyFunctor : public FunctorBase<MyFunctor, double, double, double, double> {
 public:
     double call(double a, double b, double c) override {
-        state += a + b + c;  // Update internal state
-        return state;        // Return updated state
+        // Your implementation
+        return a + b + c;  // Example
     }
 };
 
-
-class My2ndFunctor : public FunctorBase<double, double, double> {
-private:
-    double multiplier = 1.0;  // Example internal state
-
+class My2ndFunctor : public FunctorBase<My2ndFunctor, double, double, double> {
 public:
     double call(double a, double b) override {
-        multiplier *= a * b;  // Update multiplier
-        return multiplier;    // Return updated state
+        // Your implementation
+        return a * b;  // Example
     }
 };
 
+// Similarly for My3rdFunctor
 
-class My3rdFunctor : public FunctorBase<std::tuple<double, double>, double, double> {
+
+class My3rdFunctor : public FunctorBase<My3rdFunctor, std::tuple<double, double>, double, double> {
 private:
     double sum_state = 0.0;   // Example internal state
 
@@ -46,7 +41,6 @@ public:
 #endif
 
 /*
-
 from screamer import MyFunctor, My2ndFunctor, My3rdFunctor
 obj1 = MyFunctor()
 obj2 = My2ndFunctor()
@@ -69,10 +63,9 @@ def gen3():
 list(obj3(gen3()))
 
 
-from screamer import MyFunctor
-obj1 = MyFunctor()
 x = [(1,2,3)]*5
-obj1(x)
-<screamer.screamer_bindings.MyFunctorIterator object at 0x102ea99f0>
+print(obj1(x))
+
+print(obj1((1,2,3)))
 
 */

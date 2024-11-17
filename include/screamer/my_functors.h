@@ -9,16 +9,22 @@ namespace screamer {
 class MyFunctor : public FunctorBase<MyFunctor, double, double, double, double> {
 public:
     double call(double a, double b, double c) override {
-        // Your implementation
-        return a + b + c;  // Example
+        return a + b + c;
+    }
+};
+
+
+class MyFunctor1 : public FunctorBase<MyFunctor1, double, double> {
+public:
+    double call(double a) override {
+        return a * 2; 
     }
 };
 
 class My2ndFunctor : public FunctorBase<My2ndFunctor, double, double, double> {
 public:
     double call(double a, double b) override {
-        // Your implementation
-        return a * b;  // Example
+        return a * b;
     }
 };
 
@@ -41,12 +47,32 @@ public:
 #endif
 
 /*
-from screamer import MyFunctor, My2ndFunctor, My3rdFunctor
-obj1 = MyFunctor()
+from screamer import MyFunctor1
+obj1 = MyFunctor1()
+obj1(1) # works
+
+tuple_of_double = (1.1, 2.2, 3.3)
+list_of_double = [1.1, 2.2, 3.3]
+tuple_of_tuple_of_double = ( (1.1), (2.2), (3.3) )
+list_of_tuple_of_double = [ (1.1), (2.2), (3.3) ]
+
+obj1(tuple_of_double) # fails
+obj1(list_of_double) # fails
+obj1(tuple_of_tuple_of_double) # fails
+obj1(list_of_tuple_of_double) # fails
+
+
+obj1((1,2,3))
+
+from screamer import MyFunctor, MyFunctor1, My2ndFunctor, My3rdFunctor
+
+obj0 = MyFunctor()
+obj1 = MyFunctor1()
 obj2 = My2ndFunctor()
 obj3 = My3rdFunctor()
 
-print(obj1(1,2,3))
+print(obj0(1,2,3))
+print(obj1(1))
 print(obj2(1,2))
 print(obj3(1,2))
 

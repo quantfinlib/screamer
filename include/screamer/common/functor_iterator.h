@@ -10,31 +10,47 @@ namespace screamer {
 template <typename Functor>
 class FunctorIterator {
 public:
-    Functor& functor;
-    py::object iterator; // Holds a reference to the Python iterator
+    using InputTuple = typename Functor::InputTuple;
 
-    FunctorIterator(Functor& functor, py::object iterable)
-        : functor(functor), iterator(iterable) {
-        // Ensure we have an iterator
-        if (!py::hasattr(iterator, "__next__")) {
-            iterator = py::iter(iterator);
-        }
-    }
+    Functor& functor;
+    py::object iterator;
+
+    FunctorIterator(Functor& func, py::object iterable)
+        : functor(func), iterator(iterable.attr("__iter__")()) {}
 
     FunctorIterator& __iter__() {
         return *this;
     }
 
     py::object __next__() {
-        py::object item;
         try {
-            item = iterator.attr("__next__")();
+            // Get the next item from the iterator
+            py::object item = iterator.attr("__next__")();
+
+            InputTuple tuple;
+
+            if constexpr (std::tuple_size<InputTuple>::value == 1) {
+                // Single-element tuple handling
+                using ElementType = typename std::tuple_element<0, InputTuple>::type;
+
+                try {
+                    // Try casting item directly to the argument type
+                    ElementType value = item.cast<ElementType>();
+                    tuple = std::make_tuple(value);
+                } catch (const py::cast_error&) {
+                    // Try casting item to InputTuple
+                    tuple = item.cast<InputTuple>();
+                }
+            } else {
+                // Multi-element tuple handling
+                tuple = item.cast<InputTuple>();
+            }
+
+            auto result = functor(tuple);
+            return py::cast(result);
         } catch (py::stop_iteration&) {
             throw py::stop_iteration();
         }
-        auto args = item.cast<typename Functor::InputTuple>();
-        auto result = functor(args);
-        return py::cast(result);
     }
 };
 

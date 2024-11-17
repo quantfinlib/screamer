@@ -28,6 +28,23 @@ void init_bindings_myfunctors(py::module& m) {
     bind_functor_iterator<MyFunctor>(m, "MyFunctorIterator");
 
 
+
+    py::class_<MyFunctor1>(m, "MyFunctor1")
+        .def(py::init<>())
+        .def("__call__", [](MyFunctor1& self, double a) {
+            return self(a);
+        })
+        .def("__call__", [](MyFunctor1& self, const MyFunctor1::InputTuple& inputs) {
+            return self(inputs);
+        })
+        .def("__call__", [](MyFunctor1& self, py::object obj) {
+            return self.process_object(obj);
+        });
+
+    bind_functor_iterator<MyFunctor1>(m, "MyFunctor1Iterator");
+
+
+
     py::class_<My2ndFunctor>(m, "My2ndFunctor")
         .def(py::init<>())
         .def("__call__", [](My2ndFunctor& self, double a, double b) {

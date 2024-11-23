@@ -12,80 +12,39 @@ using namespace screamer;
 
 void init_bindings_myfunctors(py::module& m) {
 
-
-    py::class_<MyFunctor>(m, "MyFunctor")
+    py::class_<MyFunctor11>(m, "MyFunctor11")
         .def(py::init<>())
-        .def("__call__", [](MyFunctor& self, double a, double b, double c) {
-            return self(a, b, c);
-        })
-        .def("__call__", [](MyFunctor& self, const MyFunctor::InputTuple& inputs) {
-            return self(inputs);
-        })
-        .def("__call__", [](MyFunctor& self, py::object obj) {
-            return self.process_object(obj);
-        });
+        .def("__call__", &MyFunctor11::handle_input);
 
-    bind_functor_iterator<MyFunctor>(m, "MyFunctorIterator");
+    bind_functor_iterator<MyFunctor11>(m, "MyFunctorIterator11");
 
-
-
-    py::class_<MyFunctor1>(m, "MyFunctor1")
+    py::class_<MyFunctor22>(m, "MyFunctor22")
         .def(py::init<>())
-        .def("__call__", [](MyFunctor1& self, double a) {
-            return self(a);
-        })
-        .def("__call__", [](MyFunctor1& self, const MyFunctor1::InputTuple& inputs) {
-            return self(inputs);
-        })
-        .def("__call__", [](MyFunctor1& self, py::object obj) {
-            return self.process_object(obj);
-        });
+        .def("__call__", &MyFunctor22::handle_input);
 
-    bind_functor_iterator<MyFunctor1>(m, "MyFunctor1Iterator");
+    bind_functor_iterator<MyFunctor22>(m, "MyFunctorIterator22");
 
-
-
-    py::class_<My2ndFunctor>(m, "My2ndFunctor")
+    py::class_<MyFunctor31>(m, "MyFunctor31")
         .def(py::init<>())
-        .def("__call__", [](My2ndFunctor& self, double a, double b) {
-            return self(a, b);
-        })
-        .def("__call__", [](My2ndFunctor& self, const My2ndFunctor::InputTuple& inputs) {
-            return self(inputs);
-        })
-        .def("__call__", [](My2ndFunctor& self, py::object obj) {
-            return self.process_object(obj);
-        });
+        .def("__call__", &MyFunctor31::handle_input);
 
-    bind_functor_iterator<My2ndFunctor>(m, "My2ndFunctorIterator");
-
-
-    py::class_<My3rdFunctor>(m, "My3rdFunctor")
+/**
+    py::class_<MyFunctor31>(m, "MyFunctor31")
         .def(py::init<>())
-        .def("__call__", [](My3rdFunctor& self, double a, double b) {
-            return self(a, b);
-        })
-        .def("__call__", [](My3rdFunctor& self, const My3rdFunctor::InputTuple& inputs) {
-            return self(inputs);
-        })
-        .def("__call__", [](My3rdFunctor& self, py::object obj) {
-            return self.process_object(obj);
-        });
-
-    bind_functor_iterator<My3rdFunctor>(m, "My3rdFunctorIterator");
+        .def("__call__",
+            [](MyFunctor31& self, py::args args) {
+                if (args.size() == 1) {
+                    return self.handle_input(args[0]);
+                } else {
+                    py::tuple packed_args(args.size());
+                    for (size_t i = 0; i < args.size(); ++i) {
+                        packed_args[i] = args[i];
+                    }
+                    return self.handle_input(packed_args);                    
+                }
+            }
+        );
+*/
+    bind_functor_iterator<MyFunctor31>(m, "MyFunctorIterator31");
     
 }
-
-
-/*
-in a statement like:
-
-.def("__call__", [](MyFunctor& self, py::object obj) {
-    return self.process_object(obj);
-}, py::keep_alive<0, 1>());
-
-
-py::keep_alive<0, 1> is used to ensure that the lifetime of the obj (the second argument in 
-this directive) is tied to the lifetime of the return value (the first argument in this directive).
-
-*/

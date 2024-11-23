@@ -24,10 +24,11 @@ def test(c):
     """Build and run C++ tests in a cross-platform way."""
     # Remove build directory if it exists
     if os.path.exists('build'):
-        shutil.rmtree('build')
-
-    # Create build directory
-    os.mkdir('build')
+    #    shutil.rmtree('build')
+        pass
+    else:
+        # Create build directory
+        os.mkdir('build')
 
     # Change to build directory
     with c.cd('build'):

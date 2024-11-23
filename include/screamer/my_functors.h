@@ -6,37 +6,31 @@
 
 namespace screamer {
 
-class MyFunctor : public FunctorBase<MyFunctor, double, double, double, double> {
+class MyFunctor31 : public FunctorBase<MyFunctor31, 3, 1> {
 public:
-    double call(double a, double b, double c) override {
+    ResultTuple call(const InputArray& inputs) override {
+        const auto& [a, b, c] = std::tie(inputs[0], inputs[1], inputs[2]);
         return a + b + c;
     }
 };
 
 
-class MyFunctor1 : public FunctorBase<MyFunctor1, double, double> {
+
+class MyFunctor11 : public FunctorBase<MyFunctor11, 1, 1> {
 public:
-    double call(double a) override {
-        return a * 2; 
+    ResultTuple call(const InputArray& inputs) override {
+        const auto& [a] = std::tie(inputs[0]);
+        return a * 2;
     }
 };
 
-class My2ndFunctor : public FunctorBase<My2ndFunctor, double, double, double> {
-public:
-    double call(double a, double b) override {
-        return a * b;
-    }
-};
 
-// Similarly for My3rdFunctor
-
-
-class My3rdFunctor : public FunctorBase<My3rdFunctor, std::tuple<double, double>, double, double> {
+class MyFunctor22 : public FunctorBase<MyFunctor22, 2, 2> {
 private:
     double sum_state = 0.0;   // Example internal state
-
 public:
-    std::tuple<double, double> call(double a, double b) override {
+    ResultTuple call(const InputArray& inputs) override {
+        const auto& [a, b] = std::tie(inputs[0], inputs[1]);
         sum_state += a + b;           // Update state
         return {a - b, sum_state};    // Return computed values and state
     }
@@ -47,51 +41,117 @@ public:
 #endif
 
 /*
+# ---------------------------------
+# MyFunctor11: single argument
+#----------------------------------
+from screamer import MyFunctor11
+import numpy as np
+
+obj11 = MyFunctor11() 
+obj11(1)
+obj11((1))
+obj11((1,2,3))
+obj11([1,2,3])
+obj11([(1,), (2,), (3,)])
+obj11(np.arange(5))
+obj11(np.arange(10)[1::2])
+obj11(np.arange(12).reshape(-1,3))
+list(obj11(iter([1,2,3])))
+
+
+# ----------------------------------------
+# MyFunctor31: 3 arguments, 1 return value
+#-----------------------------------------
+from screamer import MyFunctor31
+import numpy as np
+
+obj31 = MyFunctor31()
+obj31(1,2,3)
+obj31((1,2,3))
+obj31([(1,2,3), (4,5,6)])
+obj31(np.arange(5), 2*np.arange(5), 3*np.arange(5))
+
+obj31( [1,2,3,4], [1,2,3,4], [5,6,7,8] )
+
+
+
+
+
+obj11((1))
+obj11((1,2,3))
+obj11([1,2,3])
+obj11([(1,), (2,), (3,)])
+obj11(np.arange(5))
+obj11(np.arange(10)[1::2])
+obj11(np.arange(12).reshape(-1,3))
+
+
+
+
+
+
+
+
+
+
+
+
+obj(1.1, 2.2, 3.3)
+obj( (1, 2, 3) )
+obj( [(1, 2, 3), (4, 5, 6)] )
+
+def tuple_gen():
+	for _ in range(10):
+		yield (1,2,3)
+
+for a in obj(tuple_gen()):
+	print(a)
+
+list(obj(tuple_gen()))
+
+
+# ---------------------------------
+# MyFunctor: single input-output
+#---------------------------------
 from screamer import MyFunctor1
-obj1 = MyFunctor1()
-obj1(1) # works
 
-tuple_of_double = (1.1, 2.2, 3.3)
-list_of_double = [1.1, 2.2, 3.3]
-tuple_of_tuple_of_double = ( (1.1), (2.2), (3.3) )
-list_of_tuple_of_double = [ (1.1), (2.2), (3.3) ]
+obj1 = MyFunctor1() 
 
-obj1(tuple_of_double) # fails
-obj1(list_of_double) # fails
-obj1(tuple_of_tuple_of_double) # fails
-obj1(list_of_tuple_of_double) # fails
+obj1(1)
+obj1(1.1)
+obj1( (1) )
+obj1( (1, 2, 3) )
+
+def tuple_gen1():
+	for _ in range(10):
+		yield (1)
+
+for a in obj1(tuple_gen1()):
+	print(a)
+
+list(obj1(tuple_gen1()))
 
 
-obj1((1,2,3))
+---------------------------------
+# My3rdFunctor: two outputs
+---------------------------------
+from screamer import My3rdFunctor
 
-from screamer import MyFunctor, MyFunctor1, My2ndFunctor, My3rdFunctor
-
-obj0 = MyFunctor()
-obj1 = MyFunctor1()
-obj2 = My2ndFunctor()
 obj3 = My3rdFunctor()
 
-print(obj0(1,2,3))
-print(obj1(1))
-print(obj2(1,2))
-print(obj3(1,2))
 
-def gen1():
-    for _ in range(10):
-        yield (1,2,3)
+obj3(1, 2)
+obj3(1.1, 2.2)
+obj3( (1, 2) )
+obj3( [(1, 2), (4, 5)] )
 
-list(obj1(gen1()))
+def tuple_gen3():
+	for _ in range(10):
+		yield (1,2)
 
-def gen3():
-    for _ in range(10):
-        yield (1,3)
+for a in obj3(tuple_gen3()):
+	print(a)
 
-list(obj3(gen3()))
-
-
-x = [(1,2,3)]*5
-print(obj1(x))
-
-print(obj1((1,2,3)))
+list(obj3(tuple_gen3()))
 
 */

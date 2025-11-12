@@ -15,6 +15,7 @@ accuracy, and versatility in handling both NumPy arrays and streaming data.
 [![tests](https://github.com/quantfinlib/screamer/actions/workflows/test.yml/badge.svg)](https://github.com/quantfinlib/screamer/actions/workflows/test.yml)
 [![Docs](https://readthedocs.org/projects/screamer/badge/?version=latest)](https://screamer.readthedocs.io/en/latest/?badge=latest) 
 [![PyPI](https://img.shields.io/pypi/v/screamer)](https://pypi.org/project/screamer/)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/screamer?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/screamer)
 
 
 Engineered in C++ and leveraging state-of-the-art numerical algorithms, Screamer delivers 
